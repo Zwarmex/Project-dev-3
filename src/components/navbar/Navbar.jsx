@@ -57,14 +57,14 @@ const Navbar = ({ isConnected }) => {
               </NavLink>
             </li>
           ) : (
-            ""
+            null
           )}
-          <li className="recipe__navbar-links__li-img">
+          <li className="recipe__navbar-links__li">
             {isConnected ? (
-              <img src={login} alt="login" onClick={() => handleClickMenu()} />
+              <img className="recipe__navbar-links__li-img" src={login} alt="login" onClick={() => handleClickMenu()} />
             ) : (
               <NavLink to="/login">
-                <img src={login} alt="login" />
+                <img className="recipe__navbar-links__li-img" src={login} alt="login" />
               </NavLink>
             )}
           </li>

@@ -21,7 +21,7 @@ const App = () => {
           <Route path="/marketplace" element={<MarketPage />} />
           <Route path="/wheel" element={<WheelPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/calendar" element={<CalendarPage />} />
+          {isConnected ? <Route path="/calendar" element={<CalendarPage />} /> : null}
         </Routes>
       </BrowserRouter>
     </div>
