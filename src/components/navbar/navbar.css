@@ -17,20 +17,19 @@
 
 .recipe__navbar-links {
   flex: 2;
-  display: flex;
-  justify-content: space-between;
   margin-right: 2rem;
   cursor: pointer;
-  align-items: center;
 }
 
-.recipe__navbar-links a {
+.recipe__navbar-links ul {
   font-size: x-large;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
 }
 
-.recipe__navbar-links a img {
+.recipe__navbar-links ul img {
   max-width: 75%;
   max-height: auto;
 }
