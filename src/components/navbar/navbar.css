@@ -11,7 +11,7 @@
   margin: 0.5rem;
 }
 
-.recipe__navbar-title p {
+.recipe__navbar-title {
   font-size: xx-large;
 }
 
@@ -29,7 +29,12 @@
   list-style: none;
 }
 
-.recipe__navbar-links ul img {
+.recipe__navbar-links__li-img {
+  justify-content: center;
+  display: inherit;
+}
+
+.recipe__navbar-links__li-img img {
   max-width: 75%;
-  max-height: auto;
+  /* max-height: auto; */
 }
