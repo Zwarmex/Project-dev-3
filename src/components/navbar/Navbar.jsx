@@ -45,13 +45,34 @@ const Navbar = ({ isConnected }) => {
       <div className="recipe__navbar-links">
         <ul className="recipe__navbar-links__ul">
           <li>
-            <NavLink to="/">Home</NavLink>
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                isActive ? "activeLink" : undefined
+              }
+            >
+              Home
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/marketplace">Market Place</NavLink>
+            <NavLink
+              to="/marketplace"
+              className={({ isActive }) =>
+                isActive ? "activeLink" : undefined
+              }
+            >
+              Market Place
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/wheel">Recipe's wheel</NavLink>
+            <NavLink
+              to="/wheel"
+              className={({ isActive }) =>
+                isActive ? "activeLink" : undefined
+              }
+            >
+              Recipe's wheel
+            </NavLink>
           </li>
           <li>
             {isConnected ? (
