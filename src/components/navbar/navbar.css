@@ -1,0 +1,36 @@
+.recipe__navbar-container {
+  display: flex;
+  align-items: center;
+  background-color: black;
+  color: white;
+  font-family: var(--font-family);
+}
+
+.recipe__navbar-title {
+  flex: 1;
+  margin: 0.5rem;
+}
+
+.recipe__navbar-title p {
+  font-size: xx-large;
+}
+
+.recipe__navbar-links {
+  flex: 2;
+  display: flex;
+  justify-content: space-between;
+  margin-right: 2rem;
+  cursor: pointer;
+  align-items: center;
+}
+
+.recipe__navbar-links a {
+  font-size: x-large;
+  display: flex;
+  justify-content: center;
+}
+
+.recipe__navbar-links a img {
+  max-width: 75%;
+  max-height: auto;
+}
