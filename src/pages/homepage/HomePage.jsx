@@ -7,9 +7,9 @@ const HomePage = () => {
   return (
     <div>
       <Header />
-      <AboutUs />
-      <CTA />
       <ContactUs />
+      <CTA />
+      <AboutUs />
       <Footer />
     </div>
   );
