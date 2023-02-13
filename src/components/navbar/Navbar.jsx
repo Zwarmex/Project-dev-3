@@ -45,6 +45,20 @@ const Navbar = ({ isConnected }) => {
               Recipe's wheel
             </NavLink>
           </li>
+          {isConnected ? (
+            <li>
+              <NavLink
+                to="/calendar"
+                className={({ isActive }) =>
+                  isActive ? "activeLink" : undefined
+                }
+              >
+                Calendar
+              </NavLink>
+            </li>
+          ) : (
+            ""
+          )}
           <li className="recipe__navbar-links__li-img">
             {isConnected ? (
               <img src={login} alt="login" onClick={() => handleClickMenu()} />
