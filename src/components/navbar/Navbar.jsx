@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 
 const Navbar = ({ isConnected }) => {
   const handleClickMenu = () => {
-    alert("clicke, menu");
+    alert("clicked menu");
   };
 
   return (
@@ -64,7 +64,7 @@ const Navbar = ({ isConnected }) => {
               <img className="recipe__navbar-links__li-img" src={login} alt="login" onClick={() => handleClickMenu()} />
             ) : (
               <NavLink to="/login">
-                <img className="recipe__navbar-links__li-img" src={login} alt="login" />
+                <img className="recipe__navbar-links__li-img" src={login} alt="login"/>
               </NavLink>
             )}
           </li>
