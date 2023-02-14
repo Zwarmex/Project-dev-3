@@ -1,3 +1,9 @@
+html, body, .App, #root {
+  height: -webkit-fill-available;
+  height: 100%;
+  margin: 0;
+}
+
 * {
   box-sizing: border-box;
   padding: 0;

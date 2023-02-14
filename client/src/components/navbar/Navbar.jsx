@@ -9,16 +9,16 @@ const Navbar = ({ isConnected }) => {
   };
 
   return (
-    <div className="recipe__navbar-container">
-      <div className="recipe__navbar-title">
+    <div className="navbar-container">
+      <div className="navbar-title">
         <p>
           <NavLink to="/">
             Recipe's App
           </NavLink>
         </p>
       </div>
-      <div className="recipe__navbar-links">
-        <ul className="recipe__navbar-links__ul">
+      <div className="navbar-links">
+        <ul className="navbar-links__ul">
           <li>
             <NavLink
               to="/"
@@ -63,12 +63,12 @@ const Navbar = ({ isConnected }) => {
           ) : (
             null
           )}
-          <li className="recipe__navbar-links__li">
+          <li className="navbar-links__li">
             {isConnected ? (
-              <img className="recipe__navbar-links__li-img" src={login} alt="login" onClick={() => handleClickMenu()} />
+              <img className="navbar-links__li-img" src={login} alt="login" onClick={() => handleClickMenu()} />
             ) : (
               <NavLink to="/login">
-                <img className="recipe__navbar-links__li-img" src={login} alt="login"/>
+                <img className="navbar-links__li-img" src={login} alt="login"/>
               </NavLink>
             )}
           </li>

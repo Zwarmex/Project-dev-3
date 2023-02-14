@@ -1,4 +1,4 @@
-.recipe__navbar-container {
+.navbar-container {
   display: flex;
   align-items: center;
   background-color: black;
@@ -6,22 +6,20 @@
   font-family: var(--font-family);
 }
 
-.recipe__navbar-title {
+.navbar-title {
   flex: 1;
   margin: 0.5rem;
-}
-
-.recipe__navbar-title {
   font-size: xx-large;
+
 }
 
-.recipe__navbar-links {
+.navbar-links {
   flex: 2;
   margin-right: 2rem;
   cursor: pointer;
 }
 
-.recipe__navbar-links ul {
+.navbar-links__ul {
   font-size: x-large;
   display: flex;
   justify-content: space-between;
@@ -29,17 +27,17 @@
   list-style: none;
 }
 
-.recipe__navbar-links__li-img {
+.navbar-links__li-img {
   justify-content: center;
   display: inherit;
 }
 
-.recipe__navbar-links__li {
+.navbar-links__li {
   justify-content: center;
   display: inherit;
 }
 
-.recipe__navbar-links__li-img {
+.navbar-links__li-img {
   max-width: 75%;
   justify-content: center;
   display: inherit;

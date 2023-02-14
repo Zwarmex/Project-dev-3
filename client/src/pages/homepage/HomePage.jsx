@@ -8,7 +8,9 @@ const HomePage = () => {
     <div>
       <Header />
       <CTA />
-      <Footer />
+      <div className="homepage__footer-container">
+        <Footer />
+      </div>
     </div>
   );
 };

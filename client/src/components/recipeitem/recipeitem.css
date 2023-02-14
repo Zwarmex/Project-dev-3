@@ -1,0 +1,9 @@
+.recipe__item-container {
+    background-color: rgba(217, 217, 217, 0.722);
+    font-family: var(--font-family);
+    height: 100%;
+    padding: 2%;
+    margin: 2%;
+    border-radius: 50px;
+    display: inline-block;
+}

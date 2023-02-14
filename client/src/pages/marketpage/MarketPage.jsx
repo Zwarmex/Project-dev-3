@@ -1,71 +1,68 @@
 import React, { useEffect, useState } from "react";
+import { LoadingSpinner, RecipeItem } from "../../components";
 import "./marketpage.css";
+// import { Fetch } from 'fetch-plus';
+
 
 const MarketPage = () => {
-  useEffect(() => {
-    fetchItems();
-  }, []);
 
   const [items, setItems] = useState([]);
 
-  const fetchItems = async () => {
+  const fetchItems = async () => 
+  {
     const data = await fetch("/marketplace");
     const items = await data.json();
     setItems(items);
   };
 
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
   return (
     <div className="recipe__marketplace-container">
-      <h1>Category</h1>
-      <div className="recipe__marketplace-row">
-        {items.map((item) => (
-          <div className="recipe__marketplace-item">
-            <p>Nom : {item.name}</p>
-            <p>Durée : {item.duration} minutes</p>
-            <p>Instructions :{item.intructions}</p>
-          </div>
-        ))}
+      {items.length !== 0 ?
+      <>
+        <h1>Category</h1>
+        <div className="recipe__marketplace-row">
+          {items.map((item) => (
+            < RecipeItem item={item}/>
+          ))}
+        </div>
+        <h1>Category</h1>
+        <div className="recipe__marketplace-row">
+          {items.map((item) => (
+              < RecipeItem item={item}/>
+          ))}
+        </div>
+        <h1>Category</h1>
+        <div className="recipe__marketplace-row">
+          {items.map((item) => (
+              < RecipeItem item={item}/>
+          ))}
+        </div>
+        <h1>Category</h1>
+        <div className="recipe__marketplace-row">
+          {items.map((item) => (
+              < RecipeItem item={item}/>
+          ))}
+        </div>
+        <h1>Category</h1>
+        <div className="recipe__marketplace-row">
+          {items.map((item) => (
+              < RecipeItem item={item}/>
+          ))}
+        </div>
+      </>
+      : 
+      <div className="marketplace__no-recipe__container">
+        <h1>NO RECIPES...</h1>
+        <div className="marketplace__no-recipe__loading-spinner__container">
+          <LoadingSpinner />
+        </div>
       </div>
-      <h1>Category</h1>
-      <div className="recipe__marketplace-row">
-        {items.map((item) => (
-          <div className="recipe__marketplace-item">
-            <p>Nom : {item.name}</p>
-            <p>Durée : {item.duration} minutes</p>
-            <p>Instructions :{item.intructions}</p>
-          </div>
-        ))}
-      </div>
-      <h1>Category</h1>
-      <div className="recipe__marketplace-row">
-        {items.map((item) => (
-          <div className="recipe__marketplace-item">
-            <p>Nom : {item.name}</p>
-            <p>Durée : {item.duration} minutes</p>
-            <p>Instructions :{item.intructions}</p>
-          </div>
-        ))}
-      </div>
-      <h1>Category</h1>
-      <div className="recipe__marketplace-row">
-        {items.map((item) => (
-          <div className="recipe__marketplace-item">
-            <p>Nom : {item.name}</p>
-            <p>Durée : {item.duration} minutes</p>
-            <p>Instructions :{item.intructions}</p>
-          </div>
-        ))}
-      </div>
-      <h1>Category</h1>
-      <div className="recipe__marketplace-row">
-        {items.map((item) => (
-          <div className="recipe__marketplace-item">
-            <p>Nom : {item.name}</p>
-            <p>Durée : {item.duration} minutes</p>
-            <p>Instructions :{item.intructions}</p>
-          </div>
-        ))}
-      </div>
+      }
+      
     </div>
   );
 };

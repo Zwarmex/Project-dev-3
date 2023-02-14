@@ -2,44 +2,44 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/marketplace", (req, res) => {
-  const str = [
+  const recipes = [
     {
       name: "Gateau en chocolat",
       duration: 45,
-      intructions: "Casser oeuf. Mélanger lait et farine.",
+      instructions: "Casser oeuf. Mélanger lait et farine."
     },
     {
-      name: "Gateau en chocolat",
-      duration: 45,
-      intructions: "Casser oeuf. Mélanger lait et farine.",
+      name: "Tarte aux pommes",
+      duration: 60,
+      instructions: "Éplucher et couper les pommes."
     },
     {
-      name: "Gateau en chocolat",
-      duration: 45,
-      intructions: "Casser oeuf. Mélanger lait et farine.",
-    },
+      name: "Salade César",
+      duration: 20,
+      instructions: "Couper la salade et les tomates."
+    },    
     {
       name: "Pate carbonara",
       duration: 30,
-      intructions: "Cuire lardons, etc...",
+      instructions: "Cuire lardons, etc..."
     },
     {
       name: "Pain Perdu",
       duration: 30,
-      intructions: "Casser les oeufs",
+      instructions: "Casser les oeufs"
     },
     {
-      name: "Pain Perdu",
-      duration: 30,
-      intructions: "Casser les oeufs",
+      name: "Poulet rôti",
+      duration: 90,
+      instructions: "Préchauffer le four. Assaisonner le poulet."
     },
     {
-      name: "Pain Perdu",
+      name: "Pâtes à la bolognaise",
       duration: 30,
-      intructions: "Casser les oeufs",
+      instructions: "Faire cuire les pâtes. Faire revenir la viande hachée avec l'oignon et l'ail."
     },
   ];
-  res.end(JSON.stringify(str));
+  res.end(JSON.stringify(recipes));
 });
 
 router.post("/addMarketplace", (req, res) => {

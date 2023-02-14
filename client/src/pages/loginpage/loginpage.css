@@ -12,19 +12,16 @@ button:active
 
 .recipe__form-page {
   height: 90vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
 }
 
 .recipe__form-container {
   background-color: rgba(217, 217, 217, 0.722);
   border-radius: 50px;
   width: 75%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   box-shadow: 2px 2px 10px black ;
 }
 
