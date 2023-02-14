@@ -1,0 +1,15 @@
+.contactus
+{
+    font-family: var(--font-family);
+}
+
+.contactus h1
+{
+    text-align: center;
+
+}
+
+.contactus p
+{
+    padding: 1%;
+}

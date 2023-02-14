@@ -11,7 +11,11 @@ const Navbar = ({ isConnected }) => {
   return (
     <div className="recipe__navbar-container">
       <div className="recipe__navbar-title">
-        <p>Recipe's App</p>
+        <p>
+          <NavLink to="/">
+            Recipe's App
+          </NavLink>
+        </p>
       </div>
       <div className="recipe__navbar-links">
         <ul className="recipe__navbar-links__ul">

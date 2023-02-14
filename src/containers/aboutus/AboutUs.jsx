@@ -4,13 +4,18 @@ import "./aboutus.css";
 const AboutUs = () => {
   return (
   <div id="about" className="aboutus">
-    <p>Notre équipe, composée de Samuel Lambert, Gaetan Crabeels, Julien Pollart et Mosbah El-Ajmi, 
-      est fière de vous présenter notre tout nouveau projet en développement web : une application de recettes en ligne. 
-      En tant que étudiants en deuxième année d'informatique, 
-      nous avons décidé de mettre nos connaissances en pratique en créant une plateforme pour les amateurs de cuisine du monde entier. 
-      Notre objectif est de fournir une expérience culinaire simple, amusante et intuitive pour les utilisateurs, 
-      en permettant la découverte de nouvelles recettes, la planification des repas et la création de recettes personnelles. 
-      Nous sommes excités de vous offrir cette plateforme innovante et espérons qu'elle sera un complément précieux à votre routine culinaire.</p>
+    <h1>
+      About us
+    </h1>
+    <p>
+      Our team, composed of Samuel Lambert, Gaetan Crabeels, Julien Pollart and Mosbah El-Ajmi, 
+      is proud to present our brand new web development project: an online recipe application. 
+      As students in our second year of computer science 
+      we decided to put our knowledge into practice by creating a platform for food lovers around the world. 
+      Our goal is to provide a simple, fun and intuitive cooking experience for users, 
+      allowing for the discovery of new recipes, meal planning and the creation of personal recipes. 
+      We are excited to bring you this innovative platform and hope it will be a valuable addition to your cooking routine.
+    </p>
   </div>
   );};
 

@@ -3,13 +3,14 @@ import "./header.css";
 
 const Header = () => {
   return (
-  <div>
+  <div className="home">
+    <h1>Home</h1>
     <p>
-      Bienvenue dans notre communauté culinaire en ligne ! 
-      Nous vous offrons un moyen facile et amusant de découvrir de nouvelles recettes, 
-      de planifier vos repas et de partager vos créations culinaires avec d'autres foodies. 
-      Inscrivez-vous dès maintenant pour accéder à une bibliothèque de recettes, pour ajouter vos propres recettes préférées à vos favoris, et pour connecter avec d'autres amateurs de cuisine du monde entier. 
-      Commençons à cuisiner !
+      Welcome to our online culinary community! 
+      We offer you an easy and fun way to discover new recipes, 
+      plan your meals and share your culinary creations with other foodies. 
+      Sign up now to access a library of recipes, bookmark your own favourite recipes, and connect with other foodies around the world. 
+      Let's start cooking!
     </p>
   </div>);
 };
