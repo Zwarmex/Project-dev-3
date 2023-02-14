@@ -1,0 +1,9 @@
+.recipe__marketplace-container {
+  display: flex;
+}
+.recipe__marketplace-item {
+  background-color: rgba(217, 217, 217, 0.722);
+  border-radius: 50px;
+  margin: 5%;
+  padding: 5%;
+}
