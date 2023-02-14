@@ -34,8 +34,15 @@
   display: inherit;
 }
 
-.recipe__navbar-links__li-img img {
+.recipe__navbar-links__li {
+  justify-content: center;
+  display: inherit;
+}
+
+.recipe__navbar-links__li-img {
   max-width: 75%;
+  justify-content: center;
+  display: inherit;
   /* max-height: auto; */
 }
 

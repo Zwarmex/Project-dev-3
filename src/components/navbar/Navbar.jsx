@@ -5,13 +5,17 @@ import { NavLink } from "react-router-dom";
 
 const Navbar = ({ isConnected }) => {
   const handleClickMenu = () => {
-    alert("clicke, menu");
+    alert("clicked menu");
   };
 
   return (
     <div className="recipe__navbar-container">
       <div className="recipe__navbar-title">
-        <p>Recipe's App</p>
+        <p>
+          <NavLink to="/">
+            Recipe's App
+          </NavLink>
+        </p>
       </div>
       <div className="recipe__navbar-links">
         <ul className="recipe__navbar-links__ul">
@@ -57,14 +61,14 @@ const Navbar = ({ isConnected }) => {
               </NavLink>
             </li>
           ) : (
-            ""
+            null
           )}
-          <li className="recipe__navbar-links__li-img">
+          <li className="recipe__navbar-links__li">
             {isConnected ? (
-              <img src={login} alt="login" onClick={() => handleClickMenu()} />
+              <img className="recipe__navbar-links__li-img" src={login} alt="login" onClick={() => handleClickMenu()} />
             ) : (
               <NavLink to="/login">
-                <img src={login} alt="login" />
+                <img className="recipe__navbar-links__li-img" src={login} alt="login"/>
               </NavLink>
             )}
           </li>

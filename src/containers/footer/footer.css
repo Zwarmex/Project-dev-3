@@ -1,0 +1,19 @@
+.footer
+{
+    display: flex;
+    margin: 0;
+    padding: 1%;
+    background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 1px 2px 2px 2px black;
+    font-size: x-small;
+}
+
+.footer__aboutus
+{
+    flex: 1;
+}
+
+.footer__contactus
+{
+    flex: 1;
+}

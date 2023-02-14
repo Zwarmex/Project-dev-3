@@ -1,0 +1,14 @@
+.aboutus
+{
+    font-family: var(--font-family);
+}
+
+.aboutus h1
+{
+    text-align: center;
+}
+
+.aboutus p
+{
+    padding: 1%;
+}
