@@ -16,13 +16,56 @@ const MarketPage = () => {
 
   return (
     <div className="recipe__marketplace-container">
-      {items.map((item) => (
-        <div className="recipe__marketplace-item">
-          <p>Nom : {item.name}</p>
-          <p>Durée : {item.duration} minutes</p>
-          <p>Instructions :{item.intructions}</p>
-        </div>
-      ))}
+      <h1>Category</h1>
+      <div className="recipe__marketplace-row">
+        {items.map((item) => (
+          <div className="recipe__marketplace-item">
+            <p>Nom : {item.name}</p>
+            <p>Durée : {item.duration} minutes</p>
+            <p>Instructions :{item.intructions}</p>
+          </div>
+        ))}
+      </div>
+      <h1>Category</h1>
+      <div className="recipe__marketplace-row">
+        {items.map((item) => (
+          <div className="recipe__marketplace-item">
+            <p>Nom : {item.name}</p>
+            <p>Durée : {item.duration} minutes</p>
+            <p>Instructions :{item.intructions}</p>
+          </div>
+        ))}
+      </div>
+      <h1>Category</h1>
+      <div className="recipe__marketplace-row">
+        {items.map((item) => (
+          <div className="recipe__marketplace-item">
+            <p>Nom : {item.name}</p>
+            <p>Durée : {item.duration} minutes</p>
+            <p>Instructions :{item.intructions}</p>
+          </div>
+        ))}
+      </div>
+      <h1>Category</h1>
+      <div className="recipe__marketplace-row">
+        {items.map((item) => (
+          <div className="recipe__marketplace-item">
+            <p>Nom : {item.name}</p>
+            <p>Durée : {item.duration} minutes</p>
+            <p>Instructions :{item.intructions}</p>
+          </div>
+        ))}
+      </div>
+      <h1>Category</h1>
+      <div className="recipe__marketplace-row">
+        {items.map((item) => (
+          <div className="recipe__marketplace-item">
+            <p>Nom : {item.name}</p>
+            <p>Durée : {item.duration} minutes</p>
+            <p>Instructions :{item.intructions}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

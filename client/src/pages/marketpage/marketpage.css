@@ -1,9 +1,28 @@
 .recipe__marketplace-container {
   display: flex;
+  flex-direction: column;
 }
+
+.recipe__marketplace-row {
+  height: 100%;
+  overflow-y: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+  width: 100%;
+  margin-top: 1%;
+}
+.recipe__marketplace-container h1 {
+  font-family: var(--font-family);
+  margin-top: 1%;
+  margin-left: 1%;
+}
+
 .recipe__marketplace-item {
   background-color: rgba(217, 217, 217, 0.722);
+  font-family: var(--font-family);
+  height: 100%;
+  padding: 2%;
+  margin: 2%;
   border-radius: 50px;
-  margin: 5%;
-  padding: 5%;
+  display: inline-block;
 }
