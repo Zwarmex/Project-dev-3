@@ -52,7 +52,9 @@ const LoginPage = () => {
           </div>
         )}
         <div className="recipe__form-submit__btn">
-          <button type="submit">{register ? "SIGN UP" : "LOG IN"}</button>
+          <button type="submit">
+            {register ? "CREATE YOUR ACCOUNT" : "LOG IN"}
+          </button>
         </div>
         <div className="recipe__form-option">
           <p>
@@ -65,7 +67,7 @@ const LoginPage = () => {
               register ? () => setRegister(false) : () => setRegister(true)
             }
           >
-            {register ? "SIGN UP" : "REGISTER NOW"}
+            {register ? "SIGN IN" : "REGISTER NOW"}
           </button>
         </div>
       </div>
