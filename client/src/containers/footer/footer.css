@@ -6,6 +6,8 @@
     background-color: rgba(0, 0, 0, 0.1);
     box-shadow: 1px 2px 2px 2px black;
     font-size: x-small;
+    position: absolute;
+    bottom: 0;
 }
 
 .footer__aboutus

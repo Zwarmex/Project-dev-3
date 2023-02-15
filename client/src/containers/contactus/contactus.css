@@ -1,3 +1,9 @@
+.contact__link:hover
+{
+    color: blue;
+    text-decoration: underline;
+}
+
 .contactus
 {
     font-family: var(--font-family);

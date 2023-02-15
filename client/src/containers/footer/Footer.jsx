@@ -3,6 +3,8 @@ import "./footer.css";
 import {ContactUs, AboutUs} from "../index"
 
 const Footer = () => {
+
+  
   return (
     <div className="footer">
         <div className="footer__aboutus">
@@ -12,7 +14,6 @@ const Footer = () => {
           <ContactUs />
         </div>
     </div>
-
   );};
 
 export default Footer;
