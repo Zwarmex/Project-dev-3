@@ -1,31 +1,19 @@
-.recipe__item-container {
-    background-color: rgba(217, 217, 217, 0.722);
+.recipe__item-card {
     font-family: var(--font-family);
-    height: 100%;
-    padding: 2%;
-    margin: 1%;
-    border-radius: 50px;
-    display: inline-block;
+    /* height: 95%; */
+    /* margin-left: 1%; */
+    margin-top:2%;
+    margin-bottom: 2%;
+}
+
+.recipe__item-card:hover
+{
+    box-shadow: 1px 1px 1px 2px black;
 }
 
 .recipe__item-img
 {
-    height: auto;
-    cursor: pointer;
-}
-
-.recipe__item-img img
-{
-    border: 1px solid black;
-    border-radius: 50px;
-    /* width: 100%; */
-    /* width: 100px; */
-    /* height: 100px; */
-    /* height: auto; */
-    /* height: 100%; */
-}
-
-.recipe__item-img img:hover
-{
-    box-shadow: 1px 1px 1px 1px black;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 100%;
 }

@@ -21,3 +21,9 @@ a {
   color: unset;
   text-decoration: none;
 }
+
+.App
+{
+  display: flex;
+  flex-direction: column;
+}

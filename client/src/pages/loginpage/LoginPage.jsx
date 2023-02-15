@@ -1,77 +1,133 @@
 import React, { useState } from "react";
 import "./loginpage.css";
-import login from "../../assets/login.png";
-import cadenas from "../../assets/cadenas.png";
+import {Visibility, VisibilityOff} from '@mui/icons-material';
+// import { AccountCircleOutlined, LockOutlined} from '@mui/icons-material';
+import { IconButton, InputLabel, OutlinedInput, Alert, CssBaseline, Container, FormControl, InputAdornment, FormHelperText, Box, Button} from '@mui/material';
+
 
 const LoginPage = () => {
+  const [showPassword_login, setShowPassword_login] = React.useState(false);
+  const [showPassword_register, setShowPassword_register] = React.useState(false);
+
+  const handleClickShowPassword_login = () => {
+    setShowPassword_login((show) => !show)
+  };
+
+  const handleClickShowPassword_register = () => {
+    setShowPassword_register((show) => !show)
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };  
+  const HandleSubmitForm = () => {
+    console.log('clicked');
+    <Alert severity="success">
+      This is a success alert — <strong>check it out!</strong>
+    </Alert>
+  }
   const [register, setRegister] = useState(0);
   return (
-    <div className="recipe__form-page">
-      <div className="recipe__form-container">
-        <div className="recipe__form-title">
+  <>
+    <CssBaseline />
+    <Container 
+    className="login__form-container" 
+    maxWidth="false">
+      <Box 
+      component="form"
+      className="login__form-boxes"
+      sx={{
+        '& > :not(style)': { margin: 1 },
+      }}
+      noValidate
+      autoComplete="on">
+        <Container 
+        maxWidth='false'>
           <h1>{register ? "Sign up" : "Sign in"}</h1>
           <p>Stay in touch with food</p>
-        </div>
-        <div className="recipe__form-field__login">
-          <img src={login} alt="login-icon" />
-          <input
-            type="email"
-            name=""
-            id=""
-            placeholder="Email"
-            alt="Write you email"
-            title="Write your email"
-          />
-        </div>
-        <div className="recipe__form-field__password">
-          <img src={cadenas} alt="cadenas-icon" />
-          <input
-            type="password"
-            name=""
-            id=""
-            placeholder="Password"
-            alt="Write you password"
-            title="Write your password"
-          />
-        </div>
-        {register ? (
-          <div className="recipe__form-field__password">
-            <img src={cadenas} alt="cadenas-icon" />
-            <input
-              type="password"
-              name=""
-              id=""
-              placeholder="Password"
-              alt="Write you password"
-              title="Write your password"
-            />
-          </div>
-        ) : (
-          <div className="recipe__form-forget__password">
-            <p>Forget you pwd ? (to be added)</p>
-          </div>
-        )}
-        <div className="recipe__form-submit__btn">
-          <button type="submit">
-            {register ? "CREATE YOUR ACCOUNT" : "LOG IN"}
-          </button>
-        </div>
-        <div className="recipe__form-option">
-          <p>
-            {register
-              ? "Already have an account ?"
-              : "Don't have an account yet ?"}
-          </p>
-          <button
-            onClick={
-              register ? () => setRegister(false) : () => setRegister(true)
+        </Container>
+        <FormControl>
+          <InputLabel htmlFor="input__mail">Email</InputLabel>
+          <OutlinedInput
+            id="input__mail"
+            name="input__mail"
+            type='email'
+            label="Email" />
+        </FormControl>
+        <FormControl>
+          <InputLabel htmlFor="input__password-login">Password</InputLabel>
+          <OutlinedInput
+            id="input__password-login"
+            name="input__password-login"
+            type={showPassword_login ? 'text' : 'password'}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword_login}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                  >
+                  {showPassword_login ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
             }
-          >
-            {register ? "SIGN IN" : "REGISTER NOW"}
-          </button>
-        </div>
-      </div>
-    </div>
+            label="Password" 
+            required/>
+        </FormControl>
+        {register ? (
+          <FormControl>
+            <InputLabel htmlFor="input__password-register">Password</InputLabel>
+            <OutlinedInput 
+            id="input__password-register"
+            name="input__password-register"
+            type={showPassword_register ? 'text' : 'password'}
+            endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword_register}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+                >
+                {showPassword_register ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
+            label="Password" 
+            required/>
+            <FormHelperText id="helper__password-register">
+              Write your password
+            </FormHelperText>
+            </FormControl>)
+        : (
+        <Container 
+        className="login__form-p">
+          <p>Forget you pwd ?</p>
+        </Container> )}
+        <Button 
+        className="login__form-buttons"
+        type="reset"
+        onClick={HandleSubmitForm}
+        color="warning"
+        variant="contained">
+          {register ? "CREATE YOUR ACCOUNT" : "LOG IN"}
+        </Button>
+        <Container>
+          <p>
+            {register ? "Already have an account ?": "Don't have an account yet ?"}
+          </p>
+        </Container>
+        <Button 
+        variant="outlined"
+        color="warning"
+        onClick={register ? () => setRegister(false) : () => setRegister(true)}
+        className="login__form-buttons">
+          {register ? "SIGN IN" : "REGISTER NOW"}
+        </Button>
+      </Box>
+    </Container>
+  </>
   );
 };
 

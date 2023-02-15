@@ -1,111 +1,27 @@
-button
+.login__form-container
 {
-  cursor: pointer;
-  box-shadow: 1px 1px 5px 1px black;
+  margin: auto;
 }
 
-button:active
+.login__form-boxes
 {
-  transform: scale(0.98);
-  box-shadow: 1px 1px 2px 1px black;
-}
-
-.recipe__form-page {
-  height: 90vh;
+  margin: auto;
   display: grid;
-  place-items: center;
-}
-
-.recipe__form-container {
-  background-color: rgba(217, 217, 217, 0.722);
-  border-radius: 50px;
-  width: 75%;
-  display: grid;
-  place-items: center;
-  box-shadow: 2px 2px 10px black ;
-}
-
-.recipe__form-title
-{
-  margin-top: 1em;
-  text-align: center;
-}
-
-.recipe__form-field__login img,
-.recipe__form-field__password img {
-  padding-right: 5%;
-}
-
-.recipe__form-field__login,
-.recipe__form-field__password {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 2%;
-  margin-left: 2%;
-  margin-right: 2%;
-  width: 100%;
-}
-
-.recipe__form-field__login {
-  margin-top: 5%;
-}
-
-.recipe__form-forget__password
-{
-  width: 100%;
-  text-align: end;
-  padding-right: 25%;
-}
-
-.recipe__form-forget__password p
-{
-  font-size: small;
-}
-
-.recipe__form-submit__btn {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin: 1%;
-}
-.recipe__form-submit__btn button {
-  width: 25%;
-  padding: revert;
-}
-
-.recipe__form-container img {
-  height: 3em;
-}
-
-.recipe__form-container input {
-  border-radius: 5px;
-  padding: revert;
   width: 50%;
-  height: 2em;
-}
-
-.recipe__form-container button {
-  background-color: rgba(217, 217, 217, 0.722);
+  background-color:rgba(217, 217, 217, 0.722);
   border-radius: 50px;
-  font-size: large;
   font-family: var(--font-family);
 }
 
-.recipe__form-option {
-  display: flex;
-  margin: 1%;
-  width: 100%;
-  justify-content: center;
-  font-family: var(--font-family);
-}
-
-.recipe__form-option p {
-  margin-right: 5%;
-  font-size: large;
-}
-
-.recipe__form-option button
+.login__form-p
 {
-  padding: revert;
+  text-align: end;
+  font-size: x-small;
+}
+
+.login__form-buttons
+{
+  width: 50%;  
+  margin:auto;
+  place-self: center;
 }
