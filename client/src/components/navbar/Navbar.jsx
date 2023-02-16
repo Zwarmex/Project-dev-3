@@ -133,6 +133,13 @@ const Navbar = ({ isConnected }) => {
               >
                 <NavLink to="/marketplace">marketplace</NavLink>
               </Button>
+              <Button
+                key="calendar"
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: "white", display: "block" }}
+              >
+                <NavLink to="/calendar">calendar</NavLink>
+              </Button>
             </Box>
             <Box>
               <Tooltip title="Login/Register">

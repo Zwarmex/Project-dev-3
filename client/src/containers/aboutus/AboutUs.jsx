@@ -7,7 +7,7 @@ const AboutUs = () => {
       <h1>About us</h1>
       <p>
         Our team, composed of Samuel Lambert, Gaetan Crabeels, Julien Pollart
-        and Mosbah El-Ajmi, is proud to present our brand new web development
+        and El-Ajmi Mosbah, is proud to present our brand new web development
         project: an online recipe application. As students in our second year of
         computer science we decided to put our knowledge into practice by
         creating a platform for food lovers around the world. Our goal is to
