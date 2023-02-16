@@ -124,21 +124,42 @@ const Navbar = ({ isConnected }) => {
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
-                <NavLink to="/">home</NavLink>
+                <NavLink
+                  to="/"
+                  className={({ isActive }) =>
+                    isActive ? "activeLink" : undefined
+                  }
+                >
+                  home
+                </NavLink>
               </Button>
               <Button
                 key="marketplace"
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
-                <NavLink to="/marketplace">marketplace</NavLink>
+                <NavLink
+                  to="/marketplace"
+                  className={({ isActive }) =>
+                    isActive ? "activeLink" : undefined
+                  }
+                >
+                  marketplace
+                </NavLink>
               </Button>
               <Button
                 key="calendar"
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
-                <NavLink to="/calendar">calendar</NavLink>
+                <NavLink
+                  to="/calendar"
+                  className={({ isActive }) =>
+                    isActive ? "activeLink" : undefined
+                  }
+                >
+                  calendar
+                </NavLink>
               </Button>
             </Box>
             <Box>
@@ -176,8 +197,7 @@ const Navbar = ({ isConnected }) => {
 //         <li>
 //           <NavLink
 //             to="/"
-//             className={({ isActive }) =>
-//               isActive ? "activeLink" : undefined
+//             className={({ isActive }) => isActive ? "activeLink" : undefined
 //             }
 //           >
 //             Home
