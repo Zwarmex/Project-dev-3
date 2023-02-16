@@ -1,15 +1,12 @@
-.home
-{
-    font-family: var(--font-family);
+.home {
+  font-family: var(--font-family);
 }
 
-.home h1
-{
-    text-align: center;
+.home h1 {
+  text-align: center;
 }
 
-.home p
-{
-    font-size: x-large;
-    padding: 1%;
+.home p {
+  font-size: x-large;
+  padding: 1%;
 }
