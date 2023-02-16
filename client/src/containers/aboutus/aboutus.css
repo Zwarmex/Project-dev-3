@@ -1,11 +1,11 @@
 .aboutus {
-  font-family: var(--font-family);
+	font-family: var(--font-family);
 }
 
 .aboutus h1 {
-  text-align: center;
+	text-align: center;
 }
 
 .aboutus p {
-  padding: 1%;
+	padding: 1%;
 }

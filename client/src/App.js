@@ -28,6 +28,23 @@ const App = () => {
       </BrowserRouter>
     </div>
   );
+  const isConnected = false;
+  return (
+    <div className="App">
+      <BrowserRouter>
+        <Navbar isConnected={isConnected} />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/marketplace" element={<MarketPage />} />
+          <Route path="/wheel" element={<WheelPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          {isConnected ? (
+            <Route path="/calendar" element={<CalendarPage />} />
+          ) : null}
+        </Routes>
+      </BrowserRouter>
+    </div>
+  );
 };
 
 export default App;

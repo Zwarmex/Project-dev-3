@@ -1,16 +1,16 @@
 .contact__link:hover {
-  color: blue;
-  text-decoration: underline;
+	color: blue;
+	text-decoration: underline;
 }
 
 .contactus {
-  font-family: var(--font-family);
+	font-family: var(--font-family);
 }
 
 .contactus h1 {
-  text-align: center;
+	text-align: center;
 }
 
 .contactus p {
-  padding: 1%;
+	padding: 1%;
 }
