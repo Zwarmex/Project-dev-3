@@ -131,7 +131,7 @@ const Navbar = ({ isConnected }) => {
 						<Box>
 							<Tooltip title='Login/Register'>
 								<IconButton sx={{ p: 0 }}>
-									<NavLink to='/login'>
+									<NavLink to={isConnected ? '/menu' : '/login'}>
 										<Avatar>
 											<LoginRounded />
 										</Avatar>

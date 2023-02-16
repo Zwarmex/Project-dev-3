@@ -1,23 +1,24 @@
 .login__form-container {
-  margin: auto;
+	margin: auto;
+	/* backdrop-filter: blur(5px); */
 }
 
 .login__form-boxes {
-  margin: auto;
-  display: grid;
-  width: 50%;
-  background-color: rgba(217, 217, 217, 0.722);
-  border-radius: 50px;
-  font-family: var(--font-family);
+	margin: auto;
+	display: grid;
+	width: 50%;
+	background-color: rgba(217, 217, 217, 0.722);
+	border-radius: 50px;
+	font-family: var(--font-family);
 }
 
 .login__form-p {
-  text-align: end;
-  font-size: x-small;
+	text-align: end;
+	font-size: x-small;
 }
 
 .login__form-buttons {
-  width: 50%;
-  margin: auto;
-  place-self: center;
+	width: 50%;
+	margin: auto;
+	place-self: center;
 }

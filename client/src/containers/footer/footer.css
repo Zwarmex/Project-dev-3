@@ -7,10 +7,12 @@
 	font-size: x-small;
 	position: absolute;
 	bottom: 0;
+	backdrop-filter: blur(5px);
 }
 
 .footer__aboutus {
 	flex: 1;
+	border-right: solid 1px black;
 }
 
 .footer__contactus {

@@ -9,9 +9,9 @@ const RecipeItem = ({ item }) => {
 	return (
 		<Container disableGutters className='recipe__item-container'>
 			<Card
-				className='recipe__item-card'
 				key={item.id}
-				sx={{ minWidth: '20%' }}>
+				className='recipe__item-card'
+				sx={{ minWidth: '20%', boxShadow: '1px 1px 1px 2px lightgrey' }}>
 				<CardActionArea sx={{ width: '100%' }}>
 					<CardMedia
 						className='recipe__item-img'

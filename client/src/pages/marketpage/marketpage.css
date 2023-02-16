@@ -1,25 +1,29 @@
+.marketplace__container {
+	backdrop-filter: blur(5px);
+}
+
 .recipe__marketplace-container {
-  display: flex;
-  flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
 .recipe__marketplace-row {
-  display: flex;
-  gap: 2%;
-  overflow-y: hidden;
-  overflow-x: auto;
+	display: flex;
+	gap: 2%;
+	overflow-y: hidden;
+	overflow-x: auto;
 }
 
 .recipe__marketplace-container h1 {
-  font-family: var(--font-family);
-  padding-left: 1%;
+	font-family: var(--font-family);
+	padding-left: 1%;
 }
 
 .marketplace__no-recipe__loading-spinner__container {
-  height: 100%;
+	height: 100%;
 }
 
 .marketplace__no-recipe__loading-spinner__container {
-  display: grid;
-  align-content: center;
+	display: grid;
+	align-content: center;
 }
