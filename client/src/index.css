@@ -1,8 +1,8 @@
 :root {
-  --font-family: "Verdana", sans-serif;
-  --color-bg: linear-gradient(
-    107.56deg,
-    rgba(255, 116, 15, 0.92) 30.73%,
-    rgba(225, 111, 28, 0.62) 100%
-  );
+	--font-family: 'Verdana', sans-serif;
+	--color-bg: linear-gradient(
+		107.56deg,
+		rgba(255, 116, 15, 0.92) 30.73%,
+		rgba(225, 111, 28, 0.62) 100%
+	);
 }
