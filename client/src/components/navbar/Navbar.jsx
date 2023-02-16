@@ -1,9 +1,3 @@
-import React from 'react';
-import './navbar.css';
-import DarkTheme from '../../assets/styles/DarkTheme';
-import { NavLink } from 'react-router-dom';
-import { Menu as MenuIcon, LoginRounded } from '@mui/icons-material';
-import { ThemeProvider } from '@mui/material/styles';
 import React, { useState } from 'react';
 import './navbar.css';
 import DarkTheme from '../../assets/styles/DarkTheme';
@@ -25,7 +19,7 @@ import {
 } from '@mui/material';
 
 const Navbar = ({ isConnected }) => {
-	const [anchorElNav, setAnchorElNav] = React.useState(null);
+	const [anchorElNav, setAnchorElNav] = useState(null);
 
 	const handleOpenNavMenu = (event) => {
 		setAnchorElNav(event.currentTarget);
