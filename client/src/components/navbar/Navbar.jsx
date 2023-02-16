@@ -4,6 +4,12 @@ import DarkTheme from '../../assets/styles/DarkTheme';
 import { NavLink } from 'react-router-dom';
 import { Menu as MenuIcon, LoginRounded } from '@mui/icons-material';
 import { ThemeProvider } from '@mui/material/styles';
+import React, { useState } from 'react';
+import './navbar.css';
+import DarkTheme from '../../assets/styles/DarkTheme';
+import { NavLink } from 'react-router-dom';
+import { Menu as MenuIcon, LoginRounded } from '@mui/icons-material';
+import { ThemeProvider } from '@mui/material/styles';
 import {
 	AppBar,
 	Container,
@@ -119,19 +125,43 @@ const Navbar = ({ isConnected }) => {
 								key='home'
 								onClick={handleCloseNavMenu}
 								sx={{ my: 2, color: 'white', display: 'block' }}>
-								<NavLink to='/'>home</NavLink>
+								<NavLink
+									to='/'
+									className={({ isActive }) =>
+										isActive ? 'activeLink' : undefined
+									}>
+									home
+								</NavLink>
 							</Button>
 							<Button
 								key='marketplace'
 								onClick={handleCloseNavMenu}
 								sx={{ my: 2, color: 'white', display: 'block' }}>
-								<NavLink to='/marketplace'>marketplace</NavLink>
+								<NavLink
+									to='/marketplace'
+									className={({ isActive }) =>
+										isActive ? 'activeLink' : undefined
+									}>
+									marketplace
+								</NavLink>
+							</Button>
+							<Button
+								key='calendar'
+								onClick={handleCloseNavMenu}
+								sx={{ my: 2, color: 'white', display: 'block' }}>
+								<NavLink
+									to='/calendar'
+									className={({ isActive }) =>
+										isActive ? 'activeLink' : undefined
+									}>
+									calendar
+								</NavLink>
 							</Button>
 						</Box>
 						<Box>
 							<Tooltip title='Login/Register'>
 								<IconButton sx={{ p: 0 }}>
-									<NavLink to={isConnected ? '/menu' : '/login'}>
+									<NavLink to='/login'>
 										<Avatar>
 											<LoginRounded />
 										</Avatar>
@@ -163,8 +193,7 @@ const Navbar = ({ isConnected }) => {
 //         <li>
 //           <NavLink
 //             to="/"
-//             className={({ isActive }) =>
-//               isActive ? "activeLink" : undefined
+//             className={({ isActive }) => isActive ? "activeLink" : undefined
 //             }
 //           >
 //             Home
