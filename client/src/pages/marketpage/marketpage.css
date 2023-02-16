@@ -5,26 +5,21 @@
 
 .recipe__marketplace-row {
   display: flex;
-  gap: 4%;
-  /* height: 100%; */
+  gap: 2%;
   overflow-y: hidden;
   overflow-x: auto;
-  /* white-space: nowrap; */
-  /* width: 100%; */
-  /* margin-top: 1%; */
 }
+
 .recipe__marketplace-container h1 {
   font-family: var(--font-family);
   padding-left: 1%;
 }
 
-.marketplace__no-recipe__loading-spinner__container
-{
+.marketplace__no-recipe__loading-spinner__container {
   height: 100%;
 }
 
-.marketplace__no-recipe__loading-spinner__container
-{
+.marketplace__no-recipe__loading-spinner__container {
   display: grid;
   align-content: center;
 }

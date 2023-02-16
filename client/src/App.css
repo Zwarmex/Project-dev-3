@@ -1,4 +1,7 @@
-html, body, .App, #root {
+html,
+body,
+.App,
+#root {
   height: -webkit-fill-available;
   height: 100%;
   margin: 0;
@@ -20,4 +23,9 @@ body {
 a {
   color: unset;
   text-decoration: none;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
 }
