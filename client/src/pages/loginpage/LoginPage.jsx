@@ -7,7 +7,7 @@ import {
 	logInWithEmailAndPassword,
 	logInWithGoogle,
 	registerWithEmailAndPassword,
-} from '../../assets/firebase/firebase';
+} from '../../assets/firebase/firebase_auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import {
 	IconButton,
@@ -26,10 +26,12 @@ const LoginPage = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
-	const [user, loading, error] = useAuthState(auth);
+	const [errorLogin, setErrorLogin] = useState('');
+	const [user, loading] = useAuthState(auth);
 	const [name, setName] = useState('');
-
 	const navigate = useNavigate();
+	const [register, setRegister] = useState(0);
+
 	useEffect(() => {
 		if (loading) {
 			// maybe trigger a loading screen
@@ -41,11 +43,9 @@ const LoginPage = () => {
 	const handleClickShowPassword = () => {
 		setShowPassword((show) => !show);
 	};
-
 	const handleMouseDownPassword = (event) => {
 		event.preventDefault();
 	};
-	const [register, setRegister] = useState(0);
 
 	return (
 		<>
@@ -60,12 +60,35 @@ const LoginPage = () => {
 					noValidate
 					autoComplete='on'>
 					<Container maxWidth='false'>
-						<h1>{register ? 'Sign up' : 'Sign in'}</h1>
-						<p>Stay in touch with food</p>
-						<p>{error}</p>
+						<Typography variant='h2'>
+							{register ? 'Sign up' : 'Sign in'}
+						</Typography>
+						<Typography variant='subtitle1' fontSize='medium'>
+							Stay in touch with food
+						</Typography>
+						<Typography variant='subtitle1' color='error'>
+							{errorLogin ? 'There was an error.' : null}
+						</Typography>
 					</Container>
-					<FormControl id='login__password'>
-						<InputLabel htmlFor='input__mail'>Email</InputLabel>
+					{register ? (
+						<FormControl id='register__name'>
+							<InputLabel htmlFor='register__name'>
+								<Typography>Full Name</Typography>
+							</InputLabel>
+							<OutlinedInput
+								onChange={(input) => setName(input.target.value)}
+								id='register__name'
+								name='register__name'
+								type='text'
+								value={name}
+								label='Full Name'
+							/>
+						</FormControl>
+					) : null}
+					<FormControl id='login__email'>
+						<InputLabel htmlFor='input__mail'>
+							<Typography>Email</Typography>
+						</InputLabel>
 						<OutlinedInput
 							onChange={(input) => setEmail(input.target.value)}
 							id='input__mail'
@@ -75,8 +98,10 @@ const LoginPage = () => {
 							label='Email'
 						/>
 					</FormControl>
-					<FormControl id='login__email'>
-						<InputLabel htmlFor='input__password-login'>Password</InputLabel>
+					<FormControl id='login__password'>
+						<InputLabel htmlFor='input__password-login'>
+							<Typography>Password</Typography>
+						</InputLabel>
 						<OutlinedInput
 							onChange={(input) => setPassword(input.target.value)}
 							id='input__password-login'
@@ -89,7 +114,7 @@ const LoginPage = () => {
 										onClick={handleClickShowPassword}
 										onMouseDown={handleMouseDownPassword}
 										edge='end'>
-										{showPassword ? <VisibilityOff /> : <Visibility />}
+										{showPassword ? <Visibility /> : <VisibilityOff />}
 									</IconButton>
 								</InputAdornment>
 							}
@@ -98,34 +123,28 @@ const LoginPage = () => {
 							required
 						/>
 					</FormControl>
-					{register ? (
-						<FormControl id='register__name'>
-							<InputLabel htmlFor='input__name-register'>Full Name</InputLabel>
-							<OutlinedInput
-								id='input__name-register'
-								onClick={(input) => setName(input.target.value)}
-								value={name}
-								name='input__name-register'
-								type='text'
-								label='Full Name'
-								required
-							/>
-						</FormControl>
-					) : (
-						<Container className='login__form-password__reset'>
-							<NavLink to='/reset_password'>Forget you pwd ?</NavLink>
+					{!register ? (
+						<Container>
+							<Typography
+								variant='subtitle2'
+								align='right'
+								className='login__form-reset'>
+								<NavLink to='/reset_password'>Forgot your password ?</NavLink>
+							</Typography>
 						</Container>
-					)}
+					) : null}
 					<Button
 						className='login__form-buttons'
 						type='reset'
 						onClick={
 							register
 								? () => {
-										if (registerWithEmailAndPassword(name, email, password)) {
-										}
+										setErrorLogin(
+											registerWithEmailAndPassword(name, email, password)
+										);
 								  }
-								: () => logInWithEmailAndPassword(email, password)
+								: () =>
+										setErrorLogin(logInWithEmailAndPassword(email, password))
 						}
 						color='warning'
 						variant='contained'>
@@ -135,14 +154,16 @@ const LoginPage = () => {
 					<Button
 						className='login__form-buttons'
 						variant='contained'
-						onClick={logInWithGoogle}>
+						onClick={() => {
+							console.log(setErrorLogin(logInWithGoogle()), auth);
+						}}>
 						{register ? 'Register with Google' : 'Login with Google'}
 					</Button>
 					<hr />
 					<Container
 						className='login__form-option'
-						sx={{ display: 'flex', placeContent: 'center' }}>
-						<Typography fontSize='small'>
+						sx={{ display: 'flex', justifyContent: 'space-between' }}>
+						<Typography variant='subtitle2' align='left'>
 							{register
 								? 'Already have an account ?'
 								: "Don't have an account yet ?"}
