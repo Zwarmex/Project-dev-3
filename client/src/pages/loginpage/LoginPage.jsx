@@ -1,159 +1,163 @@
-import React, { useState } from "react";
-import "./loginpage.css";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-// import { AccountCircleOutlined, LockOutlined} from '@mui/icons-material';
+import React, { useState, useEffect } from 'react';
+import './loginpage.css';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
-  IconButton,
-  InputLabel,
-  OutlinedInput,
-  Alert,
-  CssBaseline,
-  Container,
-  FormControl,
-  InputAdornment,
-  FormHelperText,
-  Box,
-  Button,
-} from "@mui/material";
+	auth,
+	logInWithEmailAndPassword,
+	logInWithGoogle,
+	registerWithEmailAndPassword,
+} from '../../assets/firebase/firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import {
+	IconButton,
+	InputLabel,
+	OutlinedInput,
+	CssBaseline,
+	Container,
+	FormControl,
+	InputAdornment,
+	Box,
+	Button,
+} from '@mui/material';
 
 const LoginPage = () => {
-  const [showPassword_login, setShowPassword_login] = useState(false);
-  const [showPassword_register, setShowPassword_register] =
-    React.useState(false);
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+	const [showPassword, setShowPassword] = useState(false);
+	const [user, loading, error] = useAuthState(auth);
+	const [name, setName] = useState('');
 
-  const handleClickShowPassword_login = () => {
-    setShowPassword_login((show) => !show);
-  };
+	const navigate = useNavigate();
+	useEffect(() => {
+		if (loading) {
+			// maybe trigger a loading screen
+			return;
+		}
+		if (user) navigate('/');
+	}, [user, loading, navigate]);
 
-  const handleClickShowPassword_register = () => {
-    setShowPassword_register((show) => !show);
-  };
+	const handleClickShowPassword_login = () => {
+		setShowPassword((show) => !show);
+	};
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-  const HandleSubmitForm = () => {
-    console.log("clicked");
-    <Alert severity="success">
-      This is a success alert — <strong>check it out!</strong>
-    </Alert>;
-  };
-  const [register, setRegister] = useState(0);
-  return (
-    <>
-      <CssBaseline />
-      <Container className="login__form-container" maxWidth="false">
-        <Box
-          component="form"
-          className="login__form-boxes"
-          sx={{
-            "& > :not(style)": { margin: 1 },
-          }}
-          noValidate
-          autoComplete="on"
-        >
-          <Container maxWidth="false">
-            <h1>{register ? "Sign up" : "Sign in"}</h1>
-            <p>Stay in touch with food</p>
-          </Container>
-          <FormControl>
-            <InputLabel htmlFor="input__mail">Email</InputLabel>
-            <OutlinedInput
-              id="input__mail"
-              name="input__mail"
-              type="email"
-              label="Email"
-            />
-          </FormControl>
-          <FormControl>
-            <InputLabel htmlFor="input__password-login">Password</InputLabel>
-            <OutlinedInput
-              id="input__password-login"
-              name="input__password-login"
-              type={showPassword_login ? "text" : "password"}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword_login}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {showPassword_login ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              label="Password"
-              required
-            />
-          </FormControl>
-          {register ? (
-            <FormControl>
-              <InputLabel htmlFor="input__password-register">
-                Password
-              </InputLabel>
-              <OutlinedInput
-                id="input__password-register"
-                name="input__password-register"
-                type={showPassword_register ? "text" : "password"}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword_register}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword_register ? (
-                        <VisibilityOff />
-                      ) : (
-                        <Visibility />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Password"
-                required
-              />
-              <FormHelperText id="helper__password-register">
-                Write your password
-              </FormHelperText>
-            </FormControl>
-          ) : (
-            <Container className="login__form-p">
-              <p>Forget you pwd ?</p>
-            </Container>
-          )}
-          <Button
-            className="login__form-buttons"
-            type="reset"
-            onClick={HandleSubmitForm}
-            color="warning"
-            variant="contained"
-          >
-            {register ? "CREATE YOUR ACCOUNT" : "LOG IN"}
-          </Button>
-          <Container>
-            <p>
-              {register
-                ? "Already have an account ?"
-                : "Don't have an account yet ?"}
-            </p>
-          </Container>
-          <Button
-            variant="outlined"
-            color="warning"
-            onClick={
-              register ? () => setRegister(false) : () => setRegister(true)
-            }
-            className="login__form-buttons"
-          >
-            {register ? "SIGN IN" : "REGISTER NOW"}
-          </Button>
-        </Box>
-      </Container>
-    </>
-  );
+	const handleMouseDownPassword = (event) => {
+		event.preventDefault();
+	};
+	const [register, setRegister] = useState(0);
+
+	return (
+		<>
+			<CssBaseline />
+			<Container className='login__form-container' maxWidth='false'>
+				<Box
+					component='form'
+					className='login__form-boxes'
+					sx={{
+						'& > :not(style)': { margin: 1 },
+					}}
+					noValidate
+					autoComplete='on'>
+					<Container maxWidth='false'>
+						<h1>{register ? 'Sign up' : 'Sign in'}</h1>
+						<p>Stay in touch with food</p>
+						<p>{error}</p>
+					</Container>
+					<FormControl id='login__password'>
+						<InputLabel htmlFor='input__mail'>Email</InputLabel>
+						<OutlinedInput
+							onChange={(input) => setEmail(input.target.value)}
+							id='input__mail'
+							name='input__mail'
+							type='email'
+							value={email}
+							label='Email'
+						/>
+					</FormControl>
+					<FormControl id='login__email'>
+						<InputLabel htmlFor='input__password-login'>Password</InputLabel>
+						<OutlinedInput
+							onChange={(input) => setPassword(input.target.value)}
+							id='input__password-login'
+							name='input__password-login'
+							type={showPassword ? 'text' : 'password'}
+							endAdornment={
+								<InputAdornment position='end'>
+									<IconButton
+										aria-label='toggle password visibility'
+										onClick={handleClickShowPassword_login}
+										onMouseDown={handleMouseDownPassword}
+										edge='end'>
+										{showPassword ? <VisibilityOff /> : <Visibility />}
+									</IconButton>
+								</InputAdornment>
+							}
+							value={password}
+							label='Password'
+							required
+						/>
+					</FormControl>
+					{register ? (
+						<FormControl id='register__name'>
+							<InputLabel htmlFor='input__name-register'>Full Name</InputLabel>
+							<OutlinedInput
+								id='input__name-register'
+								onClick={(input) => setName(input.target.value)}
+								value={name}
+								name='input__name-register'
+								type='text'
+								label='Full Name'
+								required
+							/>
+						</FormControl>
+					) : (
+						<Container className='login__form-password__reset'>
+							<NavLink to='/reset_password'>Forget you pwd ?</NavLink>
+						</Container>
+					)}
+					<Button
+						className='login__form-buttons'
+						type='reset'
+						onClick={
+							register
+								? () => {
+										if (registerWithEmailAndPassword(name, email, password)) {
+										}
+								  }
+								: () => logInWithEmailAndPassword(email, password)
+						}
+						color='warning'
+						variant='contained'>
+						{register ? 'CREATE YOUR ACCOUNT' : 'LOG IN'}
+					</Button>
+					<Button
+						className='login__btn login__google'
+						onClick={logInWithGoogle}>
+						Login with Google
+					</Button>
+					<Container>
+						<p>
+							{register
+								? 'Already have an account ?'
+								: "Don't have an account yet ?"}
+						</p>
+					</Container>
+					{/* <NavLink to='/register' className='login__form-buttons'>
+						REGISTER NOW
+					</NavLink> */}
+					<Button
+						variant='outlined'
+						color='warning'
+						onClick={
+							register ? () => setRegister(false) : () => setRegister(true)
+						}
+						className='login__form-buttons'>
+						{register ? 'SIGN IN' : 'REGISTER NOW'}
+					</Button>
+				</Box>
+			</Container>
+		</>
+	);
 };
 
 export default LoginPage;

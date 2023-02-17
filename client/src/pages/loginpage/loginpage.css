@@ -12,7 +12,7 @@
 	font-family: var(--font-family);
 }
 
-.login__form-p {
+.login__form-password__reset {
 	text-align: end;
 	font-size: x-small;
 }
