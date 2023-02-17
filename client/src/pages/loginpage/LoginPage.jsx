@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './loginpage.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import GoogleIcon from '@mui/icons-material/Google';
 import {
 	auth,
 	logInWithEmailAndPassword,
@@ -153,9 +154,10 @@ const LoginPage = () => {
 					<hr />
 					<Button
 						className='login__form-buttons'
+						startIcon={<GoogleIcon />}
 						variant='contained'
 						onClick={() => {
-							console.log(setErrorLogin(logInWithGoogle()), auth);
+							setErrorLogin(logInWithGoogle());
 						}}>
 						{register ? 'Register with Google' : 'Login with Google'}
 					</Button>
