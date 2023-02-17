@@ -19,6 +19,7 @@ import {
 	InputAdornment,
 	Box,
 	Button,
+	Typography,
 } from '@mui/material';
 
 const LoginPage = () => {
@@ -37,7 +38,7 @@ const LoginPage = () => {
 		if (user) navigate('/');
 	}, [user, loading, navigate]);
 
-	const handleClickShowPassword_login = () => {
+	const handleClickShowPassword = () => {
 		setShowPassword((show) => !show);
 	};
 
@@ -85,7 +86,7 @@ const LoginPage = () => {
 								<InputAdornment position='end'>
 									<IconButton
 										aria-label='toggle password visibility'
-										onClick={handleClickShowPassword_login}
+										onClick={handleClickShowPassword}
 										onMouseDown={handleMouseDownPassword}
 										edge='end'>
 										{showPassword ? <VisibilityOff /> : <Visibility />}
@@ -130,30 +131,33 @@ const LoginPage = () => {
 						variant='contained'>
 						{register ? 'CREATE YOUR ACCOUNT' : 'LOG IN'}
 					</Button>
+					<hr />
 					<Button
-						className='login__btn login__google'
+						className='login__form-buttons'
+						variant='contained'
 						onClick={logInWithGoogle}>
-						Login with Google
+						{register ? 'Register with Google' : 'Login with Google'}
 					</Button>
-					<Container>
-						<p>
+					<hr />
+					<Container
+						className='login__form-option'
+						sx={{ display: 'flex', placeContent: 'center' }}>
+						<Typography fontSize='small'>
 							{register
 								? 'Already have an account ?'
 								: "Don't have an account yet ?"}
-						</p>
+						</Typography>
+						<Button
+							size='small'
+							variant='outlined'
+							color='warning'
+							onClick={
+								register ? () => setRegister(false) : () => setRegister(true)
+							}
+							className='login__form-buttons login__form-option__buttons'>
+							{register ? 'SIGN IN' : 'REGISTER NOW'}
+						</Button>
 					</Container>
-					{/* <NavLink to='/register' className='login__form-buttons'>
-						REGISTER NOW
-					</NavLink> */}
-					<Button
-						variant='outlined'
-						color='warning'
-						onClick={
-							register ? () => setRegister(false) : () => setRegister(true)
-						}
-						className='login__form-buttons'>
-						{register ? 'SIGN IN' : 'REGISTER NOW'}
-					</Button>
 				</Box>
 			</Container>
 		</>

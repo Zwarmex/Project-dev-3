@@ -22,3 +22,7 @@
 	margin: auto;
 	place-self: center;
 }
+
+.login__form-option__buttons {
+	place-self: end;
+}
