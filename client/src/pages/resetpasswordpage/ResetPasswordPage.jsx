@@ -1,35 +1,73 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import { auth, sendPasswordReset } from '../../assets/firebase/firebase';
+import { NavLink } from 'react-router-dom';
+import {
+	Container,
+	InputLabel,
+	CssBaseline,
+	Button,
+	OutlinedInput,
+	FormControl,
+	Typography,
+} from '@mui/material';
+import { auth, sendPasswordReset } from '../../assets/firebase/firebase_auth';
 import './resetpasswordpage.css';
+import { Box } from '@mui/system';
 function ResetPasswordPage() {
 	const [email, setEmail] = useState('');
 	const [user, loading] = useAuthState(auth);
 	const navigate = useNavigate();
 	useEffect(() => {
 		if (loading) return;
-		if (user) navigate('/dashboard');
+		if (user) navigate('/');
 	}, [user, loading, navigate]);
 	return (
-		<div className='reset'>
-			<div className='reset__container'>
-				<input
-					type='text'
-					className='reset__textBox'
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
-					placeholder='E-mail Address'
-				/>
-				<button className='reset__btn' onClick={() => sendPasswordReset(email)}>
-					Send password reset email
-				</button>
-				<div>
-					Don't have an account? <Link to='/login'>Register</Link> now.
-				</div>
-			</div>
-		</div>
+		<>
+			<CssBaseline />
+			<Container className='reset__form-page' sx={{ display: 'flex' }}>
+				<Box
+					sx={{
+						padding: '5%',
+						'& > :not(style)': { margin: 1 },
+					}}
+					noValidate
+					autoComplete='on'
+					component='form'
+					className='reset__form-container'>
+					<FormControl id='input_mail' color='warning'>
+						<InputLabel htmlFor='input__mail'>Email</InputLabel>
+						<OutlinedInput
+							id='input_mail'
+							name='input_mail'
+							type='email'
+							value={email}
+							label='Email'
+							// color='warning'
+							onChange={(e) => setEmail(e.target.value)}
+						/>
+					</FormControl>
+					<FormControl color='warning'>
+						<Button
+							color='warning'
+							variant='contained'
+							className='reset__btn'
+							onClick={() => sendPasswordReset(email)}>
+							{' '}
+							Send email
+						</Button>
+					</FormControl>
+					<Container>
+						<Typography
+							variant='subtitle2'
+							align='right'
+							className='login__form-reset'>
+							<NavLink to='/login'>Don't have an account ?</NavLink>
+						</Typography>
+					</Container>
+				</Box>
+			</Container>
+		</>
 	);
 }
 export default ResetPasswordPage;
