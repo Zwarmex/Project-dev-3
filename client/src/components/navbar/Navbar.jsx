@@ -132,42 +132,59 @@ const Navbar = ({ isConnected }) => {
 								App
 							</Typography>
 							<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-								<Button
-									key='home'
-									onClick={handleCloseNavMenu}
-									sx={{ my: 2, color: 'white', display: 'block' }}>
-									<NavLink
-										to='/'
-										className={({ isActive }) =>
-											isActive ? 'activeLink' : undefined
-										}>
-										home
-									</NavLink>
-								</Button>
-								<Button
-									key='marketplace'
-									onClick={handleCloseNavMenu}
-									sx={{ my: 2, color: 'white', display: 'block' }}>
-									<NavLink
-										to='/marketplace'
-										className={({ isActive }) =>
-											isActive ? 'activeLink' : undefined
-										}>
-										marketplace
-									</NavLink>
-								</Button>
-								<Button
-									key='calendar'
-									onClick={handleCloseNavMenu}
-									sx={{ my: 2, color: 'white', display: 'block' }}>
-									<NavLink
-										to='/calendar'
-										className={({ isActive }) =>
-											isActive ? 'activeLink' : undefined
-										}>
-										calendar
-									</NavLink>
-								</Button>
+								<NavLink
+									to='/'
+									className={({ isActive }) =>
+										isActive ? 'activeLink' : undefined
+									}>
+									<Button
+										key='home'
+										onClick={handleCloseNavMenu}
+										sx={{
+											my: 2,
+											color: 'inherit',
+											display: 'block',
+											'&:hover': { color: '#ff7f22' },
+										}}>
+										<Typography component='p'>home</Typography>
+									</Button>
+								</NavLink>
+								<NavLink
+									to='/marketplace'
+									className={({ isActive }) =>
+										isActive ? 'activeLink' : undefined
+									}>
+									<Button
+										key='marketplace'
+										onClick={handleCloseNavMenu}
+										sx={{
+											my: 2,
+											color: 'inherit',
+											display: 'block',
+											'&:hover': { color: '#ff7f22' },
+										}}>
+										<Typography component='p'>marketplace</Typography>
+									</Button>
+								</NavLink>
+								<NavLink
+									to='/calendar'
+									className={({ isActive }) =>
+										isActive ? 'activeLink' : undefined
+									}>
+									<Button
+										key='calendar'
+										onClick={handleCloseNavMenu}
+										sx={{
+											my: 2,
+											color: 'inherit',
+											display: 'block',
+											'&:hover': {
+												color: '#ff7f22',
+											},
+										}}>
+										<Typography component='p'>calendar</Typography>
+									</Button>
+								</NavLink>
 							</Box>
 							<Box>
 								{user ? (
