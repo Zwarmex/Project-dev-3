@@ -21,4 +21,4 @@
 .env.production.local
 
 /.vscode
-client/.firebase/hosting.YnVpbGQ.cache
+client/.firebase/
