@@ -1,6 +1,9 @@
 import { Container, CssBaseline } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { LoadingSpinner, RecipeItem } from '../../components';
+// import db from 'firebase_auth';
+// import app from '../../assets/firebase/firebase';
+// import storage from '../../assets/firebase/firebase_storage';
 import './marketpage.css';
 // import { Fetch } from 'fetch-plus';
 
@@ -8,9 +11,9 @@ const MarketPage = () => {
 	const [items, setItems] = useState([]);
 
 	const fetchItems = async () => {
-		const data = await fetch('/marketplace');
-		const items = await data.json();
-		setItems(items);
+		// const data = await fetch('/marketplace');
+		// const items = await data.json();
+		// setItems(items);
 	};
 
 	useEffect(() => {

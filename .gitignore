@@ -3,7 +3,6 @@
 
 # dependencies
 /client/node_modules/
-/server/node_modules
 /.pnp
 .pnp.js
 
@@ -21,3 +20,4 @@
 .env.production.local
 
 /.vscode
+/client/.firebase
