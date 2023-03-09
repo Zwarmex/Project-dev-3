@@ -10,13 +10,15 @@ import {
 } from './pages';
 import './App.css';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from './assets/firebase/firebase';
 
 const App = () => {
-	const isConnected = false;
+	const [user] = useAuthState(auth);
 	return (
 		<div className='App'>
 			<BrowserRouter>
-				<Navbar isConnected={isConnected} />
+				<Navbar isConnected={user ? true : false} />
 				<Routes>
 					<Route path='/' element={<HomePage />} />
 					<Route path='/marketplace' element={<MarketPage />} />

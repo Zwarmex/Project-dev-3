@@ -4,11 +4,11 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import GoogleIcon from '@mui/icons-material/Google';
 import {
-	auth,
 	logInWithEmailAndPassword,
 	logInWithGoogle,
 	registerWithEmailAndPassword,
 } from '../../assets/firebase/firebase_auth';
+import { auth } from '../../assets/firebase/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import {
 	IconButton,

@@ -22,11 +22,9 @@ import {
 	IconButton,
 	CssBaseline,
 } from '@mui/material';
-import { auth } from '../../assets/firebase/firebase_auth';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '../../assets/firebase/firebase';
 
 const Navbar = ({ isConnected }) => {
-	const [user] = useAuthState(auth);
 	const [anchorElNav, setAnchorElNav] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const handleOpenNavMenu = (event) => {
@@ -103,10 +101,7 @@ const Navbar = ({ isConnected }) => {
 										</Typography>
 									</MenuItem>
 									{isConnected ? (
-										<MenuItem
-											open={Boolean(anchorElNav)}
-											key='calendar'
-											onClick={handleCloseNavMenu}>
+										<MenuItem key='calendar' onClick={handleCloseNavMenu}>
 											<Typography textAlign='center'>
 												<NavLink to='/calendar'>Calendar</NavLink>
 											</Typography>
@@ -166,28 +161,30 @@ const Navbar = ({ isConnected }) => {
 										<Typography component='p'>marketplace</Typography>
 									</Button>
 								</NavLink>
-								<NavLink
-									to='/calendar'
-									className={({ isActive }) =>
-										isActive ? 'activeLink' : undefined
-									}>
-									<Button
-										key='calendar'
-										onClick={handleCloseNavMenu}
-										sx={{
-											my: 2,
-											color: 'inherit',
-											display: 'block',
-											'&:hover': {
-												color: '#ff7f22',
-											},
-										}}>
-										<Typography component='p'>calendar</Typography>
-									</Button>
-								</NavLink>
+								{isConnected ? (
+									<NavLink
+										to='/calendar'
+										className={({ isActive }) =>
+											isActive ? 'activeLink' : undefined
+										}>
+										<Button
+											key='calendar'
+											onClick={handleCloseNavMenu}
+											sx={{
+												my: 2,
+												color: 'inherit',
+												display: 'block',
+												'&:hover': {
+													color: '#ff7f22',
+												},
+											}}>
+											<Typography component='p'>calendar</Typography>
+										</Button>
+									</NavLink>
+								) : null}
 							</Box>
 							<Box>
-								{user ? (
+								{isConnected ? (
 									<>
 										<Tooltip title='Profil'>
 											<IconButton

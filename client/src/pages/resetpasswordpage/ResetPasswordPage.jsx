@@ -11,7 +11,8 @@ import {
 	FormControl,
 	Typography,
 } from '@mui/material';
-import { auth, sendPasswordReset } from '../../assets/firebase/firebase_auth';
+import { sendPasswordReset } from '../../assets/firebase/firebase_auth';
+import { auth } from '../../assets/firebase/firebase';
 import './resetpasswordpage.css';
 import { Box } from '@mui/system';
 function ResetPasswordPage() {
