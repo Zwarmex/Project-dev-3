@@ -1,15 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './loginpage.css';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import GoogleIcon from '@mui/icons-material/Google';
-import {
-	auth,
-	logInWithEmailAndPassword,
-	logInWithGoogle,
-	registerWithEmailAndPassword,
-} from '../../assets/firebase/firebase_auth';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import {
 	IconButton,
 	InputLabel,
@@ -28,18 +21,8 @@ const LoginPage = () => {
 	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
 	const [errorLogin, setErrorLogin] = useState('');
-	const [user, loading] = useAuthState(auth);
 	const [name, setName] = useState('');
-	const navigate = useNavigate();
 	const [register, setRegister] = useState(0);
-
-	useEffect(() => {
-		if (loading) {
-			// maybe trigger a loading screen
-			return;
-		}
-		if (user) navigate('/');
-	}, [user, loading, navigate]);
 
 	const handleClickShowPassword = () => {
 		setShowPassword((show) => !show);
@@ -137,16 +120,9 @@ const LoginPage = () => {
 					<Button
 						className='login__form-buttons'
 						type='reset'
-						onClick={
-							register
-								? () => {
-										setErrorLogin(
-											registerWithEmailAndPassword(name, email, password)
-										);
-								  }
-								: () =>
-										setErrorLogin(logInWithEmailAndPassword(email, password))
-						}
+						onClick={() => {
+							'';
+						}}
 						color='warning'
 						variant='contained'>
 						{register ? 'CREATE YOUR ACCOUNT' : 'LOG IN'}
@@ -157,7 +133,7 @@ const LoginPage = () => {
 						startIcon={<GoogleIcon />}
 						variant='contained'
 						onClick={() => {
-							setErrorLogin(logInWithGoogle());
+							// setErrorLogin(logInWithGoogle());
 						}}>
 						{register ? 'Register with Google' : 'Login with Google'}
 					</Button>

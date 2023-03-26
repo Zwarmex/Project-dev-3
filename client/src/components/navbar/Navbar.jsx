@@ -22,11 +22,9 @@ import {
 	IconButton,
 	CssBaseline,
 } from '@mui/material';
-import { auth } from '../../assets/firebase/firebase_auth';
-import { useAuthState } from 'react-firebase-hooks/auth';
 
 const Navbar = ({ isConnected }) => {
-	const [user] = useAuthState(auth);
+	// const [user] = useAuthState(auth);
 	const [anchorElNav, setAnchorElNav] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const handleOpenNavMenu = (event) => {
@@ -187,7 +185,7 @@ const Navbar = ({ isConnected }) => {
 								</NavLink>
 							</Box>
 							<Box>
-								{user ? (
+								{isConnected ? (
 									<>
 										<Tooltip title='Profil'>
 											<IconButton
@@ -218,13 +216,7 @@ const Navbar = ({ isConnected }) => {
 												vertical: 'top',
 												horizontal: 'left',
 											}}>
-											<MenuItem
-												onClick={() => {
-													auth.signOut();
-													handleClose();
-												}}>
-												Logout
-											</MenuItem>
+											<MenuItem onClick={() => {}}>Logout</MenuItem>
 										</Menu>
 									</>
 								) : (

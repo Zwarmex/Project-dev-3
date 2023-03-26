@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
 	Container,
@@ -11,17 +9,10 @@ import {
 	FormControl,
 	Typography,
 } from '@mui/material';
-import { auth, sendPasswordReset } from '../../assets/firebase/firebase_auth';
 import './resetpasswordpage.css';
 import { Box } from '@mui/system';
 function ResetPasswordPage() {
 	const [email, setEmail] = useState('');
-	const [user, loading] = useAuthState(auth);
-	const navigate = useNavigate();
-	useEffect(() => {
-		if (loading) return;
-		if (user) navigate('/');
-	}, [user, loading, navigate]);
 	return (
 		<>
 			<CssBaseline />
@@ -48,11 +39,7 @@ function ResetPasswordPage() {
 						/>
 					</FormControl>
 					<FormControl color='warning'>
-						<Button
-							color='warning'
-							variant='contained'
-							className='reset__btn'
-							onClick={() => sendPasswordReset(email)}>
+						<Button color='warning' variant='contained' className='reset__btn'>
 							{' '}
 							Send email
 						</Button>
