@@ -21,4 +21,4 @@ client/node_modules
 .env.production.local
 
 /.vscode
-client/.firebase/
+
