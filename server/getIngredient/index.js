@@ -13,41 +13,40 @@ module.exports = async function (context, req) {
 			context.res = {
 				status: 500,
 				body: 'Database configuration is missing or incomplete',
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
 			};
 			return;
 		}
 
 		const pool = await sql.connect(config);
-		const idRec = req.query.name;
+		const nameIng = req.query.name;
 
-		// Verify that idRec is not null
-		if (!idRec) {
-			context.res = {
-				status: 400,
-				body: 'name parameter is required',
-			};
-			return;
-		}
-
-		// Verify that idRec is a string
-		if (typeof idRec !== 'string') {
+		if (!nameIng || typeof nameIng !== 'string') {
 			context.res = {
 				status: 400,
 				body: 'name parameter must be a string',
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
 			};
 			return;
 		}
 
 		const result = await pool
 			.request()
-			.input('name', sql.VarChar, idRec)
+			.input('name', sql.VarChar, nameIng)
 			.query('SELECT * FROM ingredients where nameIng=@name');
 
 		// Verify that result is not null
 		if (!result.recordset || result.recordset.length === 0) {
 			context.res = {
 				status: 404,
-				body: `No ingredient found with the specified name ${idRec}`,
+				body: `No ingredient found with the specified name ${nameIng}`,
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
 			};
 			return;
 		}
@@ -55,12 +54,18 @@ module.exports = async function (context, req) {
 		context.res = {
 			status: 200,
 			body: result.recordset,
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
 		};
 	} catch (err) {
 		console.log(err);
 		context.res = {
 			status: 500,
-			body: 'Failed to execute query',
+			body: `API Failed : ${err}`,
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
 		};
 	}
 };

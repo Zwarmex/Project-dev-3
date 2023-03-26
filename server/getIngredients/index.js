@@ -22,16 +22,13 @@ module.exports = async function (context, req) {
 
 		const pool = await sql.connect(config);
 
-		// Execute SQL query
-		const result = await pool
-			.request()
-			.query('SELECT TOP 10 * FROM categories');
+		const result = await pool.request().query('SELECT * FROM ingredients');
 
-		// Verify that the query was successful
+		// Verify that result is not null
 		if (!result.recordset || result.recordset.length === 0) {
 			context.res = {
 				status: 404,
-				body: 'No records found',
+				body: `No ingredients found`,
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},

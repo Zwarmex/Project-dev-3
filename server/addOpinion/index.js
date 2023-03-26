@@ -20,13 +20,37 @@ module.exports = async function (context, req) {
 
 		const pool = await sql.connect(config);
 
-		const nameIng = req.body.name;
+		const textOpi = req.body.name;
+		const idRec = parseInt(req.body.idRec);
+		const idUser = parseInt(req.body.idUser);
 
 		// Verify that nameIng is not null and is a string
-		if (!nameIng || typeof nameIng !== 'string') {
+		if (!textOpi || typeof textOpi !== 'string') {
 			context.res = {
 				status: 400,
-				body: `name parameter is required and must be a string : ${nameIng}`,
+				body: `name parameter is required and must be a string : ${textOpi}`,
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
+			};
+			return;
+		}
+		// Verify that idRec is not null and is a string
+		if (!idRec) {
+			context.res = {
+				status: 400,
+				body: `idRec parameter is required : ${idRec}`,
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
+			};
+			return;
+		}
+		// Verify that idUser is not null and is a string
+		if (!idUser) {
+			context.res = {
+				status: 400,
+				body: `idUser parameter is required : ${idUser}`,
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
@@ -34,22 +58,15 @@ module.exports = async function (context, req) {
 			return;
 		}
 
-		const result = await pool.request().input('name', sql.VarChar, nameIng)
-			.query(`
-                BEGIN TRY
-                    INSERT INTO ingredients (nameIng) values (@name);
-                END TRY
-                BEGIN CATCH
-                    IF ERROR_NUMBER() = 2627
-                    BEGIN
-                        SELECT 'Error: The ingredient name already exists' as message;
-                    END
-                    ELSE
-                    BEGIN
-                        SELECT 'Error: Failed to execute query' as message;
-                    END
-                END CATCH
-            `);
+		const result = await pool
+			.request()
+			.input('text', sql.VarChar, textOpi)
+			.input('idRec', sql.Int, idRec)
+			.input('idUser', sql.Int, idUser)
+			.query(
+				`INSERT INTO opinions (textOpi, idRec, idUser) VAUES (@text, @idRec, @idUser)`
+			);
+
 		result.recordsets.length > 0
 			? (context.res = {
 					status: 409,

@@ -21,17 +21,29 @@ module.exports = async function (context, req) {
 		}
 
 		const pool = await sql.connect(config);
+		const idUser = parseInt(req.body.idUser);
 
-		// Execute SQL query
+		// Verify that idUser is not null
+		if (!idUser) {
+			context.res = {
+				status: 400,
+				body: 'label parameter is required',
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
+			};
+			return;
+		}
+
 		const result = await pool
 			.request()
-			.query('SELECT TOP 10 * FROM categories');
+			.input('idUser', sql.VarChar, idUser)
+			.query('SELECT * FROM friends where idUser=@idUser');
 
-		// Verify that the query was successful
 		if (!result.recordset || result.recordset.length === 0) {
 			context.res = {
 				status: 404,
-				body: 'No records found',
+				body: `No friends found`,
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
