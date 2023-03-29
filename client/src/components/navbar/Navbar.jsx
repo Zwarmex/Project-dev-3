@@ -24,7 +24,6 @@ import {
 } from '@mui/material';
 
 const Navbar = ({ isConnected }) => {
-	// const [user] = useAuthState(auth);
 	const [anchorElNav, setAnchorElNav] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const handleOpenNavMenu = (event) => {
