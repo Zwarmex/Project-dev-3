@@ -8,6 +8,6 @@ button {
 }
 
 button:hover {
-  background: #ff7f22;
+  background: var(--color-primary);
   color: white;
 }

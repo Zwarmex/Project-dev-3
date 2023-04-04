@@ -1,9 +1,8 @@
 :root {
-	--font-family: 'Verdana', sans-serif;
-	--color-bg: linear-gradient(
-		107.56deg,
-		rgba(255, 116, 15, 0.92) 30.73%,
-		rgba(225, 111, 28, 0.62) 100%
-	);
-	--background-color__forms: rgba(217, 217, 217, 0.722);
+  --font-family: "Verdana", sans-serif;
+  --color-primary: rgba(182, 39, 84, 0.63);
+  --color-secondary: white;
+  --color-positive: green;
+  --color-negative: red;
+  --background-color__forms: rgba(217, 217, 217, 0.722);
 }

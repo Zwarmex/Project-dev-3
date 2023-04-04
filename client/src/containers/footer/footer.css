@@ -1,18 +1,19 @@
 .footer {
   width: 100vw;
-  height: 10vh;
+  height: 15vh;
   position: fixed;
   bottom: 0;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  color: white;
 }
 
 .footer .banner {
+  height: 10vh;
   display: flex;
   padding-left: 2%;
-  background: rgba(188, 80, 9, 0.63);
-  color: white;
+  background: var(--color-primary);
   width: 75%;
   flex-direction: column;
   justify-content: center;
