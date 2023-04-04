@@ -9,7 +9,7 @@ const RecipeItem = ({ item }) => {
 	return (
 		<Container disableGutters className='recipe__item-container'>
 			<Card
-				key={item.id}
+				key={item.idRec}
 				className='recipe__item-card'
 				sx={{ minWidth: '20%', boxShadow: '1px 1px 1px 2px lightgrey' }}>
 				<CardActionArea sx={{ width: '100%' }}>
@@ -18,12 +18,12 @@ const RecipeItem = ({ item }) => {
 						component='img'
 						width='100'
 						height='150'
-						image={item.img}
-						alt={item.name}
+						image={'data:image/jpeg;base64,' + item.imgRec}
+						alt={item.nameRec}
 					/>
 					<CardContent className='recipe__item-content'>
 						<Typography variant='h6' component='div' align='justify'>
-							{item.name}
+							{item.nameRec}
 						</Typography>
 					</CardContent>
 				</CardActionArea>

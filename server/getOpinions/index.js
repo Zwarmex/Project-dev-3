@@ -21,17 +21,29 @@ module.exports = async function (context, req) {
 		}
 
 		const pool = await sql.connect(config);
+		const idUser = parseInt(req.query.idUser);
 
-		// Execute SQL query
+		if (!idUser) {
+			context.res = {
+				status: 400,
+				body: 'idUser parameter must be a string',
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
+			};
+			return;
+		}
+
 		const result = await pool
 			.request()
-			.query('SELECT TOP 10 * FROM categories');
+			.input('idUser', sql.Int, idUser)
+			.query('SELECT * FROM opinions where idUser=@idUser');
 
-		// Verify that the query was successful
+		// Verify that result is not null
 		if (!result.recordset || result.recordset.length === 0) {
 			context.res = {
 				status: 404,
-				body: 'No records found',
+				body: `No opinion found with the specified name ${idUser}`,
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},

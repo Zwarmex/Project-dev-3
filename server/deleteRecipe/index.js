@@ -13,6 +13,9 @@ module.exports = async function (context, req) {
 			context.res = {
 				status: 500,
 				body: 'Database configuration is missing or incomplete',
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
 			};
 			return;
 		}
@@ -48,23 +51,31 @@ module.exports = async function (context, req) {
                 WHERE nameRec = @name AND idUser = @idUser;
             `);
 
-		if (result.rowsAffected[0] === 0) {
+		if (result.rowsAffected[0] === 1) {
+			context.res = {
+				status: 200,
+				body: 'Entry successfully deleted',
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
+			};
+		} else {
 			context.res = {
 				status: 404,
-				body: 'Recipe not found',
+				body: 'Entry not found',
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
 			};
-			return;
 		}
-
-		context.res = {
-			status: 200,
-			body: { message: 'Recipe deleted successfully' },
-		};
 	} catch (err) {
 		console.log(err);
 		context.res = {
 			status: 500,
-			body: 'Failed to execute query',
+			body: `API Failed : ${err}`,
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
 		};
 	}
 };

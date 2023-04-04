@@ -20,7 +20,7 @@ const LoginPage = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
-	const [errorLogin, setErrorLogin] = useState('');
+	const [errorLogin] = useState('');
 	const [name, setName] = useState('');
 	const [register, setRegister] = useState(0);
 

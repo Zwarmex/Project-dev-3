@@ -13,6 +13,9 @@ module.exports = async function (context, req) {
 			context.res = {
 				status: 500,
 				body: 'Database configuration is missing or incomplete',
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
 			};
 			return;
 		}
@@ -33,6 +36,9 @@ module.exports = async function (context, req) {
 			context.res = {
 				status: 400,
 				body: `name parameter is required and must be a string : ${nameRec}, ${req.body}`,
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
 			};
 			return;
 		}
@@ -54,12 +60,18 @@ module.exports = async function (context, req) {
 		context.res = {
 			status: 200,
 			body: { message: 'Recipe added successfully' },
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
 		};
 	} catch (err) {
 		console.log(err);
 		context.res = {
 			status: 500,
-			body: 'Failed to execute query',
+			body: `API Failed : ${err}`,
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
 		};
 	}
 };

@@ -13,6 +13,9 @@ module.exports = async function (context, req) {
 			context.res = {
 				status: 500,
 				body: 'Database configuration is missing or incomplete',
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
 			};
 			return;
 		}
@@ -35,6 +38,9 @@ module.exports = async function (context, req) {
 			context.res = {
 				status: 404,
 				body: 'No records found',
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
 			};
 			return;
 		}
@@ -42,12 +48,18 @@ module.exports = async function (context, req) {
 		context.res = {
 			status: 200,
 			body: 'Found',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
 		};
 	} catch (err) {
 		console.log(err);
 		context.res = {
 			status: 500,
-			body: 'Failed to execute query',
+			body: `API Failed : ${err}`,
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
 		};
 	}
 };

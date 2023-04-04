@@ -1,5 +1,6 @@
 const sql = require('mssql');
 const config = require('../config.js');
+require('dotenv').config();
 
 module.exports = async function (context, req) {
 	try {
@@ -13,21 +14,29 @@ module.exports = async function (context, req) {
 			context.res = {
 				status: 500,
 				body: 'Database configuration is missing or incomplete',
-				headers: {
-					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-				},
 			};
 			return;
 		}
 
 		const pool = await sql.connect(config);
-		const idIng = req.query.id;
 
-		// Verify that idIng is not null
-		if (!idIng) {
+		const idFriend = parseInt(req.body.idRec);
+		const idUser = parseInt(req.body.idUser);
+
+		if (idUser === idFriend) {
 			context.res = {
 				status: 400,
-				body: 'id parameter is required',
+				body: `Friend id not acceptable`,
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
+			};
+		}
+
+		if (!idFriend) {
+			context.res = {
+				status: 400,
+				body: `idRec parameter is required : ${idFriend}`,
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
@@ -35,11 +44,10 @@ module.exports = async function (context, req) {
 			return;
 		}
 
-		// Verify that idIng is a number
-		if (isNaN(idIng)) {
+		if (!idUser) {
 			context.res = {
 				status: 400,
-				body: 'id parameter must be a number',
+				body: `idUser parameter is required : ${idUser}`,
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
@@ -49,28 +57,27 @@ module.exports = async function (context, req) {
 
 		const result = await pool
 			.request()
-			.input('id', sql.Int, idIng)
-			.query('SELECT * FROM recipes where idRec=@id');
+			.input('idRec', sql.Int, idFriend)
+			.input('idUser', sql.Int, idUser)
+			.query(
+				`INSERT INTO friends (idUser, idFriend) VAUES (@idUser, @idFriend)`
+			);
 
-		// Verify that result is not null and contains at least one record
-		if (!result.recordset || result.recordset.length === 0) {
-			context.res = {
-				status: 404,
-				body: `No recipes found with the specified id ${idIng}`,
-				headers: {
-					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-				},
-			};
-			return;
-		}
-
-		context.res = {
-			status: 200,
-			body: result.recordset,
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
+		result.recordsets.length > 0
+			? (context.res = {
+					status: 409,
+					body: { message: result.recordset[0] },
+					headers: {
+						'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+					},
+			  })
+			: (context.res = {
+					status: 200,
+					body: { message: 'Friend added successfully' },
+					headers: {
+						'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+					},
+			  });
 	} catch (err) {
 		console.log(err);
 		context.res = {

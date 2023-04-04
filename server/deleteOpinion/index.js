@@ -22,16 +22,13 @@ module.exports = async function (context, req) {
 
 		const pool = await sql.connect(config);
 
-		// Execute SQL query
-		const result = await pool
-			.request()
-			.query('SELECT TOP 10 * FROM categories');
+		const idRec = parseInt(req.query.name);
+		const idUser = parseInt(req.body.idUser);
 
-		// Verify that the query was successful
-		if (!result.recordset || result.recordset.length === 0) {
+		if (!idRec) {
 			context.res = {
-				status: 404,
-				body: 'No records found',
+				status: 400,
+				body: 'idRec parameter missing',
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
@@ -39,13 +36,41 @@ module.exports = async function (context, req) {
 			return;
 		}
 
-		context.res = {
-			status: 200,
-			body: result.recordset,
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
+		if (!idUser) {
+			context.res = {
+				status: 400,
+				body: 'idUser parameter missing',
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
+			};
+			return;
+		}
+
+		const result = await pool
+			.request()
+			.input('idRec', sql.Int, idRec)
+			.query(
+				'DELETE TOP(1) FROM opinions WHERE idRed=@idRec AND idUser=@idUser'
+			);
+
+		if (result.rowsAffected[0] === 1) {
+			context.res = {
+				status: 200,
+				body: 'Entry successfully deleted',
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
+			};
+		} else {
+			context.res = {
+				status: 404,
+				body: 'Entry not found',
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
+			};
+		}
 	} catch (err) {
 		console.log(err);
 		context.res = {
