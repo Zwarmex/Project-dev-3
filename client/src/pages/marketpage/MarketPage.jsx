@@ -8,8 +8,8 @@ const MarketPage = () => {
 
 	const fetchItems = async () => {
 		const headers = new Headers();
-		headers.append('Content-Type', 'application/json');
-		headers.append('Access-Control-Allow-Origin', '*');
+		// headers.append('Content-Type', 'application/json');
+		// headers.append('Access-Control-Allow-Origin', '*');
 
 		const requestOptions = {
 			method: 'GET',
@@ -17,7 +17,7 @@ const MarketPage = () => {
 			cache: 'default',
 		};
 		const data = await fetch(
-			'http://localhost:7071/api/getRecipes',
+			'https://recipesappfunctions.azurewebsites.net/api/getRecipes',
 			requestOptions
 		);
 
