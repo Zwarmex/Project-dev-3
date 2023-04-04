@@ -1,18 +1,19 @@
-import React from 'react';
-import './footer.css';
-import { ContactUs, AboutUs } from '../index';
+import React from "react";
+import "./footer.css";
 
 const Footer = () => {
-	return (
-		<div className='footer'>
-			<div className='footer__aboutus'>
-				<AboutUs />
-			</div>
-			<div className='footer__contactus'>
-				<ContactUs />
-			</div>
-		</div>
-	);
+  return (
+    <div className="footer">
+      <div className="banner">
+        <p>Mail : test@test.com</p>
+        <p>Tel : +32478956895</p>
+      </div>
+      <div className="actionButton">
+        <div className="contactus">Contactez nous</div>
+        <div className="aboutus">Qui somme-nous ?</div>
+      </div>
+    </div>
+  );
 };
 
 export default Footer;

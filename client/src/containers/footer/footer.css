@@ -1,20 +1,23 @@
 .footer {
-	display: flex;
-	margin: 0;
-	padding: 1%;
-	background-color: rgba(0, 0, 0, 0.1);
-	box-shadow: 1px 2px 2px 2px black;
-	font-size: x-small;
-	position: absolute;
-	bottom: 0;
-	backdrop-filter: blur(5px);
+  width: 100vw;
+  height: 10vh;
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
-.footer__aboutus {
-	flex: 1;
-	border-right: solid 1px black;
+.footer .banner {
+  display: flex;
+  padding-left: 2%;
+  background: rgba(188, 80, 9, 0.63);
+  color: white;
+  width: 75%;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.footer__contactus {
-	flex: 1;
+.footer .actionButton {
+  width: 25%;
 }
