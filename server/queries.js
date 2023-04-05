@@ -102,25 +102,29 @@ function userPost(
 	telephoneUser,
 	mailUser,
 	passwordUser,
-	birthdayUser
+	birthdayUser,
+	saltUser
 ) {
 	return `BEGIN TRY
-			INSERT INTO users (firstnameUser, lastnameUser, abilityUser, avatarUser, bioUser, telephoneUser, mailUser, passwordUser, birthdayUser)
-			VALUES (${firstnameUser}, ${lastnameUser}, ${abilityUser}, ${avatarUser}, ${bioUser}, ${telephoneUser}, ${mailUser}, ${passwordUser}, ${birthdayUser})
-		END TRY
-		BEGIN CATCH
-			IF ERROR_NUMBER() = 2627
-				BEGIN
-					SELECT 'Error: The user already exists' as message;
+				INSERT INTO users (firstnameUser, lastnameUser, abilityUser, bioUser, avatarUser, telephoneUser, mailUser, birthdayUser, passwordUser, saltUser)
+				VALUES ('${firstnameUser}', '${lastnameUser}', ${abilityUser}, ${bioUser}, ${avatarUser}, ${telephoneUser}, '${mailUser}', '${birthdayUser}', '${passwordUser}', '${saltUser}')
+			END TRY
+			BEGIN CATCH
+				IF ERROR_NUMBER() = 2627
+					BEGIN
+						SELECT 'Error : The user already exists' as message, '409' as status;
+					END
+				ELSE
+					BEGIN
+						SELECT 'Error : Failed to execute query' as message, '400' as status;
 				END
-			ELSE
-				BEGIN
-					SELECT 'Error: Failed to execute query' as message;
-			END
-		END CATCH`;
+			END CATCH`;
 }
-function userGet(mailUser, passwordUser) {
-	return `SELECT * FROM users WHERE mailUser=${mailUser} AND passwordUser=${passwordUser}`;
+function userGetPasswordAndSaltByMail(mailUser) {
+	return `SELECT saltUser, passwordUser FROM users WHERE mailUser = '${mailUser}'`;
+}
+function userGet(mailUser) {
+	return `SELECT * FROM users WHERE mailUser = '${mailUser}'`;
 }
 
 module.exports = {
@@ -145,5 +149,6 @@ module.exports = {
 	recipeGetByLabel: recipeGetByLabel,
 	recipes: recipes,
 	userPost: userPost,
+	userGetPasswordAndSaltByMail: userGetPasswordAndSaltByMail,
 	userGet: userGet,
 };

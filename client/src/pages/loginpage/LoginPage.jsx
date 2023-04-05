@@ -127,17 +127,6 @@ const LoginPage = () => {
 						variant='contained'>
 						{register ? 'CREATE YOUR ACCOUNT' : 'LOG IN'}
 					</Button>
-					<hr />
-					<Button
-						className='login__form-buttons'
-						startIcon={<GoogleIcon />}
-						variant='contained'
-						onClick={() => {
-							// setErrorLogin(logInWithGoogle());
-						}}>
-						{register ? 'Register with Google' : 'Login with Google'}
-					</Button>
-					<hr />
 					<Container
 						className='login__form-option'
 						sx={{ display: 'flex', justifyContent: 'space-between' }}>
