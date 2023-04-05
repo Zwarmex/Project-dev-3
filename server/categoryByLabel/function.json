@@ -1,0 +1,18 @@
+{
+	"bindings": [
+		{
+			"type": "httpTrigger",
+			"direction": "in",
+			"name": "req",
+			"methods": ["get"],
+			"route": "category/label/{labelCat:alpha}",
+			"webHookType": "genericJson"
+		},
+		{
+			"type": "http",
+			"direction": "out",
+			"name": "res"
+		}
+	],
+	"disabled": false
+}
