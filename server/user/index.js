@@ -33,6 +33,12 @@ module.exports = async function (context, req) {
 		case 'POST':
 			await handlePost(context, req, pool);
 			break;
+		case 'PUT':
+			await handlePut(context, req, pool);
+			break;
+		case 'DELETE':
+			await handleDelete(context, req, pool);
+			break;
 		default:
 			context.res = {
 				status: 405,
@@ -45,67 +51,6 @@ module.exports = async function (context, req) {
 	}
 };
 
-async function handleGet(context, req, pool) {
-	const mailUser = req.params.mail;
-	const passwordUser = req.params.password;
-
-	// Verify that mail is not null and is a string
-	if (!mailUser || typeof mailUser !== 'string') {
-		context.res = {
-			status: 400,
-			body: 'mail parameter is required and must be a string',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
-	// Verify that password is not null and is a string
-	if (!passwordUser || typeof passwordUser !== 'string') {
-		context.res = {
-			status: 400,
-			body: 'password parameter is required and must be a string',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
-	const queryByMail = queries.userGetPasswordAndSaltByMail(mailUser);
-	// Execute SQL query
-	const result = await pool.request().query(queryByMail);
-
-	if (result.recordset.length > 0) {
-		const storedSalt = result.recordset[0].saltUser;
-		const storedHashedPassword = result.recordset[0].passwordUser;
-
-		// Hash the provided password with the retrieved salt.
-		const hashedPassword = await hashPassword(passwordUser, storedSalt);
-		// Compare the computed hash with the stored hashed password.
-		if (hashedPassword === storedHashedPassword) {
-			// Password is correct, return user details (excluding the password and salt).
-			const queryUser = queries.userGet(mailUser);
-			const userDetails = await pool.request().query(queryUser);
-			context.res = {
-				status: 200,
-				body: userDetails.recordset[0],
-				headers: {
-					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-				},
-			};
-			return;
-		}
-	}
-
-	// If the email is not found or the password is incorrect, return an appropriate error message.
-	context.res = {
-		status: 401,
-		body: 'Invalid email or password',
-		headers: { 'Access-Control-Allow-Origin': process.env.CORS_ORIGIN },
-	};
-}
 async function handlePost(context, req, pool) {
 	const firstnameUser = req.body && req.body.firstname;
 	const lastnameUser = req.body && req.body.lastname;
@@ -217,6 +162,151 @@ async function handlePost(context, req, pool) {
 		context.res = {
 			status: result.recordset[0].status,
 			body: { message: result.recordset[0].message },
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+	}
+}
+async function handleDelete(context, req, pool) {
+	const idUser = req.params.idUser;
+
+	if (!idUser || isNaN(idUser)) {
+		context.res = {
+			status: 400,
+			body: 'idUser parameter is required and must be a number',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+
+	const query = queries.userDelete(idUser);
+	const result = await pool.request().query(query);
+
+	if (result.rowsAffected[0] === 1) {
+		context.res = {
+			status: 200,
+			body: 'User successfully deleted',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+	} else {
+		context.res = {
+			status: 404,
+			body: 'User not found',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+	}
+}
+async function handleGet(context, req, pool) {
+	const mailUser = req.params.mail;
+	const passwordUser = req.params.password;
+
+	// Verify that mail is not null and is a string
+	if (!mailUser || typeof mailUser !== 'string') {
+		context.res = {
+			status: 400,
+			body: 'mail parameter is required and must be a string',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+
+	// Verify that password is not null and is a string
+	if (!passwordUser || typeof passwordUser !== 'string') {
+		context.res = {
+			status: 400,
+			body: 'password parameter is required and must be a string',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+
+	const queryByMail = queries.userGetPasswordAndSaltByMail(mailUser);
+	// Execute SQL query
+	const result = await pool.request().query(queryByMail);
+
+	if (result.recordset.length > 0) {
+		const storedSalt = result.recordset[0].saltUser;
+		const storedHashedPassword = result.recordset[0].passwordUser;
+
+		// Hash the provided password with the retrieved salt.
+		const hashedPassword = await hashPassword(passwordUser, storedSalt);
+		// Compare the computed hash with the stored hashed password.
+		if (hashedPassword === storedHashedPassword) {
+			// Password is correct, return user details (excluding the password and salt).
+			const queryUser = queries.userGet(mailUser);
+			const userDetails = await pool.request().query(queryUser);
+			context.res = {
+				status: 200,
+				body: userDetails.recordset[0],
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
+			};
+			return;
+		}
+	}
+
+	// If the email is not found or the password is incorrect, return an appropriate error message.
+	context.res = {
+		status: 401,
+		body: 'Invalid email or password',
+		headers: { 'Access-Control-Allow-Origin': process.env.CORS_ORIGIN },
+	};
+}
+async function handlePut(context, req, pool) {
+	const idUser = req.params.idUser;
+	const firstnameUser = req.body && req.body.firstname;
+	const lastnameUser = req.body && req.body.lastname;
+	const avatarUser = req.body.hasOwnProperty('avatar') ? req.body.avatar : null;
+	const bioUser = req.body.hasOwnProperty('bio') ? req.body.bio : null;
+	const abilityUser =
+		req.body && req.body.ability ? parseInt(req.body.ability) : null;
+	const telephoneUser =
+		req.body && req.body.telephone ? parseInt(req.body.telephone) : null;
+	const mailUser = req.body && req.body.mail;
+	const passwordUser = req.body && req.body.password;
+	const birthdayUser = req.body && req.body.birthday;
+
+	// Add validations for each field here
+
+	// Update the user information in the database using the provided idUser and other fields
+	const query = queries.userPut(
+		idUser,
+		firstnameUser,
+		lastnameUser,
+		avatarUser,
+		bioUser,
+		abilityUser,
+		telephoneUser,
+		mailUser,
+		passwordUser,
+		birthdayUser
+	);
+	const result = await pool.request().query(query);
+
+	if (result.rowsAffected[0] === 1) {
+		context.res = {
+			status: 200,
+			body: 'User successfully updated',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+	} else {
+		context.res = {
+			status: 404,
+			body: 'User not found',
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},

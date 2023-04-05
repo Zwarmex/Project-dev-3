@@ -5,7 +5,7 @@
 			"type": "httpTrigger",
 			"direction": "in",
 			"name": "req",
-			"methods": ["get", "post", "delete"],
+			"methods": ["get", "post", "delete", "put"],
 			"route": "recipe/id/{idRec:int?}/{user?}/{idUser:int?}",
 			"webHookType": "genericJson"
 		},
