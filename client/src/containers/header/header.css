@@ -1,8 +1,8 @@
 .header-container {
-  color: white;
+  color: black;
   font-family: var(--font-family);
   text-align: center;
-  margin-top: 5%;
+  margin-top: 10%;
 }
 
 .header-container h1 {

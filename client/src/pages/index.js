@@ -4,5 +4,3 @@ export { default as HomePage } from "./homepage/HomePage";
 export { default as WheelPage } from "./wheelpage/WheelPage";
 export { default as CalendarPage } from "./calendarpage/CalendarPage";
 export { default as ResetPasswordPage } from "./resetpasswordpage/ResetPasswordPage";
-export { default as ContactUsPage } from "./contactuspage/ContactUsPage";
-export { default as AboutUsPage } from "./aboutuspage/AboutUsPage";

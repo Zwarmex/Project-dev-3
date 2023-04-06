@@ -1,9 +1,10 @@
 import React from "react";
-import "./aboutuspage.css";
+import "./aboutus.css";
 
-const AboutUsPage = () => {
+const AboutUs = () => {
   return (
     <div className="aboutus-container">
+      <h1>Qui sommes-nous ?</h1>
       <p>
         Nous sommes 4 étudiants de deuxième année en technologie de
         l'informatique à l'Ephec de Louvain-La-Neuve. Dans le cadre de notre
@@ -14,11 +15,11 @@ const AboutUsPage = () => {
         Nous avons donc décidé de choisir Isaline en tant que cliente. Le
         problème était qu'elle ne savait souvent pas quoi faire pour manger.
         Nous avons donc décidé de créer une application qui lui permettrait de
-        meyttr des recettes dans ses favoris et de laisser une roue choisir son
+        mettre des recettes dans ses favoris et de laisser une roue choisir son
         repas du jour.
       </p>
     </div>
   );
 };
 
-export default AboutUsPage;
+export default AboutUs;
