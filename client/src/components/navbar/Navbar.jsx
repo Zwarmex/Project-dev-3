@@ -62,7 +62,7 @@ const Navbar = ({ isConnected }) => {
               >
                 App
               </Typography>
-
+              {/* Menu item mobile */}
               <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
                 <IconButton
                   size="large"
@@ -92,26 +92,37 @@ const Navbar = ({ isConnected }) => {
                     display: { xs: "block", md: "none" },
                   }}
                 >
-                  <MenuItem key="home" onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">
-                      <NavLink to="/">Home</NavLink>
-                    </Typography>
-                  </MenuItem>
-                  <MenuItem key="marketplace" onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">
-                      <NavLink to="/marketplace">Marketplace</NavLink>
-                    </Typography>
-                  </MenuItem>
-                  {isConnected ? (
-                    <MenuItem
-                      open={Boolean(anchorElNav)}
-                      key="calendar"
-                      onClick={handleCloseNavMenu}
-                    >
-                      <Typography textAlign="center">
-                        <NavLink to="/calendar">Calendar</NavLink>
-                      </Typography>
+                  <NavLink to="/">
+                    <MenuItem key="home" onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">Accueil</Typography>
                     </MenuItem>
+                  </NavLink>
+                  <NavLink to="/marketplace">
+                    <MenuItem key="marketplace" onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">Marketplace</Typography>
+                    </MenuItem>
+                  </NavLink>
+                  {isConnected ? (
+                    <NavLink to="/calendar">
+                      <MenuItem
+                        open={Boolean(anchorElNav)}
+                        key="calendar"
+                        onClick={handleCloseNavMenu}
+                      >
+                        <Typography textAlign="center">Calendrier</Typography>
+                      </MenuItem>
+                    </NavLink>
+                  ) : null}
+                  {isConnected ? (
+                    <NavLink to="/wheel">
+                      <MenuItem
+                        open={Boolean(anchorElNav)}
+                        key="wheel"
+                        onClick={handleCloseNavMenu}
+                      >
+                        <Typography textAlign="center">Roue</Typography>
+                      </MenuItem>
+                    </NavLink>
                   ) : null}
                 </Menu>
               </Box>
@@ -133,6 +144,7 @@ const Navbar = ({ isConnected }) => {
               >
                 App
               </Typography>
+              {/* Menu item full page */}
               <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
                 <NavLink
                   to="/"
@@ -172,28 +184,54 @@ const Navbar = ({ isConnected }) => {
                     <Typography component="p">marketplace</Typography>
                   </Button>
                 </NavLink>
-                <NavLink
-                  to="/calendar"
-                  className={({ isActive }) =>
-                    isActive ? "activeLink" : undefined
-                  }
-                >
-                  <Button
-                    key="calendar"
-                    onClick={handleCloseNavMenu}
-                    sx={{
-                      my: 2,
-                      color: "inherit",
-                      display: "block",
-                      "&:hover": {
-                        color: "var(--color-primary)",
-                      },
-                    }}
-                  >
-                    <Typography component="p">calendar</Typography>
-                  </Button>
-                </NavLink>
+                {isConnected ? (
+                  <>
+                    <NavLink
+                      to="/calendar"
+                      className={({ isActive }) =>
+                        isActive ? "activeLink" : undefined
+                      }
+                    >
+                      <Button
+                        key="calendar"
+                        onClick={handleCloseNavMenu}
+                        sx={{
+                          my: 2,
+                          color: "inherit",
+                          display: "block",
+                          "&:hover": {
+                            color: "var(--color-primary)",
+                          },
+                        }}
+                      >
+                        <Typography component="p">calendar</Typography>
+                      </Button>
+                    </NavLink>
+                    <NavLink
+                      to="/wheel"
+                      className={({ isActive }) =>
+                        isActive ? "activeLink" : undefined
+                      }
+                    >
+                      <Button
+                        key="wheel"
+                        onClick={handleCloseNavMenu}
+                        sx={{
+                          my: 2,
+                          color: "inherit",
+                          display: "block",
+                          "&:hover": {
+                            color: "var(--color-primary)",
+                          },
+                        }}
+                      >
+                        <Typography component="p">Roue</Typography>
+                      </Button>
+                    </NavLink>
+                  </>
+                ) : null}
               </Box>
+              {/* Profil icon */}
               <Box>
                 {isConnected ? (
                   <>

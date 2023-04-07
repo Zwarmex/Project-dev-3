@@ -1,26 +1,26 @@
 .login__form-container {
-	margin: auto;
+  margin: auto;
 }
 
 .login__form-boxes {
-	margin: auto;
-	display: grid;
-	width: 50%;
-	background-color: var(--background-color__forms);
-	border-radius: 50px;
-	font-family: var(--font-family);
+  margin: auto;
+  display: grid;
+  width: 50vw;
+  background-color: var(--background-color__forms);
+  border-radius: 50px;
+  font-family: var(--font-family);
 }
 
 .login__form-buttons {
-	width: 50%;
-	margin: auto;
-	place-self: center;
+  width: 50%;
+  margin: auto;
+  place-self: center;
 }
 
 .login__form-reset:hover {
-	text-decoration: underline;
+  text-decoration: underline;
 }
 
 .login__form-option {
-	justify-content: space-between;
+  justify-content: space-between;
 }

@@ -12,7 +12,7 @@ import "./App.css";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 
 const App = () => {
-  const isConnected = false;
+  const isConnected = true;
   return (
     <div className="App">
       <BrowserRouter>
