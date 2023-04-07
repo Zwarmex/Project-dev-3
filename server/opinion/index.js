@@ -33,6 +33,9 @@ module.exports = async function (context, req) {
 			case 'GET':
 				await handleGet(context, req, pool);
 				break;
+			case 'PUT':
+				await handlePut(context, req, pool);
+				break;
 			default:
 				context.res = {
 					status: 400,
@@ -54,44 +57,6 @@ module.exports = async function (context, req) {
 	}
 };
 
-async function handleGet(context, req, pool) {
-	const idUser = parseInt(req.params.idUser);
-	const topValue = req.query.top || 10;
-	const orderValue = req.query.order || 'idCat';
-	const sortValue = req.query.sort || 'ASC';
-
-	if (isNaN(idUser) || idUser <= 0) {
-		context.res = {
-			status: 400,
-			body: { message: 'Invalid idUser parameter' },
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-	const query = queries.opinionGet(idUser, topValue, orderValue, sortValue);
-	const result = await pool.request().query(query);
-
-	if (!result.recordset || result.recordset.length === 0) {
-		context.res = {
-			status: 404,
-			body: { message: 'No opinions found for the given user' },
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
-	context.res = {
-		status: 200,
-		body: result.recordset,
-		headers: {
-			'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-		},
-	};
-}
 async function handlePost(context, req, pool) {
 	const textOpi = req.body && req.body.name;
 	const idRec = parseInt(req.body && req.body.idRec);
@@ -188,6 +153,92 @@ async function handleDelete(context, req, pool) {
 		context.res = {
 			status: 404,
 			body: 'Entry not found',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+	}
+}
+async function handleGet(context, req, pool) {
+	const idUser = parseInt(req.params.idUser);
+	const topValue = req.query.top || 10;
+	const orderValue = req.query.order || 'idOpi';
+	const sortValue = req.query.sort || 'ASC';
+
+	if (isNaN(idUser) || idUser <= 0) {
+		context.res = {
+			status: 400,
+			body: { message: 'Invalid idUser parameter' },
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+	const query = queries.opinionGet(idUser, topValue, orderValue, sortValue);
+	const result = await pool.request().query(query);
+
+	if (!result.recordset || result.recordset.length === 0) {
+		context.res = {
+			status: 404,
+			body: { message: 'No opinions found for the given user' },
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+
+	context.res = {
+		status: 200,
+		body: result.recordset,
+		headers: {
+			'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+		},
+	};
+}
+async function handlePut(context, req, pool) {
+	const idRec = parseInt(req.params.idRec);
+	const idUser = parseInt(req.params.idUser);
+	const textOpi = req.body && req.body.textOpi;
+
+	if (isNaN(idRec) || isNaN(idUser)) {
+		context.res = {
+			status: 400,
+			body: 'Both idRec and idUser parameters are required and must be numbers',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+
+	if (!textOpi || typeof textOpi !== 'string') {
+		context.res = {
+			status: 400,
+			body: 'textOpi parameter is required and must be a string',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+
+	const query = queries.opinionPut(idRec, idUser, textOpi);
+	const result = await pool.request().query(query);
+
+	if (result.rowsAffected[0] === 1) {
+		context.res = {
+			status: 200,
+			body: 'Opinion updated successfully',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+	} else {
+		context.res = {
+			status: 404,
+			body: 'Opinion not found',
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},

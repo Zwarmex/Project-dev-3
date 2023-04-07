@@ -25,11 +25,20 @@ function categoryGetById(idCat) {
 function categoryGetByLabel(labelCat) {
 	return `SELECT  * FROM categories where labelCat='${labelCat}'`;
 }
+function categoryPut(idCat, labelCat) {
+	return `UPDATE Categories SET labelCat='${labelCat}' WHERE idCat=${idCat}`;
+}
 function friendPost(idUser, idFriend) {
 	return `INSERT INTO friends (idUser, idFriend) VAUES (${idUser}, ${idFriend})`;
 }
+function friendDelete(idUser, idFriend) {
+	return `DELETE FROM Friends WHERE idUser=${idUser} AND idFriend=${idFriend}`;
+}
 function friendGet(idUser, topValue, orderValue, sortValue) {
 	return `SELECT TOP ${topValue} * FROM friends where idUser=${idUser} ORDER BY ${orderValue} ${sortValue}`;
+}
+function friendPut(idUser, idFriend, newIdFriend) {
+	return `UPDATE Friends SET idFriend=${newIdFriend} WHERE idUser=${idUser} AND idFriend=${idFriend}`;
 }
 function ingredientPost(labelIng) {
 	return `BEGIN TRY
@@ -55,6 +64,9 @@ function ingredientGetById(idIng) {
 function ingredientGetByLabel(labelIng) {
 	return `SELECT * FROM ingredients where labelIng='${labelIng}'`;
 }
+function ingredientPut(idIng, labelIng) {
+	return `UPDATE ingredients SET labelIng='${labelIng}' WHERE idIng=${idIng}; `;
+}
 function ingredients(topValue, orderValue, sortValue) {
 	return `SELECT TOP ${topValue} * FROM ingredients ORDER BY ${orderValue} ${sortValue}`;
 }
@@ -66,6 +78,9 @@ function opnionDelete(idRec, idUser) {
 }
 function opinionGet(idUser, topValue, orderValue, sortValue) {
 	return `SELECT, TOP ${topValue} * FROM opinions WHERE idUser=${idUser} ORDER BY ${orderValue} ${sortValue}`;
+}
+function opinionPut(idRec, idUser, textOpi) {
+	return `UPDATE opinions SET textOpi='${textOpi}' WHERE idRec=${idRec} AND idUser=${idUser};`;
 }
 function recipePost(
 	labelRec,
@@ -90,6 +105,29 @@ function recipeGetById(idRec) {
 function recipeGetByLabel(labelRec, topValue, orderValue, sortValue) {
 	return `SELECT TOP ${topValue} * FROM recipes WHERE labelRec LIKE '%${labelRec}%' ORDER BY ${orderValue} ${sortValue}`;
 }
+function recipePut(
+	idRec,
+	idUser,
+	labelRec,
+	stepsRec,
+	numberOfPersonsRec,
+	timeRec,
+	difficultyRec,
+	imgRec,
+	idCat
+) {
+	return `
+        UPDATE recipes
+        SET labelRec='${labelRec}',
+            stepsRec='${stepsRec}',
+            numberOfPersonsRec=${numberOfPersonsRec},
+            timeRec=${timeRec},
+            difficultyRec=${difficultyRec},
+            imgRec='${imgRec}',
+            idCat=${idCat}
+        WHERE idRec=${idRec} AND idUser=${idUser};
+    `;
+}
 function recipes(topValue, orderValue, sortValue) {
 	return `SELECT TOP ${topValue} * FROM recipes ORDER BY ${orderValue} ${sortValue}`;
 }
@@ -102,25 +140,62 @@ function userPost(
 	telephoneUser,
 	mailUser,
 	passwordUser,
-	birthdayUser
+	birthdayUser,
+	saltUser
 ) {
 	return `BEGIN TRY
-			INSERT INTO users (firstnameUser, lastnameUser, abilityUser, avatarUser, bioUser, telephoneUser, mailUser, passwordUser, birthdayUser)
-			VALUES (${firstnameUser}, ${lastnameUser}, ${abilityUser}, ${avatarUser}, ${bioUser}, ${telephoneUser}, ${mailUser}, ${passwordUser}, ${birthdayUser})
-		END TRY
-		BEGIN CATCH
-			IF ERROR_NUMBER() = 2627
-				BEGIN
-					SELECT 'Error: The user already exists' as message;
+				INSERT INTO users (firstnameUser, lastnameUser, abilityUser, bioUser, avatarUser, telephoneUser, mailUser, birthdayUser, passwordUser, saltUser)
+				VALUES ('${firstnameUser}', '${lastnameUser}', ${abilityUser}, ${bioUser}, ${avatarUser}, ${telephoneUser}, '${mailUser}', '${birthdayUser}', '${passwordUser}', '${saltUser}')
+			END TRY
+			BEGIN CATCH
+				IF ERROR_NUMBER() = 2627
+					BEGIN
+						SELECT 'Error : The user already exists' as message, '409' as status;
+					END
+				ELSE
+					BEGIN
+						SELECT 'Error : Failed to execute query' as message, '400' as status;
 				END
-			ELSE
-				BEGIN
-					SELECT 'Error: Failed to execute query' as message;
-			END
-		END CATCH`;
+			END CATCH`;
 }
-function userGet(mailUser, passwordUser) {
-	return `SELECT * FROM users WHERE mailUser=${mailUser} AND passwordUser=${passwordUser}`;
+function userDelete(idUser) {
+	return `
+		DELETE FROM users
+		WHERE idUser = ${idUser};
+	`;
+}
+function userGetPasswordAndSaltByMail(mailUser) {
+	return `SELECT saltUser, passwordUser FROM users WHERE mailUser='${mailUser}'`;
+}
+function userGet(mailUser) {
+	return `SELECT * FROM users WHERE mailUser = '${mailUser}'`;
+}
+function userPut(
+	idUser,
+	firstnameUser,
+	lastnameUser,
+	avatarUser,
+	bioUser,
+	abilityUser,
+	telephoneUser,
+	mailUser,
+	passwordUser,
+	birthdayUser
+) {
+	return `
+		UPDATE users
+		SET
+			firstname = '${firstnameUser}',
+			lastname = '${lastnameUser}',
+			avatar = ${avatarUser === null ? 'NULL' : `'${avatarUser}'`},
+			bio = ${bioUser === null ? 'NULL' : `'${bioUser}'`},
+			ability = ${abilityUser === null ? 'NULL' : abilityUser},
+			telephone = ${telephoneUser === null ? 'NULL' : telephoneUser},
+			mail = '${mailUser}',
+			password = '${passwordUser}',
+			birthday = '${birthdayUser}'
+		WHERE idUser = ${idUser};
+	`;
 }
 
 module.exports = {
@@ -129,21 +204,30 @@ module.exports = {
 	categoryDelete: categoryDelete,
 	categoryGetById: categoryGetById,
 	categoryGetByLabel: categoryGetByLabel,
+	categoryPut: categoryPut,
 	friendPost: friendPost,
+	friendDelete: friendDelete,
 	friendGet: friendGet,
+	friendPut: friendPut,
 	ingredientPost: ingredientPost,
 	ingredientDelete: ingredientDelete,
 	ingredientGetById: ingredientGetById,
 	ingredientGetByLabel: ingredientGetByLabel,
+	ingredientPut: ingredientPut,
 	ingredients: ingredients,
 	opinionPost: opinionPost,
 	opnionDelete: opnionDelete,
 	opinionGet: opinionGet,
+	opinionPut: opinionPut,
 	recipePost: recipePost,
 	recipeDelete: recipeDelete,
 	recipeGetById: recipeGetById,
 	recipeGetByLabel: recipeGetByLabel,
+	recipePut: recipePut,
 	recipes: recipes,
 	userPost: userPost,
+	userDelete: userDelete,
+	userGetPasswordAndSaltByMail: userGetPasswordAndSaltByMail,
 	userGet: userGet,
+	userPut: userPut,
 };

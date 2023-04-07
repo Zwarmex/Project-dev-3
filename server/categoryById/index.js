@@ -17,7 +17,6 @@ module.exports = async function (context, req) {
 			};
 			return;
 		}
-
 		const pool = await sql.connect(config);
 
 		switch (req.method) {
@@ -29,6 +28,9 @@ module.exports = async function (context, req) {
 				break;
 			case 'GET':
 				await handleGet(context, req, pool);
+				break;
+			case 'PUT':
+				await handlePut(context, req, pool);
 				break;
 			default:
 				context.res = {
@@ -179,4 +181,54 @@ async function handleGet(context, req, pool) {
 			'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 		},
 	};
+}
+async function handlePut(context, req, pool) {
+	// The PUT handler code goes here
+	const idCat = parseInt(req.params.idCat);
+	const labelCat = req.body && req.body.label;
+
+	// Verify that idCat and labelCat are not null
+	if (!idCat || !labelCat) {
+		context.res = {
+			status: 400,
+			body: 'Both idCat and label parameters are required',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+
+	// Verify that idCat is a number and labelCat is a string
+	if (isNaN(idCat) || typeof labelCat !== 'string') {
+		context.res = {
+			status: 400,
+			body: 'idCat parameter must be a number and label parameter must be a string',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+
+	const query = queries.categoryPut(idCat, labelCat);
+	const result = await pool.request().query(query);
+
+	if (result.rowsAffected[0] === 1) {
+		context.res = {
+			status: 200,
+			body: 'Category successfully updated',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+	} else {
+		context.res = {
+			status: 404,
+			body: 'Category not found',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+	}
 }
