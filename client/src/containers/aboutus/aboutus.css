@@ -1,11 +1,11 @@
-.aboutus {
-	font-family: var(--font-family);
+.aboutus-container {
+  margin: 10%;
+  color: black;
+  background-color: var(--color-background-text);
+  padding: 2%;
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.315);
 }
 
-.aboutus h1 {
-	text-align: center;
-}
-
-.aboutus p {
-	padding: 1%;
+h1 {
+  padding-bottom: 2%;
 }

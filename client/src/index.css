@@ -1,9 +1,11 @@
 :root {
-	--font-family: 'Verdana', sans-serif;
-	--color-bg: linear-gradient(
-		107.56deg,
-		rgba(255, 116, 15, 0.92) 30.73%,
-		rgba(225, 111, 28, 0.62) 100%
-	);
-	--background-color__forms: rgba(217, 217, 217, 0.722);
+  --font-family: "Verdana", sans-serif;
+  --color-primary: rgba(226, 105, 26, 0.63);
+  --color-secondary: rgba(161, 140, 127, 1);
+  --color-positive: rgba(29, 106, 22, 1);
+  --color-negative: rgba(252, 64, 1, 1);
+  --color-warning: rgba(254, 234, 1, 1);
+  --color-neutral: rgba(205, 216, 220, 0.63);
+  --background-color__forms: rgba(217, 217, 217, 0.722);
+  --color-background-text: rgba(255, 255, 255, 0.3);
 }

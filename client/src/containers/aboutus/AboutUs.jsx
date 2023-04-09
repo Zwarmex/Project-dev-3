@@ -3,19 +3,20 @@ import "./aboutus.css";
 
 const AboutUs = () => {
   return (
-    <div id="about" className="aboutus">
-      <h1>About us</h1>
+    <div className="aboutus-container">
+      <h1>Qui sommes-nous ?</h1>
       <p>
-        Our team, composed of Samuel Lambert, Gaetan Crabeels, Julien Pollart
-        and El-Ajmi Mosbah, is proud to present our brand new web development
-        project: an online recipe application. As students in our second year of
-        computer science we decided to put our knowledge into practice by
-        creating a platform for food lovers around the world. Our goal is to
-        provide a simple, fun and intuitive cooking experience for users,
-        allowing for the discovery of new recipes, meal planning and the
-        creation of personal recipes. We are excited to bring you this
-        innovative platform and hope it will be a valuable addition to your
-        cooking routine.
+        Nous sommes 4 étudiants de deuxième année en technologie de
+        l'informatique à l'Ephec de Louvain-La-Neuve. Dans le cadre de notre
+        cours de développemennt, nous devions trouver un client afin d'apporter
+        une solution au problème posé par celui-ci.
+      </p>
+      <p>
+        Nous avons donc décidé de choisir Isaline en tant que cliente. Le
+        problème était qu'elle ne savait souvent pas quoi faire pour manger.
+        Nous avons donc décidé de créer une application qui lui permettrait de
+        mettre des recettes dans ses favoris et de laisser une roue choisir son
+        repas du jour.
       </p>
     </div>
   );

@@ -1,19 +1,18 @@
-import React from 'react';
-import './header.css';
+import React from "react";
+import "./header.css";
+import { CTA } from "..";
 
 const Header = () => {
-	return (
-		<div className='home'>
-			<h1>Home</h1>
-			<p>
-				Welcome to our online culinary community! We offer you an easy and fun
-				way to discover new recipes, plan your meals and share your culinary
-				creations with other foodies. Sign up now to access a library of
-				recipes, bookmark your own favourite recipes, and connect with other
-				foodies around the world. Let's start cooking!
-			</p>
-		</div>
-	);
+  return (
+    <div className="header-container">
+      <h1>Bienvenue sur Recipe's App</h1>
+      <p>
+        Pas le temps de réfléchir à quoi acheter, ou à quoi manger ? <br />
+        Envie découvrir de bonnes recettes de manière simple ?
+      </p>
+      <CTA />
+    </div>
+  );
 };
 
 export default Header;

@@ -1,16 +1,18 @@
-.contact__link:hover {
-	color: blue;
-	text-decoration: underline;
+.contact-form {
+  margin: 10%;
+  color: black;
+  background-color: var(--color-background-text);
+  padding: 2%;
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.315);
+  display: flex;
+  flex-direction: column;
 }
 
-.contactus {
-	font-family: var(--font-family);
+label {
+  margin: 2% 0;
 }
 
-.contactus h1 {
-	text-align: center;
-}
-
-.contactus p {
-	padding: 1%;
+.send-btn {
+  font-size: 1rem;
+  margin: 2%;
 }

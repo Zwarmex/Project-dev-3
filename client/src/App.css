@@ -2,32 +2,32 @@ html,
 body,
 .App,
 #root {
-	height: -webkit-fill-available;
-	height: 100%;
-	margin: 0;
+  height: -webkit-fill-available;
+  height: 100%;
+  margin: 0;
 }
 
 * {
-	box-sizing: border-box;
-	padding: 0;
-	margin: 0;
-	scroll-behavior: smooth;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  scroll-behavior: smooth;
 }
 
 body {
-	background-image: url('assets/images/background.jpg');
-	background-size: 100% 100%;
-	background-repeat: no-repeat;
-	/* background-attachment: local; */
-	/* background-attachment: fixed; */
+  background-image: url("assets/images/cooking-bg.jpg");
+  background-size: 100% 100%;
+  /* background-repeat: no-repeat; */
+  /* background-attachment: local; */
+  /* background-attachment: fixed; */
 }
 
 a {
-	color: unset;
-	text-decoration: none;
+  color: unset;
+  text-decoration: none;
 }
 
 .App {
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
