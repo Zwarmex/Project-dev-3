@@ -52,13 +52,13 @@ module.exports = async function (context, req) {
 
 async function handlePost(context, req, pool) {
 	// The POST handler code goes here
-	const labelCat = req.body && req.body.label;
+	const labelCat = req.body.hasOwnProperty('label') ? req.body.label : null;
 
 	// Verify that label is not null and is a string
-	if (!labelCat || typeof labelCat !== 'string') {
+	if (!labelCat) {
 		context.res = {
 			status: 400,
-			body: 'label parameter is required and must be a string',
+			body: 'label parameter is required',
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -67,7 +67,6 @@ async function handlePost(context, req, pool) {
 	}
 	// Build the SQL query string
 	const query = queries.categoryPost(labelCat);
-
 	const result = await pool.request().query(query);
 
 	result.recordsets.length > 0
@@ -85,25 +84,13 @@ async function handlePost(context, req, pool) {
 }
 async function handleDelete(context, req, pool) {
 	// The DELETE handler code goes here
-	const idCat = parseInt(req.params.idCat);
+	const idCat = req.params.hasOwnProperty('idCat') ? +req.params.idCat : null;
 
 	// Verify that idCat is not null
-	if (!idCat) {
+	if (idCat <= 0) {
 		context.res = {
 			status: 400,
-			body: 'idCat parameter is required',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
-	// Verify that idCat is a string
-	if (isNaN(idCat)) {
-		context.res = {
-			status: 400,
-			body: 'idCat parameter must be a string',
+			body: 'idCat parameter must be positive',
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -125,7 +112,7 @@ async function handleDelete(context, req, pool) {
 	} else {
 		context.res = {
 			status: 404,
-			body: 'Entry not found',
+			body: `Entry not found with this id ${idCat}`,
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -134,25 +121,12 @@ async function handleDelete(context, req, pool) {
 }
 async function handleGet(context, req, pool) {
 	// The GET handler code goes here
-	const idCat = req.params.idCat;
+	const idCat = req.params.hasOwnProperty('idCat') ? +req.params.idCat : null;
 
-	// Verify that idCat is not null
-	if (!idCat) {
+	if (idCat <= 0) {
 		context.res = {
 			status: 400,
-			body: 'id parameter is required',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
-	// Verify that idCat is a number
-	if (isNaN(idCat)) {
-		context.res = {
-			status: 400,
-			body: 'id parameter must be a number',
+			body: 'id parameter must be positive',
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -184,26 +158,23 @@ async function handleGet(context, req, pool) {
 }
 async function handlePut(context, req, pool) {
 	// The PUT handler code goes here
-	const idCat = parseInt(req.params.idCat);
-	const labelCat = req.body && req.body.label;
+	const idCat = req.params.hasOwnProperty('idCat') ? +req.params.idCat : null;
+	const labelCat = req.body.hasOwnProperty('label') ? req.body.label : null;
 
-	// Verify that idCat and labelCat are not null
-	if (!idCat || !labelCat) {
+	if (!labelCat) {
 		context.res = {
 			status: 400,
-			body: 'Both idCat and label parameters are required',
+			body: 'label parameter is required',
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
 		};
 		return;
 	}
-
-	// Verify that idCat is a number and labelCat is a string
-	if (isNaN(idCat) || typeof labelCat !== 'string') {
+	if (idCat <= 0) {
 		context.res = {
 			status: 400,
-			body: 'idCat parameter must be a number and label parameter must be a string',
+			body: 'idCat parameter must be positive',
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -225,7 +196,7 @@ async function handlePut(context, req, pool) {
 	} else {
 		context.res = {
 			status: 404,
-			body: 'Category not found',
+			body: `Category not found with the specified id ${idCat}`,
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},

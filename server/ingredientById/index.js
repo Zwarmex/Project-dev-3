@@ -59,13 +59,13 @@ module.exports = async function (context, req) {
 
 async function handlePost(context, req, pool) {
 	// The POST handler code goes here
-	const labelIng = req.body && req.body.label;
+	const labelIng = req.body.hasOwnProperty('label') ? req.body.label : null;
 
-	// Verify that labelIng is not null and is a string
-	if (!labelIng || typeof labelIng !== 'string') {
+	// Verify that labelIng is not null
+	if (!labelIng) {
 		context.res = {
 			status: 400,
-			body: `label parameter is required and must be a string`,
+			body: `label parameter is required`,
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -92,29 +92,8 @@ async function handlePost(context, req, pool) {
 		  });
 }
 async function handleDelete(context, req, pool) {
-	const idIng = req.params.idIng;
+	const idIng = req.params.hasOwnProperty('idIng') ? +req.params.idIng : null;
 
-	if (!idIng) {
-		context.res = {
-			status: 400,
-			body: 'id parameter is required',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
-	if (isNaN(idIng)) {
-		context.res = {
-			status: 400,
-			body: 'id parameter must be a number',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
 	const query = queries.ingredientDelete(idIng);
 	const result = await pool.request().query(query);
 
@@ -137,18 +116,8 @@ async function handleDelete(context, req, pool) {
 	}
 }
 async function handleGet(context, req, pool) {
-	const idIng = req.params.idIng;
+	const idIng = req.params.hasOwnProperty('idIng') ? +req.params.idIng : null;
 
-	if (!idIng || isNaN(idIng)) {
-		context.res = {
-			status: 400,
-			body: 'id parameter must be a number',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
 	const query = queries.ingredientGetById(idIng);
 	const result = await pool.request().query(query);
 
@@ -172,24 +141,13 @@ async function handleGet(context, req, pool) {
 	};
 }
 async function handlePut(context, req, pool) {
-	const idIng = req.params.idIng;
-	const labelIng = req.body && req.body.label;
+	const idIng = req.params.hasOwnProperty('idIng') ? +req.params.idIng : null;
+	const labelIng = req.body.hasOwnProperty('label') ? req.body.label : null;
 
-	if (!idIng || isNaN(idIng)) {
+	if (!labelIng) {
 		context.res = {
 			status: 400,
-			body: 'id parameter must be a number',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
-	if (!labelIng || typeof labelIng !== 'string') {
-		context.res = {
-			status: 400,
-			body: 'label parameter is required and must be a string',
+			body: 'label parameter is required',
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},

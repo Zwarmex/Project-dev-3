@@ -49,8 +49,19 @@ module.exports = async function (context, req) {
 };
 
 async function handleGet(context, req, pool) {
-	const labelIng = req.params.labelIng;
-
+	const labelIng = req.params.hasOwnProperty('labelIng')
+		? req.params.labelIng
+		: null;
+	if (!labelIng) {
+		context.res = {
+			status: 400,
+			body: `labelIng parameter is required`,
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
 	const query = queries.ingredientGetByLabel(labelIng);
 	const result = await pool.request().query(query);
 

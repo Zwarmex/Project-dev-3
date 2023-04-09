@@ -50,26 +50,90 @@ module.exports = async function (context, req) {
 };
 
 async function handlePost(context, req, pool) {
-	const labelRec = req.body && req.body.label;
-	const stepsRec = req.body && req.body.steps;
-	const numberOfPersonsRec = parseInt(req.body && req.body.numberOfPersons);
-	const timeRec = parseInt(req.body && req.body.time);
-	const difficultyRec = parseInt(req.body && req.body.difficulty);
-	const imgRec = req.body && req.body.img;
-	const idCat = parseInt(req.body && req.body.idCat);
-	const idUser = parseInt(req.body && req.body.idUser);
+	const labelRec = req.body.hasOwnProperty('label') ? req.body.label : null;
+	const stepsRec = req.body.hasOwnProperty('steps') ? req.body.steps : null;
+	const numberOfPersonsRec = req.body.hasOwnProperty('numberOfPersons')
+		? +req.body.numberOfPersons
+		: null;
+	const timeRec = req.body.hasOwnProperty('time') ? +req.body.time : null;
+	const difficultyRec = req.body.hasOwnProperty('difficulty')
+		? +req.body.difficulty
+		: null;
+	const imgRec = req.body.hasOwnProperty('img') ? `'${req.body.img}'` : null;
+	const idCat = req.body.hasOwnProperty('idCat') ? +req.body.idCat : null;
+	const idUser = req.body.hasOwnProperty('idUser') ? +req.body.idUser : null;
 
-	// Verify that nameRec is not null and is a string
-	if (!nameRec || typeof nameRec !== 'string') {
+	if (!labelRec) {
 		context.res = {
 			status: 400,
-			body: `name parameter is required and must be a string : ${nameRec}, ${req.body}`,
+			body: `label parameter is required`,
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
 		};
 		return;
 	}
+	if (!stepsRec) {
+		context.res = {
+			status: 400,
+			body: `steps parameter is required`,
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+	if (!numberOfPersonsRec || numberOfPersonsRec < 0) {
+		context.res = {
+			status: 400,
+			body: `numberOfPersons parameter must be a positive integer`,
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+	if (!timeRec || timeRec < 0) {
+		context.res = {
+			status: 400,
+			body: `time parameter must be a positive integer`,
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+	if (!(difficultyRec >= 1 && difficultyRec <= 5)) {
+		context.res = {
+			status: 400,
+			body: `difficulty parameter must be a positive integer between 1 and 5`,
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+	if (!idCat || idCat < 0) {
+		context.res = {
+			status: 400,
+			body: `idCat parameter must be a positive integer`,
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+	if (!idUser || idUser < 0) {
+		context.res = {
+			status: 400,
+			body: `idUser parameter must be a positive integer`,
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+
 	const query = queries.recipePost(
 		labelRec,
 		stepsRec,
@@ -80,6 +144,7 @@ async function handlePost(context, req, pool) {
 		idCat,
 		idUser
 	);
+	console.log(query);
 	const result = await pool.request().query(query);
 
 	result.recordsets.length > 0
@@ -96,26 +161,11 @@ async function handlePost(context, req, pool) {
 		  });
 }
 async function handleDelete(context, req, pool) {
-	const idRec = req.params.idRec;
-	const idUser = req.params.idUser;
+	const idRec = req.params.hasOwnProperty('idRec') ? +req.params.idRec : null;
+	const idUser = req.params.hasOwnProperty('idUser')
+		? +req.params.idUser
+		: null;
 
-	// Verify that idIng is a valid integer
-	if (isNaN(idRec)) {
-		context.res = {
-			status: 400,
-			body: `id parameter is required and must be a valid integer`,
-		};
-		return;
-	}
-
-	// Verify that idUser is a valid integer
-	if (isNaN(idUser)) {
-		context.res = {
-			status: 400,
-			body: `idUser parameter is required and must be a valid integer`,
-		};
-		return;
-	}
 	const query = queries.recipeDelete(idRec, idUser);
 	const result = await pool.request().query(query);
 
@@ -138,31 +188,8 @@ async function handleDelete(context, req, pool) {
 	}
 }
 async function handleGet(context, req, pool) {
-	const idRec = req.params.idRec;
+	const idRec = req.params.hasOwnProperty('idRec') ? +req.params.idRec : null;
 
-	// Verify that idIng is not null
-	if (!idRec) {
-		context.res = {
-			status: 400,
-			body: 'id parameter is required',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
-	// Verify that idIng is a number
-	if (isNaN(idRec)) {
-		context.res = {
-			status: 400,
-			body: 'id parameter must be a number',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
 	const query = queries.recipeGetById(idRec);
 	const result = await pool.request().query(query);
 
@@ -187,26 +214,21 @@ async function handleGet(context, req, pool) {
 	};
 }
 async function handlePut(context, req, pool) {
-	const idRec = parseInt(req.params.idRec);
-	const idUser = parseInt(req.params.idUser);
-	const labelRec = req.body && req.body.label;
-	const stepsRec = req.body && req.body.steps;
-	const numberOfPersonsRec = parseInt(req.body && req.body.numberOfPersons);
-	const timeRec = parseInt(req.body && req.body.time);
-	const difficultyRec = parseInt(req.body && req.body.difficulty);
-	const imgRec = req.body && req.body.img;
-	const idCat = parseInt(req.body && req.body.idCat);
-
-	if (isNaN(idRec) || isNaN(idUser)) {
-		context.res = {
-			status: 400,
-			body: 'Both idRec and idUser parameters are required and must be numbers',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
+	const idRec = req.params.hasOwnProperty('idRec') ? +req.params.idRec : null;
+	const idUser = req.params.hasOwnProperty('idUser')
+		? +req.params.idUser
+		: null;
+	const labelRec = req.body.hasOwnProperty('label') ? req.body.label : null;
+	const stepsRec = req.body.hasOwnProperty('steps') ? req.body.steps : null;
+	const numberOfPersonsRec = req.body.hasOwnProperty('numberOfPersons')
+		? +req.body.numberOfPersons
+		: null;
+	const timeRec = req.body.hasOwnProperty('time') ? +req.body.time : null;
+	const difficultyRec = req.body.hasOwnProperty('difficulty')
+		? +req.body.difficulty
+		: null;
+	const imgRec = req.body.hasOwnProperty('img') ? req.body.img : null;
+	const idCat = req.body.hasOwnProperty('idCat') ? +req.body.idCat : null;
 
 	const query = queries.recipePut(
 		idRec,

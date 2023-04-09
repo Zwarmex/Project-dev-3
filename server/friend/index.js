@@ -58,18 +58,12 @@ module.exports = async function (context, req) {
 };
 
 async function handlePost(context, req, pool) {
-	const idUser = parseInt(req.params.idUser);
-	const idFriend = parseInt(req.boy && req.body.idFriend);
-
-	if (idUser === idFriend) {
-		context.res = {
-			status: 400,
-			body: `Friend id not acceptable`,
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-	}
+	const idUser = req.params.hasOwnProperty('idUser')
+		? +req.params.idUser
+		: null;
+	const idFriend = req.body.hasOwnProperty('idFriend')
+		? +req.body.idFriend
+		: null;
 
 	if (!idFriend) {
 		context.res = {
@@ -81,17 +75,26 @@ async function handlePost(context, req, pool) {
 		};
 		return;
 	}
-
-	if (!idUser) {
+	if (!Number.isInteger(idFriend) || idFriend <= 0) {
 		context.res = {
 			status: 400,
-			body: `idUser parameter is required`,
+			body: `idFriend parameter must be a positive integer`,
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
 		};
 		return;
 	}
+	if (idUser === idFriend) {
+		context.res = {
+			status: 400,
+			body: `Friend id not acceptable`,
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+	}
+
 	const query = queries.friendPost(idUser, idFriend);
 	const result = await pool.request().query(query);
 
@@ -113,20 +116,12 @@ async function handlePost(context, req, pool) {
 }
 async function handleDelete(context, req, pool) {
 	// The DELETE handler code goes here
-	const idUser = parseInt(req.params.idUser);
-	const idFriend = parseInt(req.params.idFriend);
-
-	// Verify that idUser and idFriend are not null
-	if (!idUser || !idFriend) {
-		context.res = {
-			status: 400,
-			body: 'Both idUser and idFriend parameters are required',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
+	const idUser = req.params.hasOwnProperty('idUser')
+		? +req.params.idUser
+		: null;
+	const idFriend = req.params.hasOwnProperty('idFriend')
+		? +req.params.idFriend
+		: null;
 
 	const query = queries.friendDelete(idUser, idFriend);
 	const result = await pool.request().query(query);
@@ -150,22 +145,50 @@ async function handleDelete(context, req, pool) {
 	}
 }
 async function handleGet(context, req, pool) {
-	const idUser = parseInt(req.params.idUser);
-	const topValue = req.query.top || 10;
-	const orderValue = req.query.order || 'idUser';
-	const sortValue = req.query.sort || 'ASC';
+	const idUser = req.params.hasOwnProperty('idUser')
+		? +req.params.idUser
+		: null;
+	const topValue = req.query.hasOwnProperty('top') ? +req.query.top : 10;
+	const orderValue = req.query.hasOwnProperty('order')
+		? req.query.order.toUpperCase()
+		: 'IDUSER';
+	const validOrderValues = ['IDUSER', 'IDFRIEND'];
+	const sortValue = req.query.hasOwnProperty('sort')
+		? req.query.sort.toUpperCase()
+		: 'ASC';
+	const validSortValues = ['ASC', 'DESC'];
 
-	// Verify that idUser is not null
-	if (!idUser) {
+	if (!Number.isInteger(topValue) || topValue <= 0) {
 		context.res = {
 			status: 400,
-			body: 'idUser parameter is required',
+			body: 'topValue must be a positive integer.',
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
 		};
 		return;
 	}
+	if (!validOrderValues.includes(orderValue)) {
+		context.res = {
+			status: 400,
+			body: "orderValue must be either 'idCat' or 'labelCat'.",
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+	if (!validSortValues.includes(sortValue)) {
+		context.res = {
+			status: 400,
+			body: "sortValue must be either 'ASC' or 'DESC', case insensitive.",
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+
 	const query = queries.friendGet(idUser, topValue, orderValue, sortValue);
 	const result = await pool.request().query(query);
 
@@ -190,15 +213,35 @@ async function handleGet(context, req, pool) {
 }
 async function handlePut(context, req, pool) {
 	// The PUT handler code goes here
-	const idUser = parseInt(req.params.idUser);
-	const idFriend = parseInt(req.body && req.body.idFriend);
-	const newIdFriend = parseInt(req.body && req.body.newIdFriend);
+	const idUser = req.params.hasOwnProperty('idUser')
+		? +req.params.idUser
+		: null;
+	const idFriend = req.body.hasOwnProperty('idFriend')
+		? +req.body.idFriend
+		: null;
+	const newIdFriend = req.body.hasOwnProperty('newIdFriend')
+		? +req.body.newIdFriend
+		: null;
 
-	// Verify that idUser, idFriend, and newIdFriend are not null
-	if (!idUser || !idFriend || !newIdFriend) {
+	if (!idFriend || !newIdFriend) {
 		context.res = {
 			status: 400,
-			body: 'idUser, idFriend, and newIdFriend parameters are required',
+			body: 'idFriend and newIdFriend parameters are required',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+	if (
+		!Number.isInteger(idFriend) ||
+		!Number.isInteger(newIdFriend) ||
+		idFriend <= 0 ||
+		newIdFriend <= 0
+	) {
+		context.res = {
+			status: 400,
+			body: 'idFriend and newIdFriend parameters must be positive integer',
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},

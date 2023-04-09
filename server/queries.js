@@ -93,7 +93,7 @@ function recipePost(
 	idUser
 ) {
 	return `INSERT INTO recipes (labelRec, stepsRec, numberOfPersonsRec, timeRec, difficultyRec, imgRec, idCat, idUser)
-            VALUES (${labelRec}, ${stepsRec}, ${numberOfPersonsRec}, ${timeRec}, ${difficultyRec}, ${imgRec}, ${idCat}, ${idUser})`;
+            VALUES ('${labelRec}', '${stepsRec}', ${numberOfPersonsRec}, ${timeRec}, ${difficultyRec}, ${imgRec}, ${idCat}, ${idUser})`;
 }
 function recipeDelete(idRec, idUser) {
 	return `DELETE TOP(1) FROM recipes
@@ -179,21 +179,27 @@ function userPut(
 	abilityUser,
 	telephoneUser,
 	mailUser,
-	passwordUser,
 	birthdayUser
 ) {
 	return `
 		UPDATE users
 		SET
-			firstname = '${firstnameUser}',
-			lastname = '${lastnameUser}',
-			avatar = ${avatarUser === null ? 'NULL' : `'${avatarUser}'`},
-			bio = ${bioUser === null ? 'NULL' : `'${bioUser}'`},
-			ability = ${abilityUser === null ? 'NULL' : abilityUser},
-			telephone = ${telephoneUser === null ? 'NULL' : telephoneUser},
-			mail = '${mailUser}',
+			firstname='${firstnameUser}',
+			lastname='${lastnameUser}',
+			avatar=${avatarUser},
+			bio=${bioUser},
+			ability=${abilityUser},
+			telephone=${telephoneUser},
+			mail='${mailUser}',
+			birthday='${birthdayUser}'
+		WHERE idUser=${idUser};
+	`;
+}
+function userPutPassword(idUser, passwordUser) {
+	return `
+		UPDATE users
+		SET
 			password = '${passwordUser}',
-			birthday = '${birthdayUser}'
 		WHERE idUser = ${idUser};
 	`;
 }
@@ -230,4 +236,5 @@ module.exports = {
 	userGetPasswordAndSaltByMail: userGetPasswordAndSaltByMail,
 	userGet: userGet,
 	userPut: userPut,
+	userPutPassword: userPutPassword,
 };

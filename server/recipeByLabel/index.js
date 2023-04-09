@@ -41,12 +41,57 @@ module.exports = async function (context, req) {
 };
 
 async function handleGet(context, req, pool) {
-	const labelRec = req.params.labelRec;
-	const topValue = req.query.top || 10;
-	const orderValue = req.query.order || 'idRec';
-	const sortValue = req.query.sort || 'ASC';
+	const labelRec = req.params.hasOwnProperty('labelRec')
+		? req.params.labelRec
+		: null;
+	const topValue = req.query.hasOwnProperty('top') ? +req.query.top : 10;
+	const orderValue = req.query.hasOwnProperty('order')
+		? req.query.order.toUpperCase()
+		: 'IDREC';
+	const sortValue = req.query('sort') ? req.query.sort.toUpperCase() : 'ASC';
+	const validOrderValues = [
+		'IDREC',
+		'LABELREC',
+		'STEPSREC',
+		'NUMBEROFPERSONSREC',
+		'TIMREC',
+		'DIFFICULTYREC',
+		'IMGREC',
+		'IDCAT',
+		'IDUSER',
+	];
+	const validSortValues = ['ASC', 'DESC'];
 
-	// Verify that labelRec is not null
+	if (!Number.isInteger(topValue) || topValue <= 0) {
+		context.res = {
+			status: 400,
+			body: 'topValue must be a positive integer.',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+	if (!validOrderValues.includes(orderValue)) {
+		context.res = {
+			status: 400,
+			body: "orderValue must be either 'idCat' or 'labelCat'.",
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+	if (!validSortValues.includes(sortValue)) {
+		context.res = {
+			status: 400,
+			body: "sortValue must be either 'ASC' or 'DESC', case insensitive.",
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
 	if (!labelRec) {
 		context.res = {
 			status: 400,
@@ -57,6 +102,7 @@ async function handleGet(context, req, pool) {
 		};
 		return;
 	}
+
 	const query = queries.recipeGetByLabel(
 		labelRec,
 		topValue,

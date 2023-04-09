@@ -52,21 +52,30 @@ module.exports = async function (context, req) {
 };
 
 async function handlePost(context, req, pool) {
-	const firstnameUser = req.body && req.body.firstname;
-	const lastnameUser = req.body && req.body.lastname;
+	const firstnameUser = req.body.hasOwnProperty('firstname')
+		? req.body.firstname
+		: null;
+	const lastnameUser = req.body.hasOwnProperty('lastname')
+		? req.body.lastname
+		: null;
 	const avatarUser = req.body.hasOwnProperty('avatar') ? req.body.avatar : null;
 	const bioUser = req.body.hasOwnProperty('bio') ? req.body.bio : null;
-	const abilityUser =
-		req.body && req.body.ability ? parseInt(req.body.ability) : null;
-	const telephoneUser =
-		req.body && req.body.telephone ? parseInt(req.body.telephone) : null;
-
-	const mailUser = req.body && req.body.mail;
-	const passwordUser = req.body && req.body.password;
-	const birthdayUser = req.body && req.body.birthday;
+	const abilityUser = req.body.hasOwnProperty('ability')
+		? +req.body.ability
+		: null;
+	const telephoneUser = req.body.hasOwnProperty('telephone')
+		? +req.body.telephone
+		: null;
+	const mailUser = req.body.hasOwnProperty('mail') ? req.body.mail : null;
+	const passwordUser = req.body.hasOwnProperty('password')
+		? req.body.password
+		: null;
+	const birthdayUser = req.body.hasOwnProperty('birthday')
+		? req.body.birthday
+		: null;
 
 	// Verify the parameters
-	if (!firstnameUser || typeof firstnameUser !== 'string') {
+	if (!firstnameUser) {
 		context.res = {
 			status: 400,
 			body: 'firstname parameter is required and must be a string',
@@ -76,7 +85,7 @@ async function handlePost(context, req, pool) {
 		};
 		return;
 	}
-	if (!lastnameUser || typeof lastnameUser !== 'string') {
+	if (!lastnameUser) {
 		context.res = {
 			status: 400,
 			body: 'lastname parameter is required and must be a string',
@@ -86,7 +95,7 @@ async function handlePost(context, req, pool) {
 		};
 		return;
 	}
-	if (!mailUser || typeof mailUser !== 'string') {
+	if (!mailUser) {
 		context.res = {
 			status: 400,
 			body: 'mail parameter is required and must be a string',
@@ -96,7 +105,7 @@ async function handlePost(context, req, pool) {
 		};
 		return;
 	}
-	if (!passwordUser || typeof passwordUser !== 'string') {
+	if (!passwordUser) {
 		context.res = {
 			status: 400,
 			body: 'password parameter is required and must be a string',
@@ -108,12 +117,25 @@ async function handlePost(context, req, pool) {
 	}
 	if (
 		!birthdayUser ||
-		typeof birthdayUser !== 'string' ||
 		isNaN(Date.parse(birthdayUser.split('/').reverse().join('-')))
 	) {
 		context.res = {
 			status: 400,
 			body: 'birthday parameter is required, must be a string, and must be a valid date (format: DD/MM/YYYY)',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+	if (
+		telephoneUser &&
+		!Number.isInteger(telephoneUser) &&
+		telephoneUser.toString().length === 9
+	) {
+		context.res = {
+			status: 400,
+			body: 'telephone must be an integer',
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -132,7 +154,6 @@ async function handlePost(context, req, pool) {
 	const bioValue = bioUser === null ? 'DEFAULT' : `'${bioUser}'`;
 	const abilityValue = abilityUser === null ? 'DEFAULT' : `'${abilityUser}'`;
 
-	// Hash the user's password with the salt before storing it in the database.
 	const hashedPasswordUser = await hashPassword(passwordUser, saltUser);
 
 	const query = queries.userPost(
@@ -169,9 +190,9 @@ async function handlePost(context, req, pool) {
 	}
 }
 async function handleDelete(context, req, pool) {
-	const idUser = req.params.idUser;
+	const idUser = req.body.hasOwnProperty('idUser') ? +req.body.idUser : null;
 
-	if (!idUser || isNaN(idUser)) {
+	if (!idUser || !Number.isInteger(idUser)) {
 		context.res = {
 			status: 400,
 			body: 'idUser parameter is required and must be a number',
@@ -266,17 +287,25 @@ async function handleGet(context, req, pool) {
 }
 async function handlePut(context, req, pool) {
 	const idUser = req.params.idUser;
-	const firstnameUser = req.body && req.body.firstname;
-	const lastnameUser = req.body && req.body.lastname;
+	const firstnameUser = req.body.hasOwnProperty('firstname')
+		? req.body.firstname
+		: null;
+	const lastnameUser = req.body.hasOwnProperty('lastname')
+		? req.body.lastname
+		: null;
 	const avatarUser = req.body.hasOwnProperty('avatar') ? req.body.avatar : null;
 	const bioUser = req.body.hasOwnProperty('bio') ? req.body.bio : null;
 	const abilityUser =
 		req.body && req.body.ability ? parseInt(req.body.ability) : null;
 	const telephoneUser =
 		req.body && req.body.telephone ? parseInt(req.body.telephone) : null;
-	const mailUser = req.body && req.body.mail;
-	const passwordUser = req.body && req.body.password;
-	const birthdayUser = req.body && req.body.birthday;
+	const mailUser = req.body.hasOwnProperty('mail') ? req.body.mail : null;
+	const passwordUser = req.body.hasOwnProperty('password')
+		? req.body.password
+		: null;
+	const birthdayUser = req.body.hasOwnProperty('birthday')
+		? req.body.birthday
+		: null;
 
 	// Add validations for each field here
 

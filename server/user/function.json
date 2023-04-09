@@ -5,7 +5,7 @@
 			"type": "httpTrigger",
 			"direction": "in",
 			"name": "req",
-			"methods": ["get", "post", "delete", "put"],
+			"methods": ["get", "post", "delete"],
 			"route": "user/{mail?}/{password?}"
 		},
 		{

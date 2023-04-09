@@ -44,19 +44,9 @@ module.exports = async function (context, req) {
 
 async function handleGet(context, req, pool) {
 	// The GET handler code goes here
-	const labelCat = req.params.labelCat;
-
-	// Verify that labelCat is not null
-	if (!labelCat) {
-		context.res = {
-			status: 400,
-			body: 'label parameter is required',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
+	const labelCat = req.params.hasOwnProperty('labelCat')
+		? req.params.labelCat
+		: null;
 
 	const query = queries.categoryGetByLabel(labelCat);
 	const result = await pool.request().query(query);

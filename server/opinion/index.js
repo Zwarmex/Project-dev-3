@@ -58,36 +58,54 @@ module.exports = async function (context, req) {
 };
 
 async function handlePost(context, req, pool) {
-	const textOpi = req.body && req.body.name;
-	const idRec = parseInt(req.body && req.body.idRec);
-	const idUser = parseInt(req.body && req.body.idUser);
+	const textOpi = req.body.hasOwnProperty('textOpi') ? req.body.textOpi : null;
+	const idRec = req.body.hasOwnProperty('idRec') ? +req.body.idRec : null;
+	const idUser = req.body.hasOwnProperty('idUser') ? +req.body.idUser : null;
 
-	if (!textOpi || typeof textOpi !== 'string') {
+	if (!textOpi) {
 		context.res = {
 			status: 400,
-			body: { message: 'Invalid textOpi parameter' },
+			body: { message: 'textOpi parameter is required' },
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
 		};
 		return;
 	}
-
-	if (isNaN(idRec)) {
+	if (!idRec) {
 		context.res = {
 			status: 400,
-			body: { message: 'Invalid idRec parameter' },
+			body: { message: 'idRec parameter is required' },
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
 		};
 		return;
 	}
-
-	if (isNaN(idUser)) {
+	if (!idUser) {
 		context.res = {
 			status: 400,
-			body: { message: 'Invalid idUser parameter' },
+			body: { message: 'idUser parameter is required' },
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+	if (!Number.isInteger(idRec) || idRec <= 0) {
+		context.res = {
+			status: 400,
+			body: { message: 'idRec parameter must be positive integer' },
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+	if (!Number.isInteger(idUser) || idUser <= 0) {
+		context.res = {
+			status: 400,
+			body: { message: 'idUser parameter must be positive integer' },
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -114,30 +132,11 @@ async function handlePost(context, req, pool) {
 		  });
 }
 async function handleDelete(context, req, pool) {
-	const idRec = parseInt(req.params.idRec);
-	const idUser = parseInt(req.params.idUser);
+	const idRec = req.params.hasOwnProperty('idRec') ? +req.params.idRec : null;
+	const idUser = req.params.hasOwnProperty('idUser')
+		? +req.params.idUser
+		: null;
 
-	if (!idRec) {
-		context.res = {
-			status: 400,
-			body: 'idRec parameter missing',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
-	if (!idUser) {
-		context.res = {
-			status: 400,
-			body: 'idUser parameter missing',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
 	const query = queries.opnionDelete(idRec, idUser);
 	const result = await pool.request().query(query);
 
@@ -160,21 +159,50 @@ async function handleDelete(context, req, pool) {
 	}
 }
 async function handleGet(context, req, pool) {
-	const idUser = parseInt(req.params.idUser);
-	const topValue = req.query.top || 10;
-	const orderValue = req.query.order || 'idOpi';
-	const sortValue = req.query.sort || 'ASC';
+	const idUser = req.params.hasOwnProperty('idUser')
+		? +req.params.idUser
+		: null;
+	const topValue = req.query.hasOwnProperty('top') ? +req.query.top : 10;
+	const orderValue = req.query.hasOwnProperty('order')
+		? req.query.order.toUpperCase()
+		: 'IDUSER';
+	const sortValue = req.query.hasOwnProperty('sort')
+		? req.query.sort.toUpperCase()
+		: 'ASC';
+	const validOrderValues = ['IDOPI', 'TEXTOPI', 'IDREC', 'IDUSER'];
+	const validSortValues = ['ASC', 'DESC'];
 
-	if (isNaN(idUser) || idUser <= 0) {
+	if (!Number.isInteger(topValue) || topValue <= 0) {
 		context.res = {
 			status: 400,
-			body: { message: 'Invalid idUser parameter' },
+			body: 'topValue must be a positive integer.',
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
 		};
 		return;
 	}
+	if (!validOrderValues.includes(orderValue)) {
+		context.res = {
+			status: 400,
+			body: "orderValue must be either 'idCat' or 'labelCat'.",
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+	if (!validSortValues.includes(sortValue)) {
+		context.res = {
+			status: 400,
+			body: "sortValue must be either 'ASC' or 'DESC', case insensitive.",
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+
 	const query = queries.opinionGet(idUser, topValue, orderValue, sortValue);
 	const result = await pool.request().query(query);
 
@@ -198,25 +226,16 @@ async function handleGet(context, req, pool) {
 	};
 }
 async function handlePut(context, req, pool) {
-	const idRec = parseInt(req.params.idRec);
-	const idUser = parseInt(req.params.idUser);
-	const textOpi = req.body && req.body.textOpi;
+	const idRec = req.params.hasOwnProperty('idRec') ? +req.params.idRec : null;
+	const idUser = req.params.hasOwnProperty('idUser')
+		? +req.params.idUser
+		: null;
+	const textOpi = req.body.hasOwnProperty('textOpi') ? req.body.textOpi : null;
 
-	if (isNaN(idRec) || isNaN(idUser)) {
+	if (!textOpi) {
 		context.res = {
 			status: 400,
-			body: 'Both idRec and idUser parameters are required and must be numbers',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
-	if (!textOpi || typeof textOpi !== 'string') {
-		context.res = {
-			status: 400,
-			body: 'textOpi parameter is required and must be a string',
+			body: 'textOpi parameter is required',
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
