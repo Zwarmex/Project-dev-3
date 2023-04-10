@@ -153,6 +153,7 @@ const Navbar = ({ isConnected }) => {
                   }
                 >
                   <Button
+                    fullWidth="true"
                     key="home"
                     onClick={handleCloseNavMenu}
                     sx={{
@@ -172,6 +173,7 @@ const Navbar = ({ isConnected }) => {
                   }
                 >
                   <Button
+                    fullWidth="true"
                     key="marketplace"
                     onClick={handleCloseNavMenu}
                     sx={{
@@ -193,6 +195,7 @@ const Navbar = ({ isConnected }) => {
                       }
                     >
                       <Button
+                        fullWidth="true"
                         key="calendar"
                         onClick={handleCloseNavMenu}
                         sx={{
