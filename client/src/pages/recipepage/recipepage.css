@@ -1,0 +1,23 @@
+.recipe__title {
+	align-self: center;
+}
+.recipe__rating-container {
+	display: flex;
+	justify-content: right;
+	margin: 1%;
+	align-items: center;
+	/* background-color: black; */
+}
+.recipe__rating-stars {
+	background-color: var(--color-neutral);
+}
+.recipe__img {
+	max-width: 25vw;
+	height: auto;
+	margin: 1%;
+	border-radius: 20%;
+	border: 10px solid var(--color-primary);
+}
+.recipe__steps-container {
+	margin: 1% 0 0 1%;
+}

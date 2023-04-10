@@ -100,10 +100,26 @@ function recipeDelete(idRec, idUser) {
             WHERE idRec=${idRec} AND idUser=${idUser}`;
 }
 function recipeGetById(idRec) {
-	return `SELECT * FROM recipes where idRec=${idRec}`;
+	return `SELECT idRec,
+	labelRec,
+	stepsRec,
+	numberOfPersonsRec,
+	timeRec,
+	difficultyRec,
+	CONVERT(varchar(max), imgRec) as imgRec,
+	idCat,
+	idUser FROM recipes where idRec=${idRec}`;
 }
 function recipeGetByLabel(labelRec, topValue, orderValue, sortValue) {
-	return `SELECT TOP ${topValue} * FROM recipes WHERE labelRec LIKE '%${labelRec}%' ORDER BY ${orderValue} ${sortValue}`;
+	return `SELECT TOP ${topValue} idRec,
+	labelRec,
+	stepsRec,
+	numberOfPersonsRec,
+	timeRec,
+	difficultyRec,
+	CONVERT(varchar(max), imgRec) as imgRec,
+	idCat,
+	idUser FROM recipes WHERE labelRec LIKE '%${labelRec}%' ORDER BY ${orderValue} ${sortValue}`;
 }
 function recipePut(
 	idRec,
@@ -129,7 +145,15 @@ function recipePut(
     `;
 }
 function recipes(topValue, orderValue, sortValue) {
-	return `SELECT TOP ${topValue} * FROM recipes ORDER BY ${orderValue} ${sortValue}`;
+	return `SELECT TOP ${topValue} idRec,
+	labelRec,
+	stepsRec,
+	numberOfPersonsRec,
+	timeRec,
+	difficultyRec,
+	CONVERT(varchar(max), imgRec) as imgRec,
+	idCat,
+	idUser FROM recipes ORDER BY ${orderValue} ${sortValue}`;
 }
 function userPost(
 	firstnameUser,

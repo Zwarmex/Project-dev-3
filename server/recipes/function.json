@@ -6,7 +6,8 @@
 			"direction": "in",
 			"name": "req",
 			"methods": ["get"],
-			"route": "recipes"
+			"route": "recipes",
+			"webHookType": "genericJson"
 		},
 		{
 			"type": "http",

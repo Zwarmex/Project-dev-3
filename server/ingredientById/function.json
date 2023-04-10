@@ -6,7 +6,8 @@
 			"direction": "in",
 			"name": "req",
 			"methods": ["get", "post", "delete", "put"],
-			"route": "ingredient/id/{idIng:int?}"
+			"route": "ingredient/{idIng:int?}",
+			"webHookType": "genericJson"
 		},
 		{
 			"type": "http",

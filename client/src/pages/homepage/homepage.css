@@ -1,15 +1,15 @@
 .HomePage-Content {
-  margin: 10%;
-  color: black;
-  background-color: var(--color-background-text);
-  padding: 2%;
-  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.315);
+	margin: 10%;
+	color: black;
+	background-color: var(--color-background-text);
+	padding: 2%;
+	box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.315);
 }
 
-h1 {
-  margin-bottom: 2%;
+.HomePage-Services-Title {
+	margin-bottom: 2%;
 }
 
 .description-services {
-  padding: 2%;
+	padding: 2%;
 }

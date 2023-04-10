@@ -6,7 +6,8 @@
 			"direction": "in",
 			"name": "req",
 			"methods": ["get", "post", "delete"],
-			"route": "user/{mail?}/{password?}"
+			"route": "user/{mail?}/{password?}",
+			"webHookType": "genericJson"
 		},
 		{
 			"type": "http",

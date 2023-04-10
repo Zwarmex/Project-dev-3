@@ -6,7 +6,8 @@
 			"direction": "in",
 			"name": "req",
 			"methods": ["get", "post", "put", "delete"],
-			"route": "friend/{user?}/{idUser:int?}/{idFriend:int?}"
+			"route": "friend/{user?}/{idUser:int?}/{idFriend:int?}",
+			"webHookType": "genericJson"
 		},
 		{
 			"type": "http",

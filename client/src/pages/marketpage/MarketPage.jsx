@@ -4,67 +4,50 @@ import { LoadingSpinner, RecipeItem } from '../../components';
 import './marketpage.css';
 
 const MarketPage = () => {
-	const [items, setItems] = useState([]);
+	const [recipes, setRecipes] = useState([]);
+	const [categories, setCategories] = useState([]);
 
-	const fetchItems = async () => {
-		const headers = new Headers();
-		// headers.append('Content-Type', 'application/json');
-		// headers.append('Access-Control-Allow-Origin', '*');
-
-		const requestOptions = {
-			method: 'GET',
-			headers: headers,
-			cache: 'default',
-		};
+	const fetchCategories = async () => {
 		const data = await fetch(
-			'https://recipesappfunctions.azurewebsites.net/api/getRecipes',
-			requestOptions
+			'https://recipesappfunctions.azurewebsites.net/api/categories?top=10'
+		);
+		const categories = await data.json();
+		// console.log(categories);
+		setCategories(categories);
+	};
+
+	const fetchRecipes = async () => {
+		const data = await fetch(
+			'https://recipesappfunctions.azurewebsites.net/api/recipes?idCat=1&top=10'
 		);
 
-		const items = await data.json();
-		console.log(items);
-		setItems(items);
+		const recipes = await data.json();
+		// console.log(recipes);
+		setRecipes(recipes);
 	};
 
 	useEffect(() => {
-		fetchItems();
+		fetchCategories();
+		fetchRecipes();
 	}, []);
 
 	return (
 		<Container component='div' className='marketplace__container'>
 			<CssBaseline />
-			{items.length !== 0 ? (
+			{recipes.length !== 0 && categories.length !== 0 ? (
 				<Container disableGutters>
-					<h1>Category</h1>
-					<div className='recipe__marketplace-row'>
-						{items.map((item, index) => (
-							<RecipeItem key={index} item={item} />
-						))}
-					</div>
-					<h1>Category</h1>
-					<div className='recipe__marketplace-row'>
-						{items.map((item, index) => (
-							<RecipeItem key={index} item={item} />
-						))}
-					</div>
-					<h1>Category</h1>
-					<div className='recipe__marketplace-row'>
-						{items.map((item, index) => (
-							<RecipeItem key={index} item={item} />
-						))}
-					</div>
-					<h1>Category</h1>
-					<div className='recipe__marketplace-row'>
-						{items.map((item, index) => (
-							<RecipeItem key={index} item={item} />
-						))}
-					</div>
-					<h1>Category</h1>
-					<div className='recipe__marketplace-row'>
-						{items.map((item, index) => (
-							<RecipeItem key={index} item={item} />
-						))}
-					</div>
+					{categories.map((category, categoryIndex) => (
+						<>
+							<h1>{category.labelCat}</h1>
+							<div key={categoryIndex} className='recipe__marketplace-row'>
+								{recipes.map((recipe, recipeIndex) =>
+									recipe.idCat === category.idCat ? (
+										<RecipeItem key={recipeIndex} recipe={recipe} />
+									) : null
+								)}
+							</div>
+						</>
+					))}
 				</Container>
 			) : (
 				<div className='marketplace__no-recipe__container'>

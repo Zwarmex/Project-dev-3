@@ -1,8 +1,8 @@
 const sql = require('mssql');
 const config = require('../config.js');
 const queries = require('../queries.js');
-const hashPassword = require('./hashPassword.js');
-const bcrypt = require('bcrypt');
+const hashPassword = require('../hashPassword.js');
+const bcrypt = require('bcryptjs');
 
 module.exports = async function (context, req) {
 	context.log('Processing a request for recipe API.');
