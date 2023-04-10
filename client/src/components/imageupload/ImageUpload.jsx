@@ -9,7 +9,7 @@ const ImageUpload = ({ onImageUpload }) => {
 			const reader = new FileReader();
 			reader.onloadend = () => {
 				setImage(reader.result);
-				onImageUpload(reader.result);
+				onImageUpload(reader.result, file.size);
 			};
 			reader.readAsDataURL(file);
 		}

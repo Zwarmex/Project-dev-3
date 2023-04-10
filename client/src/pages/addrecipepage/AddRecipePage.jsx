@@ -1,5 +1,6 @@
 import './addrecipepage.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
@@ -15,9 +16,14 @@ import {
 	Select,
 	Rating,
 } from '@mui/material';
-import { ImageUpload } from '../../components';
+import { ImageUpload, UserContext } from '../../components';
 
 const AddRecipePage = () => {
+	const navigate = useNavigate();
+	const [imageSize, setImageSize] = useState(null);
+	const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
+	const maxImageSize = 1024 * 1024; // 1MB
+	const { idUser } = useContext(UserContext);
 	const [editorState, setEditorState] = useState(() =>
 		EditorState.createEmpty()
 	);
@@ -32,6 +38,11 @@ const AddRecipePage = () => {
 	const handleEditorChange = (state) => {
 		setEditorState(state);
 	};
+	const handleImageUpload = (base64, fileSize) => {
+		setBase64Image(base64);
+		setImageSize(fileSize);
+		setIsAddButtonDisabled(fileSize > maxImageSize);
+	};
 	const handleNumberOfPersonsChange = (event) => {
 		setNumberOfPersons(event.target.value);
 	};
@@ -45,18 +56,25 @@ const AddRecipePage = () => {
 		setSelectedCategoryId(event.target.value);
 	};
 	const handleAddRecipe = async () => {
+		if (
+			!title.trim() ||
+			editorState.getCurrentContent().getPlainText().trim() === ''
+		) {
+			isAddButtonDisabled(true);
+			return;
+		}
 		const rawContentState = convertToRaw(editorState.getCurrentContent());
-		console.log(JSON.stringify(rawContentState));
+		const stepsJsonString = JSON.stringify(rawContentState);
 		const recipeData = {
 			label: title,
-			steps: rawContentState,
+			steps: stepsJsonString,
 			numberOfPersons: numberOfPersons,
 			time: time,
 			difficulty: difficulty,
 			idCat: selectedCategoryId,
+			idUser: idUser,
 			img: base64Image,
 		};
-
 		const requestOptions = {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -70,7 +88,7 @@ const AddRecipePage = () => {
 			);
 
 			if (response.ok) {
-				console.log('Recipe added successfully');
+				navigate('/');
 				// TODO: handle success feedback or redirect to recipe page
 			} else {
 				console.error('Failed to add recipe');
@@ -81,6 +99,14 @@ const AddRecipePage = () => {
 			// TODO: handle error feedback
 		}
 	};
+
+	useEffect(() => {
+		setIsAddButtonDisabled(
+			!title.trim() ||
+				editorState.getCurrentContent().getPlainText().trim() === '' ||
+				imageSize > maxImageSize
+		);
+	}, [title, editorState, imageSize, maxImageSize]);
 
 	useEffect(() => {
 		const fetchCategories = async () => {
@@ -181,7 +207,12 @@ const AddRecipePage = () => {
 						))}
 					</Select>
 				</FormControl>
-				<ImageUpload onImageUpload={(base64) => setBase64Image(base64)} />
+				<ImageUpload onImageUpload={handleImageUpload} />
+				{imageSize > maxImageSize && (
+					<Typography color='error'>
+						The image size exceeds the 1MB limit. Please upload a smaller image.
+					</Typography>
+				)}
 				<div className='recipe__add-difficulty-container'>
 					<Typography component='legend'>Difficulté :</Typography>
 					<Rating
@@ -207,9 +238,16 @@ const AddRecipePage = () => {
 				variant='contained'
 				onClick={handleAddRecipe}
 				className='recipe__add-button'
-				sx={{ margin: '0 auto' }}>
+				sx={{ margin: '0 auto' }}
+				disabled={isAddButtonDisabled}>
 				Ajouter la recette
 			</Button>
+			{isAddButtonDisabled ? (
+				<Typography color='error' className='recipe__add-error'>
+					Il n'y a pas de titre ou de description. Ajoutez en une s'il vous
+					plait.
+				</Typography>
+			) : null}
 		</>
 	);
 };

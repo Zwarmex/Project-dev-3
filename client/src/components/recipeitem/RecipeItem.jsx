@@ -5,12 +5,20 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea, Container } from '@mui/material';
 import { NavLink } from 'react-router-dom';
+import defaultRecipeImage from '../../assets/images/defaultRecipeImage.jpg';
 
 const RecipeItem = ({ recipe }) => {
+	const handleImageError = (event) => {
+		event.target.src = defaultRecipeImage;
+		event.target.alt = 'Default image for recipe';
+	};
 	return (
-		<Container disableGutters>
+		<Container
+			disableGutters
+			className='recipe__item-container'
+			sx={{ maxWidth: '20%', width: 'fit-content' }}>
 			<Card
-				className='recipe__item-container'
+				className='recipe__item-card'
 				key={recipe.idRec}
 				sx={{
 					minWidth: '20%',
@@ -23,16 +31,17 @@ const RecipeItem = ({ recipe }) => {
 					}}>
 					<CardActionArea
 						sx={{ width: '100%', borderRadius: '5%' }}
-						className='recipe__item-card'>
+						className='recipe__item-card__action-area'>
 						<CardMedia
-							className='recipe__item-img'
+							className='recipe__item-car__action-media'
 							component='img'
 							width='100'
 							height='150'
-							image={recipe.imgRec}
-							alt={recipe.labelRec}
+							image={recipe.imgRec || defaultRecipeImage}
+							alt={recipe.labelRec || 'Default image for recipe'}
+							onError={handleImageError}
 						/>
-						<CardContent className='recipe__item-content'>
+						<CardContent className='recipe__item-car__action-content'>
 							<Typography variant='h6' component='div' align='justify'>
 								{recipe.labelRec}
 							</Typography>

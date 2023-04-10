@@ -6,3 +6,4 @@ export { default as CalendarPage } from './calendarpage/CalendarPage';
 export { default as ResetPasswordPage } from './resetpasswordpage/ResetPasswordPage';
 export { default as RecipePage } from './recipepage/RecipePage';
 export { default as AddRecipePage } from './addrecipepage/AddRecipePage';
+export { default as UserRecipesPage } from './userrecipespage/UserRecipesPage';

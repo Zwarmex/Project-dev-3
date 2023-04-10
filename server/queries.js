@@ -93,7 +93,7 @@ function recipePost(
 	idUser
 ) {
 	return `INSERT INTO recipes (labelRec, stepsRec, numberOfPersonsRec, timeRec, difficultyRec, imgRec, idCat, idUser)
-            VALUES ('${labelRec}', '${stepsRec}', ${numberOfPersonsRec}, ${timeRec}, ${difficultyRec}, ${imgRec}, ${idCat}, ${idUser})`;
+            VALUES ('${labelRec}', '${stepsRec}', ${numberOfPersonsRec}, ${timeRec}, ${difficultyRec}, CONVERT(varbinary(max), ${imgRec}), ${idCat}, ${idUser})`;
 }
 function recipeDelete(idRec, idUser) {
 	return `DELETE TOP(1) FROM recipes
@@ -227,6 +227,17 @@ function userPutPassword(idUser, passwordUser) {
 		WHERE idUser = ${idUser};
 	`;
 }
+function userRecipesGet(idUser, topValue, orderValue, sortValue) {
+	return `SELECT idRec,
+	labelRec,
+	stepsRec,
+	numberOfPersonsRec,
+	timeRec,
+	difficultyRec,
+	CONVERT(varchar(max), imgRec) as imgRec,
+	idCat,
+	idUser FROM recipes where idUser=${idUser}`;
+}
 
 module.exports = {
 	categories: categories,
@@ -261,4 +272,5 @@ module.exports = {
 	userGet: userGet,
 	userPut: userPut,
 	userPutPassword: userPutPassword,
+	userRecipesGet: userRecipesGet,
 };

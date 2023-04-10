@@ -21,3 +21,7 @@
 .recipe__add-button {
 	margin: 0 auto;
 }
+.recipe__add-error {
+	align-self: center;
+	background-color: var(--color-background-text);
+}

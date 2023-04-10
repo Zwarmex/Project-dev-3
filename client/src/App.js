@@ -9,6 +9,7 @@ import {
 	ResetPasswordPage,
 	RecipePage,
 	AddRecipePage,
+	UserRecipesPage,
 } from './pages';
 import './App.css';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
@@ -25,8 +26,9 @@ const App = () => {
 					<Route path='/login' element={<LoginPage />} />
 					<Route path='/calendar' element={<CalendarPage />} />
 					<Route path='/reset_password' element={<ResetPasswordPage />} />
-					<Route path='/recipe/:id' element={<RecipePage />} />
+					<Route path='/recipe/:idRec' element={<RecipePage />} />
 					<Route path='/recipe_add' element={<AddRecipePage />} />
+					<Route path='/user_recipes' element={<UserRecipesPage />} />
 				</Routes>
 			</BrowserRouter>
 		</div>

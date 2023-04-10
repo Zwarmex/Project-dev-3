@@ -31,7 +31,6 @@ module.exports = async function (context, req) {
 				};
 		}
 	} catch (err) {
-		console.log(err);
 		context.res = {
 			status: 500,
 			body: `API Failed : ${err}`,

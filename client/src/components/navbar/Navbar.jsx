@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import './navbar.css';
 import UserContext from '../usercontext/UserContext';
 import { DarkTheme } from '../../assets/styles/';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
 	Menu as MenuIcon,
 	LoginRounded,
@@ -25,6 +25,7 @@ import {
 } from '@mui/material';
 
 const Navbar = () => {
+	const navigate = useNavigate();
 	const { idUser, logout } = useContext(UserContext);
 	const [anchorElNav, setAnchorElNav] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -168,7 +169,7 @@ const Navbar = () => {
 											display: 'block',
 											'&:hover': { color: 'var(--color-primary)' },
 										}}>
-										<Typography component='p'>home</Typography>
+										<Typography component='p'>Accueil</Typography>
 									</Button>
 								</NavLink>
 								<NavLink
@@ -286,8 +287,15 @@ const Navbar = () => {
 											<MenuItem
 												onClick={() => {
 													logout();
+													navigate('/');
 												}}>
-												Logout
+												Déconnection
+											</MenuItem>
+											<MenuItem
+												onClick={() => {
+													navigate('/user_recipes');
+												}}>
+												Mes recettes
 											</MenuItem>
 										</Menu>
 									</>

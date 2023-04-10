@@ -1,0 +1,14 @@
+.user__recipes-title {
+	text-decoration: underline;
+	font-weight: bold;
+	place-self: center;
+}
+.user__recipes-container {
+	margin: 0 2% 1% 2%;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 2%;
+	overflow-y: auto;
+	border: var(--color-negative) solid 2px;
+	box-shadow: 5px 5px 5px 5px var(--color-negative);
+}

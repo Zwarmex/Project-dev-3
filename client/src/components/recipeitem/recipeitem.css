@@ -1,26 +1,25 @@
 .recipe__item-container {
-	/* margin-bottom: 2%; */
-	padding: 1%;
 }
-
 .recipe__item-card {
-	margin-top: 2%;
-	margin-bottom: 2%;
+	/* margin-bottom: 2%; */
+	padding: 5%;
 	height: 100%;
-	cursor: pointer;
-	max-width: 20%;
-	border-radius: 15%;
 }
 
-.recipe__item-card:hover {
+.recipe__item-card__action-area {
+	height: 100%;
+	max-width: 15vw;
+}
+
+.recipe__item-card__action-area:hover {
 	box-shadow: 1px 1px 1px 2px black;
 }
 
-.recipe__item-img {
+.recipe__item-car__action-media {
 	border-radius: 5% 5% 0% 0%;
 }
 
-.recipe__item-content {
+.recipe__item-car__action-content {
 	white-space: break-spaces;
 	padding: 10%;
 	min-width: 10em;

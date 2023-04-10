@@ -147,7 +147,6 @@ async function handlePost(context, req, pool) {
 	)
 		.toISOString()
 		.slice(0, 10);
-	// console.log(parsedBirthdayUser);
 	const saltRounds = 10; // Recommended value for most use cases.
 	const saltUser = await bcrypt.genSalt(saltRounds);
 	const avatarValue = avatarUser === null ? null : `'${avatarUser}'`;

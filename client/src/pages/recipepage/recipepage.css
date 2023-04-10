@@ -18,6 +18,14 @@
 	border-radius: 20%;
 	border: 10px solid var(--color-primary);
 }
-.recipe__steps-container {
-	margin: 1% 0 0 1%;
+.recipe__category-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: left;
+}
+
+.recipe__steps-editor {
+	margin: 0 1% 0 1%;
+	border-radius: 10px;
+	background: white;
 }

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { RecipeItem, UserContext, Wheel } from '../../components';
-const WheelPage = () => {
+import { RecipeItem, UserContext } from '../../components';
+import './userrecipespage.css';
+const UserRecipesPage = () => {
 	const { idUser } = useContext(UserContext);
 	const [recipes, setRecipes] = useState([]);
 	const fetchRecipes = async () => {
@@ -22,11 +23,18 @@ const WheelPage = () => {
 	}, []);
 	return (
 		<>
-			<div className='wheel-container'>
-				<Wheel recipes={recipes} />
+			<h1 className='user__recipes-title'>Vos recettes :</h1>
+			<div className='user__recipes-container'>
+				{recipes.map((recipe, recipeIndex) => {
+					return (
+						<div key={recipeIndex} className='user__recipes-item'>
+							<RecipeItem recipe={recipe} />
+						</div>
+					);
+				})}
 			</div>
 		</>
 	);
 };
 
-export default WheelPage;
+export default UserRecipesPage;

@@ -12,7 +12,6 @@ const MarketPage = () => {
 			'https://recipesappfunctions.azurewebsites.net/api/categories?top=10'
 		);
 		const categories = await data.json();
-		// console.log(categories);
 		setCategories(categories);
 	};
 
@@ -22,7 +21,6 @@ const MarketPage = () => {
 		);
 
 		const recipes = await data.json();
-		// console.log(recipes);
 		setRecipes(recipes);
 	};
 

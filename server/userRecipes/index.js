@@ -14,9 +14,13 @@ module.exports = async function (context, req) {
 			context.res = {
 				status: 500,
 				body: 'Database configuration is missing or incomplete',
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
 			};
 			return;
 		}
+
 		const pool = await sql.connect(config);
 
 		switch (req.method) {
@@ -25,9 +29,13 @@ module.exports = async function (context, req) {
 				break;
 			default:
 				context.res = {
-					status: 400,
-					body: 'Invalid request method',
+					status: 405,
+					body: 'Method not allowed',
+					headers: {
+						'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+					},
 				};
+				break;
 		}
 	} catch (err) {
 		context.res = {
@@ -41,14 +49,27 @@ module.exports = async function (context, req) {
 };
 
 async function handleGet(context, req, pool) {
+	const idUser = req.params.hasOwnProperty('idUser')
+		? +req.params.idUser
+		: null;
 	const topValue = req.query.hasOwnProperty('top') ? +req.query.top : 10;
 	const orderValue = req.query.hasOwnProperty('order')
 		? req.query.order.toUpperCase()
-		: 'IDCAT';
+		: 'IDREC';
 	const sortValue = req.query.hasOwnProperty('sort')
 		? req.query.sort.toUpperCase()
 		: 'ASC';
-	const validOrderValues = ['IDCAT', 'LABELCAT'];
+	const validOrderValues = [
+		'IDREC',
+		'LABELREC',
+		'STEPSREC',
+		'NUMBEROFPERSONSREC',
+		'TIMREC',
+		'DIFFICULTYREC',
+		'IMGREC',
+		'IDCAT',
+		'IDUSER',
+	];
 	const validSortValues = ['ASC', 'DESC'];
 
 	if (!Number.isInteger(topValue) || topValue <= 0) {
@@ -64,7 +85,7 @@ async function handleGet(context, req, pool) {
 	if (!validOrderValues.includes(orderValue)) {
 		context.res = {
 			status: 400,
-			body: "orderValue must be either 'idCat' or 'labelCat', case insensitive.",
+			body: "orderValue must be either 'idCat' or 'labelCat'.",
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -82,15 +103,14 @@ async function handleGet(context, req, pool) {
 		return;
 	}
 
-	// Execute SQL query
-	const query = queries.categories(topValue, orderValue, sortValue);
+	const query = queries.userRecipesGet(idUser);
 	const result = await pool.request().query(query);
 
-	// Verify that the query was successful
+	// Verify that result is not null and contains at least one record
 	if (!result.recordset || result.recordset.length === 0) {
 		context.res = {
 			status: 404,
-			body: 'No records found',
+			body: `The user ${idUser} has no recipes`,
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},

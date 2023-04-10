@@ -36,14 +36,13 @@ const LoginPage = () => {
 		// Validate the email before proceeding
 		if (!validateEmail(email)) {
 			setError('Invalid email');
-			console.log('error');
 			return;
 		}
 
 		// Perform the login process, for example, by making an API call
 		try {
 			const response = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/user/${email}/${password}`,
+				`https://recipesappfunctions.azurewebsites.net/api/user/account/${email}/${password}`,
 				{
 					method: 'get',
 					headers: {

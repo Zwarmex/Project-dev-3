@@ -3,49 +3,57 @@ const config = require('../config.js');
 const queries = require('../queries.js');
 
 module.exports = async function (context, req) {
-	context.log('Processing a request for recipe API.');
-
-	if (
-		!config ||
-		!config.server ||
-		!config.database ||
-		!config.user ||
-		!config.password
-	) {
-		context.res = {
-			status: 500,
-			body: 'Database configuration is missing or incomplete',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
-	const pool = await sql.connect(config);
-
-	switch (req.method) {
-		case 'GET':
-			await handleGet(context, req, pool);
-			break;
-		case 'POST':
-			await handlePost(context, req, pool);
-			break;
-		case 'DELETE':
-			await handleDelete(context, req, pool);
-			break;
-		case 'PUT':
-			await handlePut(context, req, pool);
-			break;
-		default:
+	try {
+		if (
+			!config ||
+			!config.server ||
+			!config.database ||
+			!config.user ||
+			!config.password
+		) {
 			context.res = {
-				status: 405,
-				body: 'Method not allowed',
+				status: 500,
+				body: 'Database configuration is missing or incomplete',
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
 			};
-			break;
+			return;
+		}
+
+		const pool = await sql.connect(config);
+
+		switch (req.method) {
+			case 'GET':
+				await handleGet(context, req, pool);
+				break;
+			case 'POST':
+				await handlePost(context, req, pool);
+				break;
+			case 'DELETE':
+				await handleDelete(context, req, pool);
+				break;
+			case 'PUT':
+				await handlePut(context, req, pool);
+				break;
+			default:
+				context.res = {
+					status: 405,
+					body: 'Method not allowed',
+					headers: {
+						'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+					},
+				};
+				break;
+		}
+	} catch (err) {
+		context.res = {
+			status: 500,
+			body: `API Failed : ${err}`,
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
 	}
 };
 
@@ -59,7 +67,11 @@ async function handlePost(context, req, pool) {
 	const difficultyRec = req.body.hasOwnProperty('difficulty')
 		? +req.body.difficulty
 		: null;
-	const imgRec = req.body.hasOwnProperty('img') ? `'${req.body.img}'` : null;
+	const imgRec = req.body.hasOwnProperty('img')
+		? req.body.img !== null
+			? `'${req.body.img}'`
+			: null
+		: null;
 	const idCat = req.body.hasOwnProperty('idCat') ? +req.body.idCat : null;
 	const idUser = req.body.hasOwnProperty('idUser') ? +req.body.idUser : null;
 
@@ -144,7 +156,6 @@ async function handlePost(context, req, pool) {
 		idCat,
 		idUser
 	);
-	console.log(query);
 	const result = await pool.request().query(query);
 
 	result.recordsets.length > 0
