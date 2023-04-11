@@ -10,13 +10,14 @@ import {
 	RecipePage,
 	AddRecipePage,
 	UserRecipesPage,
+	UserSettingsPage,
 } from './pages';
 import './App.css';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 
 const App = () => {
 	return (
-		<div className='App'>
+		<div className='App' id='scrollbar2'>
 			<BrowserRouter>
 				<Navbar />
 				<Routes>
@@ -29,6 +30,7 @@ const App = () => {
 					<Route path='/recipe/:idRec' element={<RecipePage />} />
 					<Route path='/recipe_add' element={<AddRecipePage />} />
 					<Route path='/user_recipes' element={<UserRecipesPage />} />
+					<Route path='/settings' element={<UserSettingsPage />} />
 				</Routes>
 			</BrowserRouter>
 		</div>

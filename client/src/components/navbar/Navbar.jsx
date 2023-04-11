@@ -286,16 +286,22 @@ const Navbar = () => {
 											}}>
 											<MenuItem
 												onClick={() => {
+													navigate('/user_recipes');
+												}}>
+												Mes recettes
+											</MenuItem>
+											<MenuItem
+												onClick={() => {
+													navigate('/settings');
+												}}>
+												Paramètres
+											</MenuItem>
+											<MenuItem
+												onClick={() => {
 													logout();
 													navigate('/');
 												}}>
 												Déconnection
-											</MenuItem>
-											<MenuItem
-												onClick={() => {
-													navigate('/user_recipes');
-												}}>
-												Mes recettes
 											</MenuItem>
 										</Menu>
 									</>

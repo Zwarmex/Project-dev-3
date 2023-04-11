@@ -16,24 +16,25 @@ import {
 	Select,
 	Rating,
 } from '@mui/material';
-import { ImageUpload, UserContext } from '../../components';
+import { ImageUpload, LoadingBars, UserContext } from '../../components';
 
 const AddRecipePage = () => {
 	const navigate = useNavigate();
-	const [imageSize, setImageSize] = useState(null);
-	const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
 	const maxImageSize = 1024 * 1024; // 1MB
 	const { idUser } = useContext(UserContext);
+	const [difficulty, setDifficulty] = useState(1);
+	const [numberOfPersons, setNumberOfPersons] = useState(2);
+	const [time, setTime] = useState(15);
+	const [title, setTitle] = useState('');
+	const [selectedCategoryId, setSelectedCategoryId] = useState('');
+	const [loading, setLoading] = useState(false);
+	const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
+	const [categories, setCategories] = useState([]);
+	const [base64Image, setBase64Image] = useState(null);
+	const [imageSize, setImageSize] = useState(null);
 	const [editorState, setEditorState] = useState(() =>
 		EditorState.createEmpty()
 	);
-	const [title, setTitle] = useState('');
-	const [numberOfPersons, setNumberOfPersons] = useState(2);
-	const [time, setTime] = useState(15);
-	const [difficulty, setDifficulty] = useState(1);
-	const [categories, setCategories] = useState([]);
-	const [selectedCategoryId, setSelectedCategoryId] = useState('');
-	const [base64Image, setBase64Image] = useState(null);
 
 	const handleEditorChange = (state) => {
 		setEditorState(state);
@@ -80,7 +81,7 @@ const AddRecipePage = () => {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(recipeData),
 		};
-
+		setLoading(true);
 		try {
 			const response = await fetch(
 				'https://recipesappfunctions.azurewebsites.net/api/recipe',
@@ -89,14 +90,13 @@ const AddRecipePage = () => {
 
 			if (response.ok) {
 				navigate('/');
-				// TODO: handle success feedback or redirect to recipe page
 			} else {
-				console.error('Failed to add recipe');
-				// TODO: handle error feedback
+				console.error("L'ajout de recette a échoué");
 			}
-		} catch (error) {
-			console.error('Failed to add recipe', error);
-			// TODO: handle error feedback
+		} catch {
+			console.error("L'ajout de recette a échoué");
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -240,7 +240,7 @@ const AddRecipePage = () => {
 				className='recipe__add-button'
 				sx={{ margin: '0 auto' }}
 				disabled={isAddButtonDisabled}>
-				Ajouter la recette
+				{loading ? <LoadingBars /> : 'Ajouter la recette'}
 			</Button>
 			{isAddButtonDisabled ? (
 				<Typography color='error' className='recipe__add-error'>

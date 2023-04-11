@@ -195,40 +195,51 @@ function userGet(mailUser) {
 	return `SELECT * FROM users WHERE mailUser = '${mailUser}'`;
 }
 function userPut(
-	idUser,
-	firstnameUser,
-	lastnameUser,
-	avatarUser,
-	bioUser,
-	abilityUser,
-	telephoneUser,
-	mailUser,
-	birthdayUser
+	idUser = null,
+	firstnameUser = null,
+	lastnameUser = null,
+	avatarUser = null,
+	bioUser = null,
+	abilityUser = null,
+	telephoneUser = null,
+	mailUser = null,
+	birthdayUser = null
 ) {
 	return `
-		UPDATE users
-		SET
-			firstname='${firstnameUser}',
-			lastname='${lastnameUser}',
-			avatar=${avatarUser},
-			bio=${bioUser},
-			ability=${abilityUser},
-			telephone=${telephoneUser},
-			mail='${mailUser}',
-			birthday='${birthdayUser}'
-		WHERE idUser=${idUser};
-	`;
+        UPDATE users
+        SET
+            ${firstnameUser !== null ? `firstname='${firstnameUser}',` : ''}
+            ${lastnameUser !== null ? `lastname='${lastnameUser}',` : ''}
+            ${avatarUser !== null ? `avatar=${avatarUser},` : ''}
+            ${bioUser !== null ? `bio=${bioUser},` : ''}
+            ${abilityUser !== null ? `ability=${abilityUser},` : ''}
+            ${telephoneUser !== null ? `telephone=${telephoneUser},` : ''}
+            ${mailUser !== null ? `mail='${mailUser}'` : ''}
+            ${birthdayUser !== null ? `birthday='${birthdayUser}'` : ''}
+        WHERE idUser=${idUser}
+        AND (
+            ${firstnameUser !== null ? `1=1` : '0=1'} OR
+            ${lastnameUser !== null ? `1=1` : '0=1'} OR
+            ${avatarUser !== null ? `1=1` : '0=1'} OR
+            ${bioUser !== null ? `1=1` : '0=1'} OR
+            ${abilityUser !== null ? `1=1` : '0=1'} OR
+            ${telephoneUser !== null ? `1=1` : '0=1'} OR
+            ${mailUser !== null ? `1=1` : '0=1'} OR
+            ${birthdayUser !== null ? `1=1` : '0=1'}
+        );
+    `.replace(/,\s+$/, '');
 }
-function userPutPassword(idUser, passwordUser) {
+function userPutPassword(idUser = null, passwordUser = null, saltUser = null) {
 	return `
-		UPDATE users
-		SET
-			password = '${passwordUser}',
-		WHERE idUser = ${idUser};
-	`;
+        UPDATE users
+        SET
+            passwordUser='${passwordUser}',
+			saltUser='${saltUser}'
+        WHERE idUser=${idUser};`;
 }
 function userRecipesGet(idUser, topValue, orderValue, sortValue) {
-	return `SELECT idRec,
+	return `SELECT TOP ${topValue} 
+	idRec,
 	labelRec,
 	stepsRec,
 	numberOfPersonsRec,
@@ -236,7 +247,10 @@ function userRecipesGet(idUser, topValue, orderValue, sortValue) {
 	difficultyRec,
 	CONVERT(varchar(max), imgRec) as imgRec,
 	idCat,
-	idUser FROM recipes where idUser=${idUser}`;
+	idUser 
+	FROM recipes 
+	WHERE idUser=${idUser}
+	ORDER BY ${orderValue} ${sortValue}`;
 }
 
 module.exports = {

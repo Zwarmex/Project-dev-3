@@ -12,3 +12,9 @@
 	border: var(--color-negative) solid 2px;
 	box-shadow: 5px 5px 5px 5px var(--color-negative);
 }
+.user__recipes-empty-message {
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	margin-top: 5%;
+}

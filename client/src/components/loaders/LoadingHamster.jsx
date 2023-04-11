@@ -1,13 +1,13 @@
 import React from 'react';
-import './loadingspinner.css';
+import './loadinghamster.css';
 
-const LoadingSpinner = () => {
+const LoadingHamster = () => {
 	return (
 		<div
 			aria-label='Orange and tan hamster running in a metal wheel'
 			role='img'
 			className='wheel-and-hamster'>
-			<div className='wheel'></div>
+			<div className='wheel-hamster'></div>
 			<div className='hamster'>
 				<div className='hamster__body'>
 					<div className='hamster__head'>
@@ -27,4 +27,4 @@ const LoadingSpinner = () => {
 	);
 };
 
-export default LoadingSpinner;
+export default LoadingHamster;

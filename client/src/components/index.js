@@ -1,5 +1,6 @@
 export { default as Navbar } from './navbar/Navbar';
-export { default as LoadingSpinner } from './loadingspinner/LoadingSpinner';
+export { default as LoadingHamster } from './loaders/LoadingHamster';
+export { default as LoadingBars } from './loaders/LoadingBars';
 export { default as RecipeItem } from './recipeitem/RecipeItem';
 export { default as ImageUpload } from './imageupload/ImageUpload';
 export { default as UserProvider } from './userprovider/UserProvider';

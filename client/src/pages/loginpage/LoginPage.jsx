@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import './loginpage.css';
-import { UserContext } from '../../components';
+import { UserContext, LoadingBars } from '../../components';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
@@ -14,35 +14,89 @@ import {
 	Box,
 	Button,
 	Typography,
+	TextField,
 } from '@mui/material';
 
 const LoginPage = () => {
 	const navigate = useNavigate();
 	const { setIdUser } = useContext(UserContext);
 	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
-	const [showPassword, setShowPassword] = useState(false);
-	const [error, setError] = useState('');
-	const [name, setName] = useState('');
+	const [loginPassword, setLoginPassword] = useState('');
+	const [registerPassword, setRegisterPassword] = useState('');
+	const [errorMessage, setErrorMessage] = useState('');
+	const [firstName, setFirstName] = useState('');
+	const [lastName, setLastName] = useState('');
+	const [birthday, setBirthday] = useState('');
 	const [register, setRegister] = useState(0);
+	const [showLoginPassword, setShowLoginPassword] = useState(false);
+	const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+	const [emailError, setEmailError] = useState(false);
+	const [loginPasswordError, setLoginPasswordError] = useState(false);
+	const [registerPasswordError, setRegisterPasswordError] = useState(false);
+	const [firstNameError, setFirstNameError] = useState(false);
+	const [lastNameError, setLastNameError] = useState(false);
+	const [birthdayError, setBirthdayError] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const today = new Date();
+	const maxDate = new Date(
+		today.getFullYear() - 3,
+		today.getMonth(),
+		today.getDate()
+	);
+	const minDate = new Date(
+		today.getFullYear() - 150,
+		today.getMonth(),
+		today.getDate()
+	);
 
-	const handleClickShowPassword = () => {
-		setShowPassword((show) => !show);
+	const handleChangingLoginOrRegister = (isRegister) => {
+		setRegister(isRegister);
+		setErrorMessage('');
+		setEmailError(false);
+		setFirstNameError(false);
+		setLastNameError(false);
+		setLoginPasswordError(false);
+		setRegisterPasswordError(false);
+	};
+
+	const handleClickShowLoginPassword = () => {
+		setShowLoginPassword((show) => !show);
 	};
 	const handleMouseDownPassword = (event) => {
 		event.preventDefault();
 	};
+	const handleClickShowRegisterPassword = () => {
+		setShowRegisterPassword((show) => !show);
+	};
 	const handleLogin = async () => {
-		// Validate the email before proceeding
+		let errors = false;
+		let errorMessageLogin = '';
+		setErrorMessage(errorMessageLogin);
+
 		if (!validateEmail(email)) {
-			setError('Invalid email');
-			return;
+			errorMessageLogin += '-Email invalide.\n';
+			setEmailError(true);
+			errors = true;
+		} else {
+			setEmailError(false);
 		}
 
-		// Perform the login process, for example, by making an API call
+		if (loginPassword === '') {
+			setLoginPasswordError(true);
+			errors = true;
+			errorMessageLogin += '-Il manque le mot de passe.\n';
+		} else {
+			setLoginPasswordError(false);
+		}
+
+		if (errors) {
+			setErrorMessage(errorMessageLogin);
+			return;
+		}
+		setLoading(true);
 		try {
 			const response = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/user/account/${email}/${password}`,
+				`https://recipesappfunctions.azurewebsites.net/api/user/account/${email}/${loginPassword}`,
 				{
 					method: 'get',
 					headers: {
@@ -52,24 +106,125 @@ const LoginPage = () => {
 			);
 
 			if (!response.ok) {
-				setError('Login failed');
+				setErrorMessage('Connection échouée');
 			}
 
 			const data = await response.json();
 
-			// Set the idUser in the context and store it in localStorage
 			setIdUser(data.idUser);
 			localStorage.setItem('idUser', data.idUser);
 			navigate('/');
 		} catch (error) {
-			console.error('Login error:', error.message);
+			setErrorMessage('Connection échouée');
+		} finally {
+			setLoading(false);
 		}
 	};
+	const handleRegister = async () => {
+		let errors = false;
+		let errorMessageRegister = '';
+		setErrorMessage(errorMessageRegister);
+		if (!validateEmail(email)) {
+			setEmailError(true);
+			errors = true;
+			errorMessageRegister += '- Email invalide\n';
+		} else {
+			setEmailError(false);
+		}
 
-	const handleRegister = async () => {};
+		if (firstName === '') {
+			setFirstNameError(true);
+			errors = true;
+			errorMessageRegister += '- Prénom invalide.\n';
+		} else {
+			setFirstNameError(false);
+		}
+
+		if (lastName === '') {
+			setLastNameError(true);
+			errors = true;
+			errorMessageRegister += '- Nom de famille invalide.\n';
+		} else {
+			setLastNameError(false);
+		}
+
+		if (!validatePassword(loginPassword)) {
+			setRegisterPasswordError(true);
+			setLoginPasswordError(true);
+			errors = true;
+			errorMessageRegister +=
+				'- Le mot de passe doit avoir 8 caractère minimum.\n';
+		} else {
+			setRegisterPasswordError(false);
+			setLoginPasswordError(false);
+			if (loginPassword !== registerPassword) {
+				errors = true;
+				errorMessageRegister += '- Les mots de passe ne sont pas identiques.\n';
+				setRegisterPasswordError(true);
+			}
+		}
+		if (!validateBirthday(birthday)) {
+			setBirthdayError(true);
+			errors = true;
+			errorMessageRegister += '- Date de naissance invalide.\n';
+		} else {
+			setBirthdayError(false);
+		}
+
+		if (errors) {
+			setErrorMessage(errorMessageRegister);
+			return;
+		}
+		setLoading(true);
+		try {
+			// Replace the URL with the appropriate endpoint for user registration in your API
+			const response = await fetch(
+				`https://recipesappfunctions.azurewebsites.net/api/user/account`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						mail: email,
+						firstname: firstName,
+						lastname: lastName,
+						password: registerPassword,
+						birthday: birthday,
+					}),
+				}
+			);
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				if (response.status === 409) {
+					setErrorMessage("L 'utilisateur existe déjà");
+				} else {
+					// Display a more specific error message if available in the response
+					setErrorMessage(
+						errorData.message ? errorData.message : 'Inscription échouée'
+					);
+				}
+
+				return;
+			}
+			// If registration is successful, clear the form and display a success message
+			handleLogin();
+		} catch (error) {
+			setErrorMessage('Inscription échouée');
+		} finally {
+			setLoading(false);
+		}
+	};
 	const validateEmail = (email) => {
 		const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 		return emailRegex.test(email);
+	};
+	const validatePassword = (password) => {
+		return password.length >= 8;
+	};
+	const validateBirthday = (birthday) => {
+		return birthday;
 	};
 
 	return (
@@ -86,31 +241,66 @@ const LoginPage = () => {
 					autoComplete='on'>
 					<Container maxWidth='false'>
 						<Typography variant='h2'>
-							{register ? 'Sign up' : 'Sign in'}
+							{register ? 'Inscription' : 'Connection'}
 						</Typography>
 						<Typography variant='subtitle1' fontSize='medium'>
-							Stay in touch with food
+							Restez en lien avec la nourriture
 						</Typography>
 						<Typography variant='subtitle1' color='error'>
-							{error ? error : null}
+							<pre style={{ fontFamily: 'inherit' }}>
+								{errorMessage ? errorMessage : null}
+							</pre>
 						</Typography>
 					</Container>
 					{register ? (
-						<FormControl id='register__name'>
-							<InputLabel htmlFor='register__name'>
-								<Typography>Full Name</Typography>
-							</InputLabel>
-							<OutlinedInput
-								onChange={(input) => setName(input.target.value)}
-								id='register__name'
-								name='register__name'
-								type='text'
-								value={name}
-								label='Full Name'
+						<>
+							<FormControl id='register__first-name' error={firstNameError}>
+								<InputLabel htmlFor='register__first-name'>
+									<Typography>Prénom</Typography>
+								</InputLabel>
+								<OutlinedInput
+									onChange={(input) => setFirstName(input.target.value)}
+									id='register__first-name'
+									name='register__first-name'
+									type='text'
+									value={firstName}
+									label='Prénom'
+									required
+								/>
+							</FormControl>
+							<FormControl id='register__last-name' error={lastNameError}>
+								<InputLabel htmlFor='register__last-name'>
+									<Typography>Nom de famille</Typography>
+								</InputLabel>
+								<OutlinedInput
+									onChange={(input) => setLastName(input.target.value)}
+									id='register__last-name'
+									name='register__last-name'
+									type='text'
+									value={lastName}
+									label='Nom de famille'
+									required
+								/>
+							</FormControl>
+							<TextField
+								id='register__birthday'
+								label='Date de naissance'
+								type='date'
+								value={birthday}
+								onChange={(event) => setBirthday(event.target.value)}
+								InputLabelProps={{
+									shrink: true,
+								}}
+								sx={{ margin: 1 }}
+								error={birthdayError}
+								inputProps={{
+									min: minDate.toISOString().split('T')[0], // Convert minDate to 'YYYY-MM-DD' format
+									max: maxDate.toISOString().split('T')[0], // Convert maxDate to 'YYYY-MM-DD' format
+								}}
 							/>
-						</FormControl>
+						</>
 					) : null}
-					<FormControl id='login__email'>
+					<FormControl id='login__email' error={emailError}>
 						<InputLabel htmlFor='input__mail'>
 							<Typography>Email</Typography>
 						</InputLabel>
@@ -121,30 +311,31 @@ const LoginPage = () => {
 							type='email'
 							value={email}
 							label='Email'
+							required
 						/>
 					</FormControl>
-					<FormControl id='login__password'>
+					<FormControl id='login__password' error={loginPasswordError}>
 						<InputLabel htmlFor='input__password-login'>
-							<Typography>Password</Typography>
+							<Typography>Mot de passe</Typography>
 						</InputLabel>
 						<OutlinedInput
-							onChange={(input) => setPassword(input.target.value)}
+							onChange={(input) => setLoginPassword(input.target.value)}
 							id='input__password-login'
 							name='input__password-login'
-							type={showPassword ? 'text' : 'password'}
+							type={showLoginPassword ? 'text' : 'password'}
 							endAdornment={
 								<InputAdornment position='end'>
 									<IconButton
 										aria-label='toggle password visibility'
-										onClick={handleClickShowPassword}
+										onClick={handleClickShowLoginPassword}
 										onMouseDown={handleMouseDownPassword}
 										edge='end'>
-										{showPassword ? <Visibility /> : <VisibilityOff />}
+										{showLoginPassword ? <Visibility /> : <VisibilityOff />}
 									</IconButton>
 								</InputAdornment>
 							}
-							value={password}
-							label='Password'
+							value={loginPassword}
+							label='Mot de passe'
 							required
 						/>
 					</FormControl>
@@ -154,36 +345,69 @@ const LoginPage = () => {
 								variant='subtitle2'
 								align='right'
 								className='login__form-reset'>
-								<NavLink to='/reset_password'>Forgot your password ?</NavLink>
+								<NavLink to='/reset_password'>Mot de passe oublié ?</NavLink>
 							</Typography>
 						</Container>
-					) : null}
+					) : (
+						<FormControl
+							id='register__password-copy'
+							error={registerPasswordError}>
+							<InputLabel htmlFor='input__password-register'>
+								<Typography>Mot de passe</Typography>
+							</InputLabel>
+							<OutlinedInput
+								onChange={(input) => setRegisterPassword(input.target.value)}
+								id='input__password-register'
+								name='input__password-register'
+								type={showRegisterPassword ? 'text' : 'password'}
+								endAdornment={
+									<InputAdornment position='end'>
+										<IconButton
+											aria-label='toggle password visibility'
+											onClick={handleClickShowRegisterPassword}
+											onMouseDown={handleMouseDownPassword}
+											edge='end'>
+											{showRegisterPassword ? (
+												<Visibility />
+											) : (
+												<VisibilityOff />
+											)}
+										</IconButton>
+									</InputAdornment>
+								}
+								value={registerPassword}
+								label='Mot de passe'
+								required
+							/>
+						</FormControl>
+					)}
 					<Button
 						className='login__form-buttons'
 						type='reset'
-						onClick={register ? handleRegister : handleLogin} // Replace the empty function with handleLogin
+						onClick={register ? handleRegister : handleLogin}
 						color='warning'
-						variant='contained'>
-						{register ? 'CREATE YOUR ACCOUNT' : 'LOG IN'}
+						variant='contained'
+						disabled={loading}>
+						{!loading ? (register ? 'INSCRIPTION' : 'CONNECTION') : null}
+						{loading && <LoadingBars />}
 					</Button>
-
 					<Container
 						className='login__form-option'
 						sx={{ display: 'flex', justifyContent: 'space-between' }}>
 						<Typography variant='subtitle2' align='left'>
-							{register
-								? 'Already have an account ?'
-								: "Don't have an account yet ?"}
+							{register ? 'Déjà un compte ?' : 'Pas encore de compte ?'}
 						</Typography>
 						<Button
 							size='small'
 							variant='outlined'
 							color='warning'
 							onClick={
-								register ? () => setRegister(false) : () => setRegister(true)
+								register
+									? () => handleChangingLoginOrRegister(false)
+									: () => handleChangingLoginOrRegister(true)
 							}
 							className='login__form-buttons login__form-option__buttons'>
-							{register ? 'SIGN IN' : 'REGISTER NOW'}
+							{register ? 'CONNECTION' : 'INSCRIPTION'}
 						</Button>
 					</Container>
 				</Box>

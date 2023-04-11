@@ -10,7 +10,9 @@
 		"azure-functions-core-tools": "^4.0.5085",
 		"bcryptjs": "^2.4.3",
 		"dotenv": "^16.0.3",
-		"mssql": "^9.1.1",
+		"mssql": "^9.1.1"
+	},
+	"devDependencies": {
 		"nodemon": "^2.0.22"
 	}
 }

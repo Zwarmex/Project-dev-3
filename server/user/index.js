@@ -5,8 +5,6 @@ const hashPassword = require('../hashPassword.js');
 const bcrypt = require('bcryptjs');
 
 module.exports = async function (context, req) {
-	context.log('Processing a request for recipe API.');
-
 	if (
 		!config ||
 		!config.server ||
@@ -66,7 +64,7 @@ async function handlePost(context, req, pool) {
 	const telephoneUser = req.body.hasOwnProperty('telephone')
 		? +req.body.telephone
 		: null;
-	const mailUser = req.body.hasOwnProperty('mail') ? req.body.mail : null;
+	const mailUser = req.body.hasOwnProperty('email') ? req.body.email : null;
 	const passwordUser = req.body.hasOwnProperty('password')
 		? req.body.password
 		: null;
@@ -227,43 +225,14 @@ async function handleGet(context, req, pool) {
 	const mailUser = req.params.mail;
 	const passwordUser = req.params.password;
 
-	// Verify that mail is not null and is a string
-	if (!mailUser || typeof mailUser !== 'string') {
-		context.res = {
-			status: 400,
-			body: 'mail parameter is required and must be a string',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
-	// Verify that password is not null and is a string
-	if (!passwordUser || typeof passwordUser !== 'string') {
-		context.res = {
-			status: 400,
-			body: 'password parameter is required and must be a string',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
 	const queryByMail = queries.userGetPasswordAndSaltByMail(mailUser);
-	// Execute SQL query
 	const result = await pool.request().query(queryByMail);
 
 	if (result.recordset.length > 0) {
 		const storedSalt = result.recordset[0].saltUser;
 		const storedHashedPassword = result.recordset[0].passwordUser;
-
-		// Hash the provided password with the retrieved salt.
 		const hashedPassword = await hashPassword(passwordUser, storedSalt);
-		// Compare the computed hash with the stored hashed password.
 		if (hashedPassword === storedHashedPassword) {
-			// Password is correct, return user details (excluding the password and salt).
 			const queryUser = queries.userGet(mailUser);
 			const userDetails = await pool.request().query(queryUser);
 			context.res = {
@@ -285,7 +254,7 @@ async function handleGet(context, req, pool) {
 	};
 }
 async function handlePut(context, req, pool) {
-	const idUser = req.params.idUser;
+	const idUser = +req.params.idUser;
 	const firstnameUser = req.body.hasOwnProperty('firstname')
 		? req.body.firstname
 		: null;
@@ -306,9 +275,6 @@ async function handlePut(context, req, pool) {
 		? req.body.birthday
 		: null;
 
-	// Add validations for each field here
-
-	// Update the user information in the database using the provided idUser and other fields
 	const query = queries.userPut(
 		idUser,
 		firstnameUser,

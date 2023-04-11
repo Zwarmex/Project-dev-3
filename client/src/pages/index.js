@@ -7,3 +7,4 @@ export { default as ResetPasswordPage } from './resetpasswordpage/ResetPasswordP
 export { default as RecipePage } from './recipepage/RecipePage';
 export { default as AddRecipePage } from './addrecipepage/AddRecipePage';
 export { default as UserRecipesPage } from './userrecipespage/UserRecipesPage';
+export { default as UserSettingsPage } from './usersettingspage/UserSettingsPage';

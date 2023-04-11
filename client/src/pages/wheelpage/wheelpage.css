@@ -1,6 +1,37 @@
 .wheel-container {
-	display: flex;
-	justify-content: center;
+	position: relative;
+	border-radius: 50%;
+	width: 400px;
+	height: 400px;
+	margin: auto;
+	/* background-color: red; */
+}
+
+.wheel-items {
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	line-height: 20px;
+	text-align: center;
+	background-color: white;
+	border-radius: 50%;
+	top: 0%;
+	left: 0%;
+	transform-origin: 50% 25%;
+}
+
+.wheel__button-container {
+	margin: auto;
+	align-self: center;
+	width: 20%;
+}
+.wheel__button-start {
+	width: 100%;
+}
+
+.wheel__recipes-empty-message {
 	align-items: center;
-	height: 100vh;
+	justify-content: center;
+	display: flex;
+	margin-top: 5%;
 }

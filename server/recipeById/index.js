@@ -95,7 +95,11 @@ async function handlePost(context, req, pool) {
 		};
 		return;
 	}
-	if (!numberOfPersonsRec || numberOfPersonsRec < 0) {
+	if (
+		!numberOfPersonsRec ||
+		numberOfPersonsRec < 0 ||
+		!Number.isInteger(numberOfPersonsRec)
+	) {
 		context.res = {
 			status: 400,
 			body: `numberOfPersons parameter must be a positive integer`,
@@ -105,7 +109,7 @@ async function handlePost(context, req, pool) {
 		};
 		return;
 	}
-	if (!timeRec || timeRec < 0) {
+	if (!timeRec || !Number.isInteger(timeRec) || timeRec < 0) {
 		context.res = {
 			status: 400,
 			body: `time parameter must be a positive integer`,
@@ -115,7 +119,10 @@ async function handlePost(context, req, pool) {
 		};
 		return;
 	}
-	if (!(difficultyRec >= 1 && difficultyRec <= 5)) {
+	if (
+		!Number.isInteger(difficultyRec) ||
+		!(difficultyRec >= 1 && difficultyRec <= 5)
+	) {
 		context.res = {
 			status: 400,
 			body: `difficulty parameter must be a positive integer between 1 and 5`,
@@ -125,7 +132,7 @@ async function handlePost(context, req, pool) {
 		};
 		return;
 	}
-	if (!idCat || idCat < 0) {
+	if (!idCat || !Number.isInteger(idCat) || idCat < 0) {
 		context.res = {
 			status: 400,
 			body: `idCat parameter must be a positive integer`,
@@ -135,7 +142,7 @@ async function handlePost(context, req, pool) {
 		};
 		return;
 	}
-	if (!idUser || idUser < 0) {
+	if (!idUser || !Number.isInteger(idUser) || idUser < 0) {
 		context.res = {
 			status: 400,
 			body: `idUser parameter must be a positive integer`,

@@ -1,6 +1,6 @@
 import { Container, CssBaseline } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { LoadingSpinner, RecipeItem } from '../../components';
+import { LoadingHamster, RecipeItem } from '../../components';
 import './marketpage.css';
 
 const MarketPage = () => {
@@ -35,23 +35,23 @@ const MarketPage = () => {
 			{recipes.length !== 0 && categories.length !== 0 ? (
 				<Container disableGutters>
 					{categories.map((category, categoryIndex) => (
-						<>
+						<React.Fragment key={categoryIndex}>
 							<h1>{category.labelCat}</h1>
-							<div key={categoryIndex} className='recipe__marketplace-row'>
+							<div className='recipe__marketplace-row'>
 								{recipes.map((recipe, recipeIndex) =>
 									recipe.idCat === category.idCat ? (
 										<RecipeItem key={recipeIndex} recipe={recipe} />
 									) : null
 								)}
 							</div>
-						</>
+						</React.Fragment>
 					))}
 				</Container>
 			) : (
 				<div className='marketplace__no-recipe__container'>
 					<h1>NO RECIPES...</h1>
 					<div className='marketplace__no-recipe__loading-spinner__container'>
-						<LoadingSpinner />
+						<LoadingHamster />
 					</div>
 				</div>
 			)}
