@@ -146,7 +146,7 @@ const Navbar = () => {
                 variant="h5"
                 noWrap
                 component="a"
-                href=""
+                href="/"
                 sx={{
                   mr: 2,
                   display: { xs: "flex", md: "none" },
@@ -170,7 +170,7 @@ const Navbar = () => {
                 >
                   <Button
                     key="home"
-                    fullWidth="true"
+                    fullWidth
                     onClick={handleCloseNavMenu}
                     sx={{
                       my: 2,
@@ -190,7 +190,7 @@ const Navbar = () => {
                 >
                   <Button
                     key="marketplace"
-                    fullWidth="true"
+                    fullWidth
                     onClick={handleCloseNavMenu}
                     sx={{
                       my: 2,
@@ -234,7 +234,7 @@ const Navbar = () => {
                     >
                       <Button
                         key="wheel"
-                        fullWidth="true"
+                        fullWidth
                         onClick={handleCloseNavMenu}
                         sx={{
                           my: 2,
@@ -256,7 +256,7 @@ const Navbar = () => {
                     >
                       <Button
                         key="recipe_add"
-                        fullWidth="true"
+                        fullWidth
                         onClick={handleCloseNavMenu}
                         sx={{
                           my: 2,
