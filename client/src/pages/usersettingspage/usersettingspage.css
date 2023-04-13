@@ -14,10 +14,10 @@
 	font-weight: bold;
 	text-decoration: underline;
 }
-.settings__img-uploader {
+.settings__avatar-uploader {
 	margin: 1%;
 }
-.settings__img-container,
+.settings__avatar-container,
 .settings__password-container {
 	margin: 5% 5% 0;
 	width: 100%;

@@ -1,44 +1,42 @@
 .navbar-container {
-  display: flex;
-  align-items: center;
-  background-color: black;
-  color: white;
-  font-family: var(--font-family);
+	display: flex;
+	align-items: center;
+	background-color: black;
+	color: white;
+	font-family: var(--font-family);
 }
-
 .navbar-title {
-  flex: 1;
-  margin: 0.5rem;
-  font-size: xx-large;
+	flex: 1;
+	margin: 0.5rem;
+	font-size: xx-large;
 }
-
 .navbar-links {
-  flex: 2;
-  margin-right: 2rem;
-  cursor: pointer;
+	flex: 2;
+	margin-right: 2rem;
+	cursor: pointer;
 }
-
 .navbar-links__ul {
-  font-size: x-large;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  list-style: none;
+	font-size: x-large;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	list-style: none;
 }
-
 .navbar-links__li-img {
-  justify-content: center;
-  display: inherit;
-  max-width: 75%;
-  /* max-height: auto; */
+	justify-content: center;
+	display: inherit;
+	max-width: 75%;
 }
-
 .navbar-links__li {
-  justify-content: center;
-  display: inherit;
+	justify-content: center;
+	display: inherit;
 }
-
 .activeLink {
-  color: var(--color-primary);
-  text-decoration: underline;
+	color: var(--color-primary);
+	text-decoration: underline;
+}
+.navbar__avatarImageUser {
+	width: 100%;
+	height: auto;
+	object-fit: cover;
 }

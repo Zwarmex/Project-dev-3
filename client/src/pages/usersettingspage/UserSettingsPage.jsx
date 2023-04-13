@@ -10,26 +10,28 @@ import {
 	InputAdornment,
 	IconButton,
 	Button,
-	Container,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const UserSettingsPage = () => {
 	const maxImageSize = 1024 * 1024; // 1MB
-	const { idUser } = useContext(UserContext);
-	const [base64Image, setBase64Image] = useState(null);
-	const [imageSize, setImageSize] = useState(null);
+	const { idUser, setAvatarUser } = useContext(UserContext);
+	const [base64Avatar, setBase64Avatar] = useState(null);
+	// const [avatarSize, setAvatarSize] = useState(null);
 	const [newPassword1, setNewPassword1] = useState('');
 	const [newPassword2, setNewPassword2] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
+	const [errorStatus, setErrorStatus] = useState(false);
 	const [infoMessage, setInfoMessage] = useState('');
-	const [isImgAddButtonDisabled, setIsImgAddButtonDisabled] = useState(false);
+	const [infoStatus, setInfoStatus] = useState(false);
+	const [isAvatarAddButtonDisabled, setIsAvatarAddButtonDisabled] =
+		useState(false);
 	const [newPassword1Error, setNewPassword1Error] = useState(false);
 	const [newPassword2Error, setNewPassword2Error] = useState(false);
 	const [showNewPassword1, setShowNewPassword1] = useState(false);
 	const [showNewPassword2, setShowNewPassword2] = useState(false);
 	const [passwordLoading, setPasswordLoading] = useState(false);
-	const [imgLoading, setImgLoading] = useState(false);
+	const [avatarLoading, setAvatarLoading] = useState(false);
 
 	const handleClickShowNewPassword1 = () => {
 		setShowNewPassword1((show) => !show);
@@ -40,19 +42,30 @@ const UserSettingsPage = () => {
 	const handleMouseDownPassword = (event) => {
 		event.preventDefault();
 	};
-	const handleImageUpload = (base64, fileSize) => {
-		setBase64Image(base64);
-		setImageSize(fileSize);
-		setIsImgAddButtonDisabled(fileSize > maxImageSize);
+	const handleAvatarUpload = (base64, fileSize) => {
+		setBase64Avatar(base64);
+		// setAvatarSize(fileSize);
+		if (fileSize > maxImageSize) {
+			setIsAvatarAddButtonDisabled(true);
+			setErrorStatus(true);
+			setErrorMessage(
+				"La taille de l'image dépasse la limite de 1MB. Charger une image plus petite s'il vous plaît."
+			);
+		} else {
+			setIsAvatarAddButtonDisabled(false);
+			setErrorMessage('');
+			setErrorStatus(false);
+		}
 	};
 	const handlePasswordChanging = async () => {
 		let newPassword1HasError = false;
 		let newPassword2HasError = false;
 		let errorMessagePasswordChanging = '';
 		if (!validatePassword(newPassword1)) {
+			newPassword2HasError = true;
 			newPassword1HasError = true;
 			errorMessagePasswordChanging +=
-				'- Le nouveau mot de pase doit contenir 8 caractères minimum.\n';
+				'- Le nouveau mot de passe doit contenir 8 caractères minimum.\n';
 		}
 		if (newPassword2 !== newPassword1) {
 			newPassword1HasError = true;
@@ -64,9 +77,7 @@ const UserSettingsPage = () => {
 		setNewPassword1Error(false);
 		setNewPassword2Error(false);
 		if (errorMessagePasswordChanging !== '') {
-			// if (loginPasswordHasError) {
-			// 	setLoginPasswordError(true);
-			// }
+			setErrorStatus(true);
 			if (newPassword1HasError) {
 				setNewPassword1Error(true);
 			}
@@ -75,6 +86,7 @@ const UserSettingsPage = () => {
 			}
 			return;
 		}
+		setErrorStatus(false);
 		setPasswordLoading(true);
 		const userData = {
 			password: newPassword1,
@@ -92,18 +104,49 @@ const UserSettingsPage = () => {
 
 			if (!response.ok) {
 				setErrorMessage('Connection échouée');
+				setErrorStatus(true);
 			}
 			if (response.ok) {
+				setInfoStatus(true);
 				setInfoMessage('Changement de mot de passe effectué');
 			}
 		} catch {
+			setErrorStatus(true);
 			setErrorMessage('Problèmes dans le changement de mot de passe');
 		} finally {
 			setPasswordLoading(false);
 		}
 	};
-	const handleImgChanging = async () => {
-		setImgLoading(true);
+	const handleAvatarChanging = async () => {
+		const userData = {
+			avatar: base64Avatar,
+		};
+		const requestOptions = {
+			method: 'PUT',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(userData),
+		};
+		setAvatarLoading(true);
+		try {
+			const response = await fetch(
+				`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/updateAvatar`,
+				requestOptions
+			);
+
+			if (response.ok) {
+				setInfoStatus(true);
+				setInfoMessage('Votre avatar a été mis a jour.');
+				setAvatarUser(base64Avatar);
+			} else {
+				setErrorMessage('Erreur dans la modification de votre avatar.');
+				setErrorStatus(true);
+			}
+		} catch {
+			setErrorMessage('Erreur dans la modification de votre avatar.');
+			setErrorStatus(true);
+		} finally {
+			setAvatarLoading(false);
+		}
 	};
 	const validatePassword = (newPassword) => {
 		return newPassword.length >= 8;
@@ -111,24 +154,31 @@ const UserSettingsPage = () => {
 
 	return (
 		<div className='settings__page-container'>
-			<Typography component='h1' color='error'>
-				<pre style={{ fontFamily: 'inherit' }}>{errorMessage}</pre>
-			</Typography>
-			<div className='settings__img-container'>
-				<Box component='form' className='settings__box-img'>
+			{errorStatus && (
+				<Typography component='h1' color='error'>
+					<pre style={{ fontFamily: 'inherit' }}>{errorMessage}</pre>
+				</Typography>
+			)}
+			{infoStatus && (
+				<Typography component='h1' color='warning'>
+					<pre style={{ fontFamily: 'inherit' }}>{infoMessage}</pre>
+				</Typography>
+			)}
+			<div className='settings__avatar-container'>
+				<Box component='form' className='settings__box-avatar'>
 					<p className='settings__p-title'>Ajouter un avatar :</p>
-					<div className='settings__img-uploader'>
-						<ImageUpload onImageUpload={handleImageUpload} />
+					<div className='settings__avatar-uploader'>
+						<ImageUpload onImageUpload={handleAvatarUpload} />
 					</div>
 					<Button
-						className='settings__button-img'
+						className='settings__button-avatar'
 						type='reset'
-						onClick={handleImgChanging}
+						onClick={handleAvatarChanging}
 						color='warning'
 						variant='contained'
-						disabled={imgLoading || isImgAddButtonDisabled}
+						disabled={avatarLoading || isAvatarAddButtonDisabled}
 						sx={{ margin: '1%' }}>
-						{imgLoading ? <LoadingBars /> : 'Ajouter ou modifier son avatar'}
+						{avatarLoading ? <LoadingBars /> : 'Ajouter ou modifier son avatar'}
 					</Button>
 				</Box>
 			</div>

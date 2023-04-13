@@ -6,7 +6,7 @@
 			"direction": "in",
 			"name": "req",
 			"methods": ["put"],
-			"route": "user/{idUser:int}/updatePassword",
+			"route": "user/{idUser:int}/updateAvatar",
 			"webHookType": "genericJson"
 		},
 		{

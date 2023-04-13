@@ -86,8 +86,8 @@ const WheelPage = () => {
 				</>
 			) : (
 				<div className='wheel__recipes-empty-message'>
-					{loading && <LoadingHamster />}
-					<p>Il n'y a pas de recettes pour le moment.</p>
+					{(loading && <LoadingHamster />) ||
+						(!loading && <p>Il n'y a pas de recettes pour le moment.</p>)}
 				</div>
 			)}
 		</>

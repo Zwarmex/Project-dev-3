@@ -19,7 +19,7 @@ import {
 
 const LoginPage = () => {
 	const navigate = useNavigate();
-	const { setIdUser } = useContext(UserContext);
+	const { setIdUser, setAvatarUser } = useContext(UserContext);
 	const [email, setEmail] = useState('');
 	const [loginPassword, setLoginPassword] = useState('');
 	const [registerPassword, setRegisterPassword] = useState('');
@@ -112,7 +112,9 @@ const LoginPage = () => {
 			const data = await response.json();
 
 			setIdUser(data.idUser);
+			setAvatarUser(data.avatarUser);
 			localStorage.setItem('idUser', data.idUser);
+			localStorage.setItem('avatarUser', data.avatarUser);
 			navigate('/');
 		} catch (error) {
 			setErrorMessage('Connection échouée');

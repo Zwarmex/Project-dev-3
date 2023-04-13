@@ -44,7 +44,7 @@ const UserRecipesPage = () => {
 			) : (
 				<div className='user__recipes-empty-message'>
 					{loading && <LoadingHamster />}
-					Il n'y a pas de recettes pour le moment.
+					{!loading && "Il n'y a pas de recettes pour le moment."}
 				</div>
 			)}
 		</>

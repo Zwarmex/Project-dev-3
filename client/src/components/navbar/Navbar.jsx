@@ -26,7 +26,7 @@ import {
 
 const Navbar = () => {
 	const navigate = useNavigate();
-	const { idUser, logout } = useContext(UserContext);
+	const { idUser, logout, avatarUser } = useContext(UserContext);
 	const [anchorElNav, setAnchorElNav] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const handleOpenNavMenu = (event) => {
@@ -266,7 +266,13 @@ const Navbar = () => {
 												aria-haspopup='true'
 												aria-expanded={Boolean(anchorEl) ? 'true' : undefined}>
 												<Avatar>
-													<AccountCircleOutlined />
+													{(avatarUser && (
+														<img
+															src={avatarUser}
+															alt='Avatar'
+															className='navbar__avatarImageUser'
+														/>
+													)) || <AccountCircleOutlined />}
 												</Avatar>
 											</IconButton>
 										</Tooltip>

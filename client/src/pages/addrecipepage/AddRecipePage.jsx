@@ -210,7 +210,8 @@ const AddRecipePage = () => {
 				<ImageUpload onImageUpload={handleImageUpload} />
 				{imageSize > maxImageSize && (
 					<Typography color='error'>
-						The image size exceeds the 1MB limit. Please upload a smaller image.
+						La taille de l'image dépasse la limite de 1MB. Charger une image
+						plus petite s'il vous plaît.
 					</Typography>
 				)}
 				<div className='recipe__add-difficulty-container'>

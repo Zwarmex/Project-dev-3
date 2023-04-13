@@ -192,7 +192,20 @@ function userGetPasswordAndSaltByMail(mailUser) {
 	return `SELECT saltUser, passwordUser FROM users WHERE mailUser='${mailUser}'`;
 }
 function userGet(mailUser) {
-	return `SELECT * FROM users WHERE mailUser = '${mailUser}'`;
+	return `
+	SELECT idUser,
+	firstnameUser,
+	lastnameUser,
+	abilityUser,
+	bioUser,
+	telephoneUser,
+	mailUser,
+	passwordUser,
+	birthdayUser,
+	saltUser,
+	CONVERT(varchar(max), avatarUser) as avatarUser
+	FROM users 
+	WHERE mailUser='${mailUser}'`;
 }
 function userPut(
 	idUser = null,
@@ -229,6 +242,14 @@ function userPut(
         );
     `.replace(/,\s+$/, '');
 }
+function userPutAvatar(idUser, avatarUser) {
+	return `
+        UPDATE users
+        SET 
+            avatarUser=CONVERT(varbinary(max), '${avatarUser}')
+        WHERE idUser=${idUser}`;
+}
+
 function userPutPassword(idUser = null, passwordUser = null, saltUser = null) {
 	return `
         UPDATE users
@@ -285,6 +306,7 @@ module.exports = {
 	userGetPasswordAndSaltByMail: userGetPasswordAndSaltByMail,
 	userGet: userGet,
 	userPut: userPut,
+	userPutAvatar: userPutAvatar,
 	userPutPassword: userPutPassword,
 	userRecipesGet: userRecipesGet,
 };

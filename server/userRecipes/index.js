@@ -85,7 +85,7 @@ async function handleGet(context, req, pool) {
 	if (!validOrderValues.includes(orderValue)) {
 		context.res = {
 			status: 400,
-			body: "orderValue must be either 'idCat' or 'labelCat'.",
+			body: 'orderValue must be either IDREC,LABELREC,STEPSREC,NUMBEROFPERSONSREC,TIMREC,DIFFICULTYREC,IMGREC,IDCAT,IDUSER.',
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -103,7 +103,7 @@ async function handleGet(context, req, pool) {
 		return;
 	}
 
-	const query = queries.userRecipesGet(idUser);
+	const query = queries.userRecipesGet(idUser, topValue, orderValue, sortValue);
 	const result = await pool.request().query(query);
 
 	// Verify that result is not null and contains at least one record
