@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import './wheelpage.css';
 import { RecipeItem, UserContext, LoadingHamster } from '../../components';
+import { Typography } from '@mui/material';
 
 const WheelPage = () => {
 	const { idUser } = useContext(UserContext);
@@ -87,7 +88,9 @@ const WheelPage = () => {
 			) : (
 				<div className='wheel__recipes-empty-message'>
 					{(loading && <LoadingHamster />) ||
-						(!loading && <p>Il n'y a pas de recettes pour le moment.</p>)}
+						(!loading && (
+							<Typography>Il n'y a pas de recettes pour le moment.</Typography>
+						))}
 				</div>
 			)}
 		</>

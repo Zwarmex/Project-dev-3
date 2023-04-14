@@ -19,7 +19,7 @@ import {
 
 const LoginPage = () => {
 	const navigate = useNavigate();
-	const { setIdUser, setAvatarUser } = useContext(UserContext);
+	const { setIdUser, setAvatarUser, setMailUser } = useContext(UserContext);
 	const [email, setEmail] = useState('');
 	const [loginPassword, setLoginPassword] = useState('');
 	const [registerPassword, setRegisterPassword] = useState('');
@@ -58,7 +58,6 @@ const LoginPage = () => {
 		setLoginPasswordError(false);
 		setRegisterPasswordError(false);
 	};
-
 	const handleClickShowLoginPassword = () => {
 		setShowLoginPassword((show) => !show);
 	};
@@ -112,8 +111,10 @@ const LoginPage = () => {
 			const data = await response.json();
 
 			setIdUser(data.idUser);
+			setMailUser(data.mailUser);
 			setAvatarUser(data.avatarUser);
 			localStorage.setItem('idUser', data.idUser);
+			localStorage.setItem('mailUser', data.mailUser);
 			localStorage.setItem('avatarUser', data.avatarUser);
 			navigate('/');
 		} catch (error) {

@@ -92,6 +92,8 @@ function recipePost(
 	idCat,
 	idUser
 ) {
+	console.log(`INSERT INTO recipes (labelRec, stepsRec, numberOfPersonsRec, timeRec, difficultyRec, imgRec, idCat, idUser)
+	VALUES ('${labelRec}', '${stepsRec}', ${numberOfPersonsRec}, ${timeRec}, ${difficultyRec}, ${idCat}, ${idUser})`);
 	return `INSERT INTO recipes (labelRec, stepsRec, numberOfPersonsRec, timeRec, difficultyRec, imgRec, idCat, idUser)
             VALUES ('${labelRec}', '${stepsRec}', ${numberOfPersonsRec}, ${timeRec}, ${difficultyRec}, CONVERT(varbinary(max), ${imgRec}), ${idCat}, ${idUser})`;
 }
@@ -249,7 +251,6 @@ function userPutAvatar(idUser, avatarUser) {
             avatarUser=CONVERT(varbinary(max), '${avatarUser}')
         WHERE idUser=${idUser}`;
 }
-
 function userPutPassword(idUser = null, passwordUser = null, saltUser = null) {
 	return `
         UPDATE users

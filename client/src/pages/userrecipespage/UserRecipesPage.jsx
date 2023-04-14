@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { LoadingHamster, RecipeItem, UserContext } from '../../components';
 import './userrecipespage.css';
+import { Typography } from '@mui/material';
 const UserRecipesPage = () => {
 	const { idUser } = useContext(UserContext);
 	const [recipes, setRecipes] = useState([]);
@@ -44,7 +45,9 @@ const UserRecipesPage = () => {
 			) : (
 				<div className='user__recipes-empty-message'>
 					{loading && <LoadingHamster />}
-					{!loading && "Il n'y a pas de recettes pour le moment."}
+					{!loading && (
+						<Typography>Il n'y a pas de recettes pour le moment.</Typography>
+					)}
 				</div>
 			)}
 		</>

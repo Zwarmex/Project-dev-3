@@ -48,6 +48,7 @@ const Navbar = () => {
 				<AppBar position='static'>
 					<Container maxWidth='xl'>
 						<Toolbar disableGutters>
+							{/* Title for the web page */}
 							<Typography
 								variant='h6'
 								noWrap
@@ -136,6 +137,7 @@ const Navbar = () => {
 									) : null}
 								</Menu>
 							</Box>
+							{/* Title for the mobile  */}
 							<Typography
 								variant='h5'
 								noWrap
@@ -200,7 +202,7 @@ const Navbar = () => {
 											}>
 											<Button
 												key='calendar'
-												fullWidth='true'
+												fullWidth
 												onClick={handleCloseNavMenu}
 												sx={{
 													my: 2,
@@ -210,7 +212,7 @@ const Navbar = () => {
 														color: 'var(--color-primary)',
 													},
 												}}>
-												<Typography component='p'>calendar</Typography>
+												<Typography component='p'>calendrier</Typography>
 											</Button>
 										</NavLink>
 										<NavLink
@@ -259,12 +261,12 @@ const Navbar = () => {
 							{/* Profil icon */}
 							<Box>
 								{idUser ? (
-									<>
+									<Container disableGutters>
 										<Tooltip title='Profil'>
 											<IconButton
 												onClick={handleClick}
 												size='small'
-												sx={{ ml: 2 }}
+												sx={{ ml: 2, height: '100%' }}
 												aria-controls={
 													Boolean(anchorEl) ? 'account-menu' : undefined
 												}
@@ -315,7 +317,7 @@ const Navbar = () => {
 												Déconnection
 											</MenuItem>
 										</Menu>
-									</>
+									</Container>
 								) : (
 									<Tooltip title='Login'>
 										<IconButton sx={{ p: 0 }}>

@@ -106,18 +106,6 @@ async function handleGet(context, req, pool) {
 	const query = queries.userRecipesGet(idUser, topValue, orderValue, sortValue);
 	const result = await pool.request().query(query);
 
-	// Verify that result is not null and contains at least one record
-	if (!result.recordset || result.recordset.length === 0) {
-		context.res = {
-			status: 404,
-			body: `The user ${idUser} has no recipes`,
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
 	context.res = {
 		status: 200,
 		body: result.recordset,
