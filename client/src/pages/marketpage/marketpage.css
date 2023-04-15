@@ -7,7 +7,7 @@
 	flex-direction: column;
 }
 
-.recipe__marketplace-row {
+.marketplace__recipes-array-container {
 	display: flex;
 	gap: 2%;
 	overflow-y: hidden;
@@ -22,6 +22,9 @@
 	width: fit-content;
 }
 
+.marketplace__row {
+	margin: 1% 0;
+}
 /* .marketplace__no-recipe__loading-spinner__container {
 	height: 100%;
 }

@@ -21,7 +21,6 @@ import {
 	Tooltip,
 	Avatar,
 	IconButton,
-	CssBaseline,
 } from '@mui/material';
 
 const Navbar = () => {
@@ -39,11 +38,10 @@ const Navbar = () => {
 		setAnchorEl(null);
 	};
 	const handleClick = (event) => {
-		setAnchorEl(event.currentTarget);
+		setAnchorEl(event.target);
 	};
 	return (
 		<>
-			<CssBaseline />
 			<ThemeProvider theme={DarkTheme}>
 				<AppBar position='static'>
 					<Container maxWidth='xl'>
@@ -54,30 +52,22 @@ const Navbar = () => {
 								noWrap
 								component='a'
 								href='/'
-								sx={{
-									mr: 2,
-									display: { xs: 'none', md: 'flex' },
-									fontFamily: 'monospace',
-									fontWeight: 700,
-									letterSpacing: '.3rem',
-									color: 'inherit',
-									textDecoration: 'none',
-								}}>
+								id='navbar__title'>
 								App
 							</Typography>
 							{/* Menu item mobile */}
-							<Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+							<Box id='navbar__mobile-menu-container'>
 								<IconButton
 									size='large'
 									aria-label='account of current user'
-									aria-controls='menu-appbar'
+									aria-controls='navbar__mobile-menu'
 									aria-haspopup='true'
 									onClick={handleOpenNavMenu}
 									color='inherit'>
 									<MenuIcon />
 								</IconButton>
 								<Menu
-									id='menu-appbar'
+									id='navbar__mobile-menu'
 									anchorEl={anchorElNav}
 									anchorOrigin={{
 										vertical: 'bottom',
@@ -89,10 +79,7 @@ const Navbar = () => {
 										horizontal: 'left',
 									}}
 									open={Boolean(anchorElNav)}
-									onClose={handleCloseNavMenu}
-									sx={{
-										display: { xs: 'block', md: 'none' },
-									}}>
+									onClose={handleCloseNavMenu}>
 									<NavLink to='/'>
 										<MenuItem key='home' onClick={handleCloseNavMenu}>
 											<Typography textAlign='center'>Accueil</Typography>
@@ -143,53 +130,34 @@ const Navbar = () => {
 								noWrap
 								component='a'
 								href='/'
-								sx={{
-									mr: 2,
-									display: { xs: 'flex', md: 'none' },
-									flexGrow: 1,
-									fontFamily: 'monospace',
-									fontWeight: 700,
-									letterSpacing: '.3rem',
-									color: 'inherit',
-									textDecoration: 'none',
-								}}>
+								id='navbar__mobile-title'>
 								App
 							</Typography>
 							{/* Menu item full page */}
-							<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+							<Box id='navbar__menu-container'>
 								<NavLink
 									to='/'
 									className={({ isActive }) =>
-										isActive ? 'activeLink' : undefined
+										isActive ? 'activeLink navbar__links' : 'navbar__links'
 									}>
 									<Button
 										key='home'
 										fullWidth
 										onClick={handleCloseNavMenu}
-										sx={{
-											my: 2,
-											color: 'inherit',
-											display: 'block',
-											'&:hover': { color: 'var(--color-primary)' },
-										}}>
+										className='navbar__menu-buttons'>
 										<Typography component='p'>Accueil</Typography>
 									</Button>
 								</NavLink>
 								<NavLink
 									to='/marketplace'
 									className={({ isActive }) =>
-										isActive ? 'activeLink' : undefined
+										isActive ? 'activeLink navbar__links' : 'navbar__links'
 									}>
 									<Button
 										key='marketplace'
 										fullWidth
 										onClick={handleCloseNavMenu}
-										sx={{
-											my: 2,
-											color: 'inherit',
-											display: 'block',
-											'&:hover': { color: 'var(--color-primary)' },
-										}}>
+										className='navbar__menu-buttons'>
 										<Typography component='p'>marketplace</Typography>
 									</Button>
 								</NavLink>
@@ -198,60 +166,39 @@ const Navbar = () => {
 										<NavLink
 											to='/calendar'
 											className={({ isActive }) =>
-												isActive ? 'activeLink' : undefined
+												isActive ? 'activeLink navbar__links' : 'navbar__links'
 											}>
 											<Button
 												key='calendar'
 												fullWidth
 												onClick={handleCloseNavMenu}
-												sx={{
-													my: 2,
-													color: 'inherit',
-													display: 'block',
-													'&:hover': {
-														color: 'var(--color-primary)',
-													},
-												}}>
+												className='navbar__menu-buttons'>
 												<Typography component='p'>calendrier</Typography>
 											</Button>
 										</NavLink>
 										<NavLink
 											to='/wheel'
 											className={({ isActive }) =>
-												isActive ? 'activeLink' : undefined
+												isActive ? 'activeLink navbar__links' : 'navbar__links'
 											}>
 											<Button
 												key='wheel'
 												fullWidth
 												onClick={handleCloseNavMenu}
-												sx={{
-													my: 2,
-													color: 'inherit',
-													display: 'block',
-													'&:hover': {
-														color: 'var(--color-primary)',
-													},
-												}}>
+												className='navbar__menu-buttons'>
 												<Typography component='p'>Roue</Typography>
 											</Button>
 										</NavLink>
 										<NavLink
 											to='/recipe_add'
 											className={({ isActive }) =>
-												isActive ? 'activeLink' : undefined
+												isActive ? 'activeLink navbar__links' : 'navbar__links'
 											}>
 											<Button
 												key='recipe_add'
 												fullWidth
 												onClick={handleCloseNavMenu}
-												sx={{
-													my: 2,
-													color: 'inherit',
-													display: 'block',
-													'&:hover': {
-														color: 'var(--color-primary)',
-													},
-												}}>
+												className='navbar__menu-buttons'>
 												<Typography component='p'>Ajouter</Typography>
 											</Button>
 										</NavLink>
@@ -266,7 +213,7 @@ const Navbar = () => {
 											<IconButton
 												onClick={handleClick}
 												size='small'
-												sx={{ ml: 2, height: '100%' }}
+												className='navbar__profil-iconButtons'
 												aria-controls={
 													Boolean(anchorEl) ? 'account-menu' : undefined
 												}
@@ -320,7 +267,7 @@ const Navbar = () => {
 									</Container>
 								) : (
 									<Tooltip title='Login'>
-										<IconButton sx={{ p: 0 }}>
+										<IconButton className='navbar__profil-iconButtons'>
 											<NavLink to='/login'>
 												<Avatar>
 													<LoginRounded />

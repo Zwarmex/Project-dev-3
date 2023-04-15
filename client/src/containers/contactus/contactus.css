@@ -1,18 +1,19 @@
 .contact-form {
-  margin: 10%;
-  color: black;
-  background-color: var(--color-background-text);
-  padding: 2%;
-  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.315);
-  display: flex;
-  flex-direction: column;
+	margin: auto;
+	margin-top: 5%;
+	width: 80%;
+	color: black;
+	background-color: var(--color-background-text);
+	padding: 2%;
+	box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.315);
+	display: flex;
+	flex-direction: column;
 }
-
-label {
-  margin: 2% 0;
+.contactus__form-control {
+	margin: 1% 0 !important;
 }
-
-.send-btn {
-  font-size: 1rem;
-  margin: 2%;
+.contactus__button-container {
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
 }

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { LoadingHamster, RecipeItem, UserContext } from '../../components';
 import './userrecipespage.css';
-import { Typography } from '@mui/material';
+import { Box, Typography, Container } from '@mui/material';
 const UserRecipesPage = () => {
 	const { idUser } = useContext(UserContext);
 	const [recipes, setRecipes] = useState([]);
@@ -30,27 +30,31 @@ const UserRecipesPage = () => {
 		// eslint-disable-next-line
 	}, []);
 	return (
-		<>
-			<h1 className='user__recipes-title'>Vos recettes :</h1>
+		<Container>
+			<Box className='user__recipes-title-container'>
+				<Typography component='p' variant='h4'>
+					Vos recettes :
+				</Typography>
+			</Box>
 			{recipes.length > 0 ? (
-				<div className='user__recipes-container'>
+				<Box className='user__recipes-container scrollbar'>
 					{recipes.map((recipe, recipeIndex) => {
 						return (
-							<div key={recipeIndex} className='user__recipes-item'>
+							<Box key={recipeIndex} className='user__recipes-item'>
 								<RecipeItem recipe={recipe} />
-							</div>
+							</Box>
 						);
 					})}
-				</div>
+				</Box>
 			) : (
-				<div className='user__recipes-empty-message'>
+				<Box className='user__recipes-empty-message'>
 					{loading && <LoadingHamster />}
 					{!loading && (
 						<Typography>Il n'y a pas de recettes pour le moment.</Typography>
 					)}
-				</div>
+				</Box>
 			)}
-		</>
+		</Container>
 	);
 };
 

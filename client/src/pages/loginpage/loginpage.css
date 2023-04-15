@@ -2,7 +2,7 @@
 	margin: auto;
 }
 
-.login__form-boxes {
+#login__form-box {
 	margin: auto;
 	display: grid;
 	width: 50vw;
@@ -11,6 +11,9 @@
 	font-family: var(--font-family);
 }
 
+#login__form-box > *:not(style) {
+	margin: 2%;
+}
 .login__form-buttons {
 	width: 50%;
 	margin: auto;
@@ -21,6 +24,7 @@
 	text-decoration: underline;
 }
 
-.login__form-option {
-	justify-content: space-between;
+.login__form-option-container {
+	display: flex;
+	justify-content: space-evenly;
 }

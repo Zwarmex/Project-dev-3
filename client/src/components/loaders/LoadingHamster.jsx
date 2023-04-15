@@ -1,29 +1,30 @@
 import React from 'react';
 import './loadinghamster.css';
+import { Box } from '@mui/material';
 
 const LoadingHamster = () => {
 	return (
-		<div
+		<Box
 			aria-label='Orange and tan hamster running in a metal wheel'
 			role='img'
 			className='wheel-and-hamster'>
-			<div className='wheel-hamster'></div>
-			<div className='hamster'>
-				<div className='hamster__body'>
-					<div className='hamster__head'>
-						<div className='hamster__ear'></div>
-						<div className='hamster__eye'></div>
-						<div className='hamster__nose'></div>
-					</div>
-					<div className='hamster__limb hamster__limb--fr'></div>
-					<div className='hamster__limb hamster__limb--fl'></div>
-					<div className='hamster__limb hamster__limb--br'></div>
-					<div className='hamster__limb hamster__limb--bl'></div>
-					<div className='hamster__tail'></div>
-				</div>
-			</div>
-			<div className='spoke'></div>
-		</div>
+			<Box className='wheel'></Box>
+			<Box className='hamster'>
+				<Box className='hamster__body'>
+					<Box className='hamster__head'>
+						<Box className='hamster__ear'></Box>
+						<Box className='hamster__eye'></Box>
+						<Box className='hamster__nose'></Box>
+					</Box>
+					<Box className='hamster__limb hamster__limb--fr'></Box>
+					<Box className='hamster__limb hamster__limb--fl'></Box>
+					<Box className='hamster__limb hamster__limb--br'></Box>
+					<Box className='hamster__limb hamster__limb--bl'></Box>
+					<Box className='hamster__tail'></Box>
+				</Box>
+			</Box>
+			<Box className='spoke'></Box>
+		</Box>
 	);
 };
 

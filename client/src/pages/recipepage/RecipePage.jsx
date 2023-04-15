@@ -1,7 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './recipepage.css';
-import { Rating, Typography } from '@mui/material';
+import {
+	Box,
+	Button,
+	Container,
+	Divider,
+	Rating,
+	Typography,
+} from '@mui/material';
 import { UserContext } from '../../components';
 import { Editor } from 'react-draft-wysiwyg';
 import { convertFromRaw, EditorState } from 'draft-js';
@@ -10,13 +17,12 @@ import defaultRecipeImage from '../../assets/images/defaultRecipeImage.jpg';
 
 const RecipePage = () => {
 	const navigate = useNavigate();
-
 	const [recipe, setRecipe] = useState([]);
 	const [category, setCategory] = useState([]);
 	const [editorState, setEditorState] = useState(() =>
 		EditorState.createEmpty()
 	);
-	const { idRec } = useParams();
+	const { idRec, mailUser } = useParams();
 	const { idUser } = useContext(UserContext);
 
 	const fetchRecipe = async () => {
@@ -71,13 +77,15 @@ const RecipePage = () => {
 		fetchRecipe();
 		// eslint-disable-next-line
 	}, []);
-
+	console.log(idUser, mailUser);
 	return (
-		<>
-			<h1 className='recipe__title'>
-				{recipe.labelRec} ({recipe.numberOfPersonsRec} pers.)
-			</h1>
-			<div className='recipe__rating-container'>
+		<Container>
+			<Box className='recipePage__title-container'>
+				<Typography component='p' variant='h4' className='recipe__title'>
+					{recipe.labelRec} ({recipe.numberOfPersonsRec} pers.)
+				</Typography>
+			</Box>
+			<Box className='recipe__rating-container'>
 				<Typography component='legend'>Difficulté :</Typography>
 				{recipe.difficultyRec ? (
 					<Rating
@@ -88,7 +96,7 @@ const RecipePage = () => {
 						readOnly
 					/>
 				) : null}
-			</div>
+			</Box>
 			<img
 				src={recipe.imgRec || defaultRecipeImage}
 				alt={recipe.labelRec || 'Default image for recipe'}
@@ -96,25 +104,35 @@ const RecipePage = () => {
 				onError={handleImageError}
 			/>
 
-			<div className='recipe__category-container'>
-				<h2>Catégorie : {category.labelCat}</h2>
-			</div>
-			<hr />
-			<div className='recipe__steps-container'>
-				<h2 className='recipe__steps-title'>Étapes ({recipe.timeRec} min.):</h2>
+			<Box className='recipe__category-container'>
+				<Typography component='p' variant='h5'>
+					Catégorie : {category.labelCat}
+				</Typography>
+			</Box>
+			<Divider />
+			<Box className='recipe__steps-container'>
+				<Typography component='p' variant='h5' className='recipe__steps-title'>
+					Étapes ({recipe.timeRec} min.):
+				</Typography>
 				<Editor
 					editorClassName='recipe__steps-editor'
 					editorState={editorState}
 					readOnly
 					toolbarHidden
 				/>
-			</div>
+			</Box>
 			{+idUser === recipe.idUser ? (
-				<button onClick={handleDelete} className='recipe__delete-button'>
-					Supprimer la recette
-				</button>
+				<Box className='recipe__delete-button-container'>
+					<Button
+						onClick={handleDelete}
+						color='warning'
+						variant='contained'
+						className='recipe__delete-button-item'>
+						Supprimer la recette
+					</Button>
+				</Box>
 			) : null}
-		</>
+		</Container>
 	);
 };
 export default RecipePage;

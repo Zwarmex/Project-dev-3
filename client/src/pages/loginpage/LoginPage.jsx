@@ -234,14 +234,7 @@ const LoginPage = () => {
 		<>
 			<CssBaseline />
 			<Container className='login__form-container' maxWidth='false'>
-				<Box
-					component='form'
-					className='login__form-boxes'
-					sx={{
-						'& > :not(style)': { margin: 1 },
-					}}
-					noValidate
-					autoComplete='on'>
+				<Box component='form' id='login__form-box' noValidate autoComplete='on'>
 					<Container maxWidth='false'>
 						<Typography variant='h2'>
 							{register ? 'Inscription' : 'Connection'}
@@ -294,7 +287,6 @@ const LoginPage = () => {
 								InputLabelProps={{
 									shrink: true,
 								}}
-								sx={{ margin: 1 }}
 								error={birthdayError}
 								inputProps={{
 									min: minDate.toISOString().split('T')[0], // Convert minDate to 'YYYY-MM-DD' format
@@ -394,9 +386,7 @@ const LoginPage = () => {
 						{!loading ? (register ? 'INSCRIPTION' : 'CONNECTION') : null}
 						{loading && <LoadingBars />}
 					</Button>
-					<Container
-						className='login__form-option'
-						sx={{ display: 'flex', justifyContent: 'space-between' }}>
+					<Box className='login__form-option-container'>
 						<Typography variant='subtitle2' align='left'>
 							{register ? 'Déjà un compte ?' : 'Pas encore de compte ?'}
 						</Typography>
@@ -412,7 +402,7 @@ const LoginPage = () => {
 							className='login__form-buttons login__form-option__buttons'>
 							{register ? 'CONNECTION' : 'INSCRIPTION'}
 						</Button>
-					</Container>
+					</Box>
 				</Box>
 			</Container>
 		</>

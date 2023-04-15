@@ -4,13 +4,12 @@
 	width: 400px;
 	height: 400px;
 	margin: auto;
-	/* background-color: red; */
 }
 
 .wheel-items {
 	position: absolute;
-	width: 100px;
-	height: 100px;
+	width: fit-content;
+	height: fit-content;
 	line-height: 20px;
 	text-align: center;
 	background-color: white;

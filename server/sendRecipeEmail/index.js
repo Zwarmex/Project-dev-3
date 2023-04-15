@@ -1,6 +1,11 @@
-const sgMail = require('@sendgrid/mail');
-require('dotenv').config;
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const {
+	EmailClient,
+	KnownEmailSendStatus,
+} = require('@azure/communication-email');
+require('dotenv').config();
+
+// This code demonstrates how to fetch your connection string
+// from an environment variable.
 
 module.exports = async function (context, req) {
 	try {
@@ -34,41 +39,93 @@ async function handlePost(context, req) {
 		? JSON.parse(req.body.recipe)
 		: null;
 	const date = req.body.hasOwnProperty('date') ? req.body.date : null;
-	const userEmail = req.params.mailUser;
+	const mailUser = req.params.mailUser;
+	const emailClient = new EmailClient(
+		process.env.COMMUNICATION_SERVICES_CONNECTION_STRING
+	);
+	const senderAddress = process.env.SENDER_ADDRESS;
+	const POLLER_WAIT_TIME = 10;
 
-	const recipeMail = {
-		to: userEmail,
-		from: process.env.SENDGRID_FROM_EMAIL,
-		subject: `Recette : ${recipe.labelRec}`,
-		html: `
-        <h1>Recette : ${recipe.labelRec}</h1>
-        <h2>Date: ${date}</h2>
-        <img src="${recipe.imgRec}" alt="Recette image" width="300" />
-        <h3>Details:</h3>
-        <span>
-            Étapes : ${JSON.parse(recipe.stepsRec).blocks[0].text}
-        </span>`,
+	const htmlContent = `<h1>
+							Recette du ${new Date(date).toLocaleDateString('fr-FR')} : ${recipe.labelRec}
+						</h1>
+						<img
+							src="${recipe.imgRec}"
+							alt="Image de la recette ${recipe.labelRec}"
+						/>
+						<p>
+							Étapes : ${JSON.parse(recipe.stepsRec).blocks[0].text}
+						</p>
+						`;
+
+	const message = {
+		senderAddress: senderAddress,
+		content: {
+			subject: `Recette du ${new Date(date).toLocaleDateString('fr-FR')} : ${
+				recipe.labelRec
+			}`,
+			html: htmlContent,
+		},
+		recipients: {
+			to: [
+				{
+					address: `${mailUser}`,
+				},
+			],
+		},
 	};
 
-	try {
-		// Send email
-		const response = await sgMail.send(recipeMail);
+	const poller = await emailClient.beginSend(message);
 
-		if (response[0]?.statusCode >= 200 && response[0]?.statusCode < 300) {
-			context.res = {
-				status: 200,
-				body: 'Email sent successfully',
-			};
-		} else {
-			context.res = {
-				status: 500,
-				body: `Failed to send email: ${JSON.stringify(response)}`,
-			};
-		}
-	} catch (error) {
+	if (!poller.getOperationState().isStarted) {
 		context.res = {
 			status: 500,
-			body: `Failed to send email: ${error}`,
+			body: 'The email was not sent.',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
 		};
+		return;
+	}
+
+	let timeElapsed = 0;
+	while (!poller.isDone()) {
+		poller.poll();
+		console.log('Email send polling in progress');
+
+		await new Promise((resolve) =>
+			setTimeout(resolve, POLLER_WAIT_TIME * 1000)
+		);
+		timeElapsed += 10;
+
+		if (timeElapsed > 18 * POLLER_WAIT_TIME) {
+			context.res = {
+				status: 500,
+				body: 'Polling timed out.',
+				headers: {
+					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+				},
+			};
+			return;
+		}
+	}
+
+	if (poller.getResult().status === KnownEmailSendStatus.Succeeded) {
+		context.res = {
+			status: 200,
+			body: 'Email sent successfully.',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+	} else {
+		context.res = {
+			status: 500,
+			body: poller.getResult().error,
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
 	}
 }

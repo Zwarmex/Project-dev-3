@@ -1,13 +1,14 @@
 import React from 'react';
 import './loadingbars.css';
+import { Box } from '@mui/material';
 
 const LoadingBars = () => {
 	return (
-		<div className='loader'>
-			<span className='bar'></span>
-			<span className='bar'></span>
-			<span className='bar'></span>
-		</div>
+		<Box id='loader'>
+			<span className='bars'></span>
+			<span className='bars'></span>
+			<span className='bars'></span>
+		</Box>
 	);
 };
 

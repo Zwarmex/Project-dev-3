@@ -6,3 +6,4 @@ export { default as ImageUpload } from './imageupload/ImageUpload';
 export { default as UserProvider } from './userprovider/UserProvider';
 export { default as UserContext } from './usercontext/UserContext';
 export { default as Wheel } from './wheel/Wheel';
+export { default as IngredientItem } from './ingredientitem/IngredientItem';

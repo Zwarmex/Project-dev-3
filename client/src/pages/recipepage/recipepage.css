@@ -1,5 +1,6 @@
-.recipe__title {
-	align-self: center;
+.recipePage__title-container {
+	display: grid;
+	place-content: center;
 }
 .recipe__rating-container {
 	display: flex;
@@ -28,4 +29,11 @@
 	margin: 0 1% 0 1%;
 	border-radius: 10px;
 	background: white;
+}
+.recipe__delete-button-container {
+	display: grid;
+	place-content: center;
+}
+.recipe__delete-button-item {
+	width: fit-content;
 }

@@ -14,10 +14,11 @@ import {
 } from './pages';
 import './App.css';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { Box } from '@mui/material';
 
 const App = () => {
 	return (
-		<div className='App' id='scrollbar2'>
+		<Box id='App' className='scrollbars'>
 			<BrowserRouter>
 				<Navbar />
 				<Routes>
@@ -33,7 +34,7 @@ const App = () => {
 					<Route path='/settings' element={<UserSettingsPage />} />
 				</Routes>
 			</BrowserRouter>
-		</div>
+		</Box>
 	);
 };
 

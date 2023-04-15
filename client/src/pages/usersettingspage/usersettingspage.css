@@ -10,12 +10,13 @@
 	border-radius: 25px;
 }
 .settings__p-title {
-	font-size: x-large;
-	font-weight: bold;
 	text-decoration: underline;
 }
 .settings__avatar-uploader {
 	margin: 1%;
+}
+.settings__button-avatar {
+	margin: 1% !important;
 }
 .settings__avatar-container,
 .settings__password-container {
@@ -33,4 +34,5 @@
 
 .settings__form-button {
 	width: 50%;
+	margin: 1% !important;
 }

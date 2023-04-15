@@ -7,14 +7,14 @@ import { CardActionArea, Container } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import defaultRecipeImage from '../../assets/images/defaultRecipeImage.jpg';
 
-const RecipeItem = ({ recipe, disableButton }) => {
+const RecipeItem = ({ recipe, disabled }) => {
 	const handleImageError = (event) => {
 		event.target.src = defaultRecipeImage;
 		event.target.alt = 'Default image for recipe';
 	};
 
 	const renderCardContent = () => (
-		<>
+		<Container disableGutters>
 			<CardMedia
 				className='recipe__item-car__action-media'
 				component='img'
@@ -24,27 +24,18 @@ const RecipeItem = ({ recipe, disableButton }) => {
 				alt={recipe.labelRec || 'Default image for recipe'}
 				onError={handleImageError}
 			/>
-			<CardContent className='recipe__item-car__action-content'>
-				<Typography variant='h6' component='div' align='justify'>
+			<CardContent className='recipe__item-card__action-content'>
+				<Typography component='p' align='justify'>
 					{recipe.labelRec}
 				</Typography>
 			</CardContent>
-		</>
+		</Container>
 	);
 
 	return (
-		<Container
-			disableGutters
-			className='recipe__item-container'
-			sx={{ maxWidth: '20%', width: 'fit-content' }}>
-			<Card
-				className='recipe__item-card'
-				key={recipe.idRec}
-				sx={{
-					minWidth: '20%',
-					boxShadow: '1px 1px 1px 2px lightgrey',
-				}}>
-				{disableButton ? (
+		<Container disableGutters className='recipe__item-container'>
+			<Card className='recipe__item-card' key={recipe.idRec}>
+				{disabled ? (
 					renderCardContent()
 				) : (
 					<NavLink
@@ -52,9 +43,7 @@ const RecipeItem = ({ recipe, disableButton }) => {
 							pathname: `/recipe/${recipe.idRec}`,
 							state: { recipe: recipe },
 						}}>
-						<CardActionArea
-							sx={{ width: '100%', borderRadius: '5%' }}
-							className='recipe__item-card__action-area'>
+						<CardActionArea className='recipe__item-card__action-area'>
 							{renderCardContent()}
 						</CardActionArea>
 					</NavLink>

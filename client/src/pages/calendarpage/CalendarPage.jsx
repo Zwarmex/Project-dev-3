@@ -9,7 +9,7 @@ import {
 	RecipeItem,
 	UserContext,
 } from '../../components';
-import { Typography, Button } from '@mui/material';
+import { Typography, Button, Box, Container } from '@mui/material';
 
 const CalendarPage = () => {
 	const { idUser, mailUser } = useContext(UserContext);
@@ -20,6 +20,8 @@ const CalendarPage = () => {
 	const [mailLoading, setMailLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [errorStatus, setErrorStatus] = useState(false);
+	const [infoMessage, setInfoMessage] = useState('');
+	const [infoStatus, setInfoStatus] = useState(false);
 
 	const fetchRecipes = async () => {
 		try {
@@ -40,11 +42,8 @@ const CalendarPage = () => {
 			setRecipesLoading(false);
 		}
 	};
-
 	const sendRecipeEmail = async (recipe) => {
 		const mailBody = { recipe: JSON.stringify({ recipe }), date: date };
-		console.log(JSON.stringify(mailBody));
-		return;
 		setMailLoading(true);
 		try {
 			const response = await fetch(
@@ -62,12 +61,15 @@ const CalendarPage = () => {
 			} else {
 				alert('Failed to send recipe email.');
 			}
+			setInfoMessage("Le service mail n'existe pas encore.");
+			setInfoStatus(true);
 		} catch {
 			setErrorMessage('Error sending recipe email:');
 			setErrorStatus(true);
+		} finally {
+			setMailLoading(false);
 		}
 	};
-
 	const handleSetDate = (selectedDate) => {
 		// Format the date as YYYY-MM-DD
 		const formattedDate = selectedDate.toLocaleDateString('en-CA');
@@ -82,6 +84,8 @@ const CalendarPage = () => {
 		}
 	};
 	const handleSendRecipe = () => {
+		setErrorStatus(false);
+		setInfoStatus(false);
 		const confirmSend = window.confirm(
 			`Voulez vous réellement recevoir "${
 				savedSelectedRecipe.labelRec
@@ -98,27 +102,30 @@ const CalendarPage = () => {
 	}, []);
 
 	return (
-		<div>
-			<div className='calendar__title-container'>
-				<h1>Planifier votre prochain repas :</h1>
-			</div>
-			<div className='calendar__error-container'>
-				{errorStatus && <Typography>{errorMessage}</Typography>}
-			</div>
-			<div className='calendar__calendar-container'>
+		<Container>
+			<Box className='calendar__title-container'>
+				<Typography component='p' variant='h4'>
+					Planifier votre prochain repas :
+				</Typography>
+			</Box>
+			<Box className='calendar__error-container'>
+				{errorStatus && <Typography color='error'>{errorMessage}</Typography>}
+				{infoStatus && <Typography>{infoMessage}</Typography>}
+			</Box>
+			<Box className='calendar__calendar-container'>
 				<Calendar
 					className='calendar__calendar-item'
 					onChange={handleSetDate}
 					value={date}
 					locale='fr-FR'
 				/>
-			</div>
+			</Box>
 			{recipes.length > 0 ? (
-				<div className='calendar__recipes-container'>
-					<div className='calendar__recipes-array-container'>
+				<Box className='calendar__recipes-container'>
+					<Box className='calendar__recipes-array-container'>
 						{recipes.map((recipe, recipeIndex) => {
 							return (
-								<div
+								<Box
 									className={`calendar__recipes-item${
 										savedSelectedRecipe === recipe ? ' active' : ''
 									}`}
@@ -126,12 +133,12 @@ const CalendarPage = () => {
 									onClick={() => {
 										handleSelectRecipe(recipe);
 									}}>
-									<RecipeItem recipe={recipe} disableButton />
-								</div>
+									<RecipeItem recipe={recipe} disabled />
+								</Box>
 							);
 						})}
-					</div>
-					<div className='calendar__recipes__button-container'>
+					</Box>
+					<Box className='calendar__recipes__button-container'>
 						<Button
 							variant='contained'
 							color='warning'
@@ -141,17 +148,17 @@ const CalendarPage = () => {
 							{(mailLoading && <LoadingBars />) ||
 								'Recevoir la recette sélectionnée'}
 						</Button>
-					</div>
-				</div>
+					</Box>
+				</Box>
 			) : (
-				<div className='calendar__empty-recipes-message'>
+				<Box className='calendar__empty-recipes-message'>
 					{(recipesLoading && <LoadingHamster />) ||
 						(recipes.length === 0 && (
 							<Typography>Pas encore de recettes a choisir !</Typography>
 						))}
-				</div>
+				</Box>
 			)}
-		</div>
+		</Container>
 	);
 };
 

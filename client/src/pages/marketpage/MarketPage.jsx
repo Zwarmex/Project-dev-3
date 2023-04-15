@@ -1,4 +1,4 @@
-import { Container, CssBaseline } from '@mui/material';
+import { Container, Box, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { LoadingHamster, RecipeItem } from '../../components';
 import './marketpage.css';
@@ -44,27 +44,28 @@ const MarketPage = () => {
 
 	return (
 		<Container component='div' className='marketplace__container'>
-			<CssBaseline />
 			{recipes.length !== 0 && categories.length !== 0 ? (
-				<Container disableGutters>
+				<Box>
 					{categories.map((category, categoryIndex) => (
-						<React.Fragment key={categoryIndex}>
-							<h1>{category.labelCat}</h1>
-							<div className='recipe__marketplace-row'>
+						<Box key={categoryIndex} className='marketplace__row'>
+							<Typography component='p' variant='h4'>
+								{category.labelCat}
+							</Typography>
+							<Box className='marketplace__recipes-array-container scrollbar'>
 								{recipes.map((recipe, recipeIndex) =>
 									recipe.idCat === category.idCat ? (
 										<RecipeItem key={recipeIndex} recipe={recipe} />
 									) : null
 								)}
-							</div>
-						</React.Fragment>
+							</Box>
+						</Box>
 					))}
-				</Container>
+				</Box>
 			) : (
-				<div className='marketplace__no-recipe__container'>
+				<Box className='marketplace__no-recipe__container'>
 					{(loading && <LoadingHamster />) ||
 						(!loading && <h1>NO RECIPES...</h1>)}
-				</div>
+				</Box>
 			)}
 		</Container>
 	);

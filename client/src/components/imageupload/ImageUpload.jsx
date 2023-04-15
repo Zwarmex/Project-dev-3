@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Box, Input } from '@mui/material';
 
 const ImageUpload = ({ onImageUpload }) => {
 	const [image, setImage] = useState(null);
@@ -16,8 +17,8 @@ const ImageUpload = ({ onImageUpload }) => {
 	};
 
 	return (
-		<div>
-			<input type='file' accept='image/*' onChange={handleChange} />
+		<Box>
+			<Input type='file' accept='image/*' onChange={handleChange} />
 			{image && (
 				<img
 					src={image}
@@ -25,7 +26,7 @@ const ImageUpload = ({ onImageUpload }) => {
 					style={{ maxWidth: '200px', maxHeight: '200px' }}
 				/>
 			)}
-		</div>
+		</Box>
 	);
 };
 

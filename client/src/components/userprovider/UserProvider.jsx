@@ -20,7 +20,7 @@ const UserProvider = ({ children }) => {
 		}
 		//get the mail
 		if (storedMailUser) {
-			setIdUser(storedMailUser);
+			setMailUser(storedMailUser);
 		}
 		//get the avatar
 		if (storedAvatarUser) {

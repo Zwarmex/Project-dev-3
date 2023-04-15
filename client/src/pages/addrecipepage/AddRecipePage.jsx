@@ -5,7 +5,6 @@ import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {
-	CssBaseline,
 	Box,
 	FormControl,
 	InputLabel,
@@ -15,27 +14,48 @@ import {
 	MenuItem,
 	Select,
 	Rating,
+	Container,
+	Divider,
+	IconButton,
 } from '@mui/material';
-import { ImageUpload, LoadingBars, UserContext } from '../../components';
+import { AddOutlined } from '@mui/icons-material';
+import {
+	ImageUpload,
+	LoadingBars,
+	UserContext,
+	IngredientItem,
+} from '../../components';
 
 const AddRecipePage = () => {
 	const navigate = useNavigate();
 	const maxImageSize = 1024 * 1024; // 1MB
 	const { idUser } = useContext(UserContext);
+	const [numberOfIngredients, setNumberOfIngredients] = useState(0);
 	const [difficulty, setDifficulty] = useState(1);
 	const [numberOfPersons, setNumberOfPersons] = useState(2);
 	const [time, setTime] = useState(15);
 	const [title, setTitle] = useState('');
 	const [selectedCategoryId, setSelectedCategoryId] = useState('');
 	const [loading, setLoading] = useState(false);
-	const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
+	const [ingredients, setIngredients] = useState([]);
 	const [categories, setCategories] = useState([]);
+	const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
 	const [base64Image, setBase64Image] = useState(null);
 	const [imageSize, setImageSize] = useState(null);
 	const [editorState, setEditorState] = useState(() =>
 		EditorState.createEmpty()
 	);
 
+	const handleAddIngredient = () => {
+		setNumberOfIngredients(numberOfIngredients + 1);
+		setIngredients([
+			...ingredients,
+			<IngredientItem
+				key={numberOfIngredients}
+				ingredient={{ labelIng: 'ingredientName' }}
+			/>,
+		]);
+	};
 	const handleEditorChange = (state) => {
 		setEditorState(state);
 	};
@@ -129,19 +149,14 @@ const AddRecipePage = () => {
 		fetchCategories();
 	}, []);
 	return (
-		<>
-			<CssBaseline />
-			<div className='recipe__add-top-title'>
-				<h1>Ajoute une recette : </h1>
-			</div>
-			<Box
-				component='form'
-				className='recipe__add-form'
-				sx={{
-					'& > :not(style)': { margin: 1 },
-				}}
-				noValidate
-				autoComplete='off'>
+		<Container>
+			{/* Title */}
+			<Box id='recipe__add-top-title'>
+				<Typography component='p' variant='h4'>
+					Ajoute une recette :{' '}
+				</Typography>
+			</Box>
+			<Box component='form' id='recipe__add-form' noValidate autoComplete='off'>
 				<FormControl id='recipe__add-title'>
 					<InputLabel htmlFor='recipe__add-title-input'>
 						<Typography>Titre</Typography>
@@ -214,7 +229,7 @@ const AddRecipePage = () => {
 						plus petite s'il vous plaît.
 					</Typography>
 				)}
-				<div className='recipe__add-difficulty-container'>
+				<Box id='recipe__add-difficulty-container'>
 					<Typography component='legend'>Difficulté :</Typography>
 					<Rating
 						name='recipe-rating'
@@ -223,33 +238,46 @@ const AddRecipePage = () => {
 						precision={1}
 						size='medium'
 					/>
-				</div>
+				</Box>
+				<Box id='recipe__add-ingredients'>
+					<Typography component='p' variant='h5'>
+						Ingredients :
+					</Typography>
+					{ingredients}
+					<IconButton
+						className='recipe__add-ingredients-buttons'
+						onClick={handleAddIngredient}>
+						<AddOutlined />
+					</IconButton>
+				</Box>
 			</Box>
-			<hr />
-			<div className='recipe__add-rich__editor-container'>
-				<h2>Ajoutez les étapes : </h2>
+			<Divider />
+			<Box id='recipe__add-rich__editor-container'>
+				<Typography component='p' variant='h5'>
+					Ajoutez les étapes :{' '}
+				</Typography>
 				<Editor
 					editorState={editorState}
 					onEditorStateChange={handleEditorChange}
 					placeholder='Écrivez ici'
 				/>
-			</div>
-
-			<Button
-				variant='contained'
-				onClick={handleAddRecipe}
-				className='recipe__add-button'
-				sx={{ margin: '0 auto' }}
-				disabled={isAddButtonDisabled}>
-				{loading ? <LoadingBars /> : 'Ajouter la recette'}
-			</Button>
-			{isAddButtonDisabled ? (
-				<Typography color='error' className='recipe__add-error'>
-					Il n'y a pas de titre ou de description. Ajoutez en une s'il vous
-					plait.
-				</Typography>
-			) : null}
-		</>
+			</Box>
+			<Box id='recipe__add-button__warning-container'>
+				<Button
+					variant='contained'
+					onClick={handleAddRecipe}
+					id='recipe__add-button'
+					disabled={isAddButtonDisabled}>
+					{loading ? <LoadingBars /> : 'Ajouter la recette'}
+				</Button>
+				{isAddButtonDisabled ? (
+					<Typography color='error' id='recipe__add-error'>
+						Il n'y a pas de titre ou de description. Ajoutez en une s'il vous
+						plait.
+					</Typography>
+				) : null}
+			</Box>
+		</Container>
 	);
 };
 

@@ -10,6 +10,7 @@ import {
 	InputAdornment,
 	IconButton,
 	Button,
+	Container,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
@@ -153,7 +154,7 @@ const UserSettingsPage = () => {
 	};
 
 	return (
-		<div className='settings__page-container'>
+		<Container className='settings__page-container'>
 			{errorStatus && (
 				<Typography component='h1' color='error'>
 					<pre style={{ fontFamily: 'inherit' }}>{errorMessage}</pre>
@@ -164,27 +165,30 @@ const UserSettingsPage = () => {
 					<pre style={{ fontFamily: 'inherit' }}>{infoMessage}</pre>
 				</Typography>
 			)}
-			<div className='settings__avatar-container'>
+			<Box className='settings__avatar-container'>
 				<Box component='form' className='settings__box-avatar'>
-					<p className='settings__p-title'>Ajouter un avatar :</p>
-					<div className='settings__avatar-uploader'>
+					<Typography component='p' variant='h5' className='settings__p-title'>
+						Ajouter un avatar :
+					</Typography>
+					<Box className='settings__avatar-uploader'>
 						<ImageUpload onImageUpload={handleAvatarUpload} />
-					</div>
+					</Box>
 					<Button
 						className='settings__button-avatar'
 						type='reset'
 						onClick={handleAvatarChanging}
 						color='warning'
 						variant='contained'
-						disabled={avatarLoading || isAvatarAddButtonDisabled}
-						sx={{ margin: '1%' }}>
+						disabled={avatarLoading || isAvatarAddButtonDisabled}>
 						{avatarLoading ? <LoadingBars /> : 'Ajouter ou modifier son avatar'}
 					</Button>
 				</Box>
-			</div>
-			<div className='settings__password-container'>
+			</Box>
+			<Box className='settings__password-container'>
 				<Box component='form' className='settings__box-password'>
-					<p className='settings__p-title'>Changez votre mot de passe :</p>
+					<Typography component='p' variant='h5' className='settings__p-title'>
+						Changez votre mot de passe :
+					</Typography>
 					<FormControl
 						disabled={passwordLoading}
 						id='settings__password-new1-form'
@@ -247,13 +251,12 @@ const UserSettingsPage = () => {
 						onClick={handlePasswordChanging}
 						variant='contained'
 						color='warning'
-						disabled={passwordLoading}
-						sx={{ margin: '1%' }}>
+						disabled={passwordLoading}>
 						{passwordLoading ? <LoadingBars /> : 'Changer de mot de passe'}
 					</Button>
 				</Box>
-			</div>
-		</div>
+			</Box>
+		</Container>
 	);
 };
 
