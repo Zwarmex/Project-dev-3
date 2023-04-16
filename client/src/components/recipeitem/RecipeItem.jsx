@@ -25,7 +25,10 @@ const RecipeItem = ({ recipe, disabled }) => {
 				onError={handleImageError}
 			/>
 			<CardContent className='recipe__item-card__action-content'>
-				<Typography component='p' align='justify'>
+				<Typography
+					component='p'
+					align='justify'
+					className='recipe__item-card__action-title'>
 					{recipe.labelRec}
 				</Typography>
 			</CardContent>

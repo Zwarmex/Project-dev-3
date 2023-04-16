@@ -25,6 +25,7 @@
 		"react-router-dom": "^6.8.1",
 		"react-scripts": "5.0.1",
 		"react-spring": "^9.7.1",
+		"react-widgets": "^5.8.4",
 		"redux": "^4.2.1",
 		"styled-components": "^5.3.6",
 		"uuid": "^9.0.0",

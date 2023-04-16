@@ -21,8 +21,13 @@
 	display: grid;
 	place-content: center;
 }
-.calendar__recipes-array-container {
+.calendar__recipes-array-row {
 	display: flex;
+	gap: 2%;
+	overflow-y: hidden;
+	overflow-x: auto;
+	width: 100%;
+	background-color: rgba(255, 255, 255, 0.5);
 }
 .calendar__recipes-item {
 	position: relative;

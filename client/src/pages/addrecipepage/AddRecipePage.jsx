@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { Combobox } from 'react-widgets';
+import 'react-widgets/styles.css';
 import {
 	Box,
 	FormControl,
@@ -18,12 +20,12 @@ import {
 	Divider,
 	IconButton,
 } from '@mui/material';
-import { AddOutlined } from '@mui/icons-material';
+import { Add, Remove } from '@mui/icons-material';
 import {
 	ImageUpload,
 	LoadingBars,
+	LoadingHamster,
 	UserContext,
-	IngredientItem,
 } from '../../components';
 
 const AddRecipePage = () => {
@@ -36,7 +38,11 @@ const AddRecipePage = () => {
 	const [time, setTime] = useState(15);
 	const [title, setTitle] = useState('');
 	const [selectedCategoryId, setSelectedCategoryId] = useState('');
-	const [loading, setLoading] = useState(false);
+	const [errorMessage, setErrorMessage] = useState('');
+	const [errorStatus, setErrorStatus] = useState(false);
+	const [loadingCategories, setLoadingCategories] = useState(false);
+	const [loadingIngredients, setLoadingIngredients] = useState(false);
+	const [loadingAddRecipe, setLoadingAddRecipe] = useState(false);
 	const [ingredients, setIngredients] = useState([]);
 	const [categories, setCategories] = useState([]);
 	const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
@@ -46,15 +52,8 @@ const AddRecipePage = () => {
 		EditorState.createEmpty()
 	);
 
-	const handleAddIngredient = () => {
-		setNumberOfIngredients(numberOfIngredients + 1);
-		setIngredients([
-			...ingredients,
-			<IngredientItem
-				key={numberOfIngredients}
-				ingredient={{ labelIng: 'ingredientName' }}
-			/>,
-		]);
+	const resetError = () => {
+		setErrorStatus(false);
 	};
 	const handleEditorChange = (state) => {
 		setEditorState(state);
@@ -81,7 +80,7 @@ const AddRecipePage = () => {
 			!title.trim() ||
 			editorState.getCurrentContent().getPlainText().trim() === ''
 		) {
-			isAddButtonDisabled(true);
+			setIsAddButtonDisabled(true);
 			return;
 		}
 		const rawContentState = convertToRaw(editorState.getCurrentContent());
@@ -101,7 +100,7 @@ const AddRecipePage = () => {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(recipeData),
 		};
-		setLoading(true);
+		setLoadingAddRecipe(true);
 		try {
 			const response = await fetch(
 				'https://recipesappfunctions.azurewebsites.net/api/recipe',
@@ -116,10 +115,58 @@ const AddRecipePage = () => {
 		} catch {
 			console.error("L'ajout de recette a échoué");
 		} finally {
-			setLoading(false);
+			setLoadingAddRecipe(false);
 		}
 	};
-
+	const handleAddIngredient = () => {
+		setNumberOfIngredients(numberOfIngredients + 1);
+	};
+	const handleRemoveIngredient = () => {
+		numberOfIngredients > 0 && setNumberOfIngredients(numberOfIngredients - 1);
+	};
+	const fetchIngredients = async () => {
+		resetError();
+		setLoadingIngredients(true);
+		try {
+			const response = await fetch(
+				'https://recipesappfunctions.azurewebsites.net/api/ingredients'
+			);
+			if (response.ok) {
+				const data = await response.json();
+				setIngredients(data);
+			} else {
+				setErrorStatus(true);
+				setErrorMessage('Erreur de connection.');
+			}
+		} catch {
+			setErrorStatus(true);
+			setErrorMessage('Erreur de connection.');
+		} finally {
+			setLoadingIngredients(false);
+		}
+	};
+	const fetchCategories = async () => {
+		resetError();
+		setLoadingCategories(true);
+		try {
+			const response = await fetch(
+				'https://recipesappfunctions.azurewebsites.net/api/categories'
+			);
+			if (response.ok) {
+				const data = await response.json();
+				setCategories(data);
+				setSelectedCategoryId(data[0].idCat);
+			} else {
+				setErrorStatus(true);
+				setErrorMessage('Erreur de connection.');
+			}
+		} catch {
+			setErrorStatus(true);
+			setErrorMessage('Erreur de connection.');
+		} finally {
+			setLoadingCategories(false);
+		}
+	};
 	useEffect(() => {
 		setIsAddButtonDisabled(
 			!title.trim() ||
@@ -129,24 +176,9 @@ const AddRecipePage = () => {
 	}, [title, editorState, imageSize, maxImageSize]);
 
 	useEffect(() => {
-		const fetchCategories = async () => {
-			try {
-				const response = await fetch(
-					'https://recipesappfunctions.azurewebsites.net/api/categories'
-				);
-				if (response.ok) {
-					const data = await response.json();
-					setCategories(data);
-					setSelectedCategoryId(data[0].idCat); // Set the first category ID as the default selected value
-				} else {
-					console.error('Failed to fetch categories');
-				}
-			} catch (error) {
-				console.error('Failed to fetch categories', error);
-			}
-		};
-
 		fetchCategories();
+		fetchIngredients();
+		//eslint-disable-next-line
 	}, []);
 	return (
 		<Container>
@@ -167,7 +199,7 @@ const AddRecipePage = () => {
 						name='recipe__add-title-input'
 						type='text'
 						value={title}
-						label='Full Name'
+						label='Titre'
 					/>
 				</FormControl>
 				<FormControl id='recipe__add-number-of-persons'>
@@ -214,7 +246,15 @@ const AddRecipePage = () => {
 						value={selectedCategoryId}
 						onChange={handleCategoryChange}
 						label='Catégorie'
-						id='recipe__add-category-input'>
+						id='recipe__add-category-input'
+						renderValue={
+							loadingCategories
+								? () => <LoadingBars />
+								: (selectedValue) =>
+										categories.find(
+											(category) => category.idCat === selectedValue
+										)?.labelCat
+						}>
 						{categories.map((category) => (
 							<MenuItem key={category.idCat} value={category.idCat}>
 								{category.labelCat}
@@ -222,15 +262,22 @@ const AddRecipePage = () => {
 						))}
 					</Select>
 				</FormControl>
-				<ImageUpload onImageUpload={handleImageUpload} />
-				{imageSize > maxImageSize && (
-					<Typography color='error'>
-						La taille de l'image dépasse la limite de 1MB. Charger une image
-						plus petite s'il vous plaît.
+				<Box id='recipe__add-image-container'>
+					<Typography component='p' variant='h6'>
+						Photo :
 					</Typography>
-				)}
+					<ImageUpload onImageUpload={handleImageUpload} />
+					{imageSize > maxImageSize && (
+						<Typography color='error'>
+							La taille de l'image dépasse la limite de 1MB. Charger une image
+							plus petite s'il vous plaît.
+						</Typography>
+					)}
+				</Box>
 				<Box id='recipe__add-difficulty-container'>
-					<Typography component='legend'>Difficulté :</Typography>
+					<Typography component='p' variant='h6'>
+						Difficulté :
+					</Typography>
 					<Rating
 						name='recipe-rating'
 						value={difficulty}
@@ -239,16 +286,73 @@ const AddRecipePage = () => {
 						size='medium'
 					/>
 				</Box>
-				<Box id='recipe__add-ingredients'>
+				<Box id='recipe__add-ingredients-container'>
 					<Typography component='p' variant='h5'>
-						Ingredients :
+						Ingredients (optionel) :
 					</Typography>
-					{ingredients}
+					{(loadingIngredients && <LoadingHamster />) ||
+						Array.from(
+							{ length: numberOfIngredients },
+							(_, index) => index + 1
+						).map((value) => {
+							return (
+								<Box
+									key={value}
+									className='recipe__add-ingredients-choice-container'>
+									<Typography
+										component='p'
+										className='recipe__add-ingredients-choice-number'>
+										{value}.
+									</Typography>
+									<Box>
+										<Typography component='p'>
+											Choix de l'ingrédient :
+										</Typography>
+										<Combobox
+											data={ingredients.map((ingredient) => {
+												return ingredient.labelIng;
+											})}
+											placeholder='Ingrédient'
+										/>
+									</Box>
+									{/* <FormControl id='recipe__add-ingredients-quantity'>
+										<InputLabel htmlFor='input__recipe__add-ingredients-quantity'>
+											<Typography>Quantité</Typography>
+										</InputLabel>
+										<OutlinedInput
+											id='input__recipe__add-ingredients-quantity'
+											name='input__recipe__add-ingredients-quantity'
+											type='number'
+											value={ingredient.quantity}
+											onChange={(input) => {
+												handleIngredientQuantityChange(
+													ingredient,
+													input.target.value
+												);
+											}}
+											label='Quantité'
+											required
+										/>
+									</FormControl> */}
+									<Box>
+										<Typography component='p'>Choix de l'unité :</Typography>
+										<Combobox placeholder='Unité'></Combobox>
+									</Box>
+								</Box>
+							);
+						})}
 					<IconButton
 						className='recipe__add-ingredients-buttons'
 						onClick={handleAddIngredient}>
-						<AddOutlined />
+						<Add />
 					</IconButton>
+					{numberOfIngredients > 0 && (
+						<IconButton
+							className='recipe__add-ingredients-buttons'
+							onClick={handleRemoveIngredient}>
+							<Remove />
+						</IconButton>
+					)}
 				</Box>
 			</Box>
 			<Divider />
@@ -268,14 +372,19 @@ const AddRecipePage = () => {
 					onClick={handleAddRecipe}
 					id='recipe__add-button'
 					disabled={isAddButtonDisabled}>
-					{loading ? <LoadingBars /> : 'Ajouter la recette'}
+					{(loadingAddRecipe && <LoadingBars />) || 'Ajouter la recette'}
 				</Button>
-				{isAddButtonDisabled ? (
-					<Typography color='error' id='recipe__add-error'>
+				{isAddButtonDisabled && (
+					<Typography color='error' component='p' id='recipe__add-error'>
 						Il n'y a pas de titre ou de description. Ajoutez en une s'il vous
 						plait.
 					</Typography>
-				) : null}
+				)}
+				{errorStatus && (
+					<Typography color='error' component='p'>
+						{errorMessage}
+					</Typography>
+				)}
 			</Box>
 		</Container>
 	);

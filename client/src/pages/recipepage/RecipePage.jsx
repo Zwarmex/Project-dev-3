@@ -22,7 +22,7 @@ const RecipePage = () => {
 	const [editorState, setEditorState] = useState(() =>
 		EditorState.createEmpty()
 	);
-	const { idRec, mailUser } = useParams();
+	const { idRec } = useParams();
 	const { idUser } = useContext(UserContext);
 
 	const fetchRecipe = async () => {
@@ -67,7 +67,6 @@ const RecipePage = () => {
 			}
 		}
 	};
-
 	const handleImageError = (event) => {
 		event.target.src = defaultRecipeImage;
 		event.target.alt = 'Default image for recipe';
@@ -77,7 +76,6 @@ const RecipePage = () => {
 		fetchRecipe();
 		// eslint-disable-next-line
 	}, []);
-	console.log(idUser, mailUser);
 	return (
 		<Container>
 			<Box className='recipePage__title-container'>

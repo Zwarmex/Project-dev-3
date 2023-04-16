@@ -7,7 +7,9 @@
 	min-width: 20% !important;
 	box-shadow: 1px 1px 1px 2px lightgrey !important;
 }
-
+.recipe__item-card__action-title {
+	user-select: none;
+}
 .recipe__item-card__action-area {
 	height: 100%;
 	max-width: 15vw;

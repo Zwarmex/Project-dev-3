@@ -22,6 +22,7 @@ const CalendarPage = () => {
 	const [errorStatus, setErrorStatus] = useState(false);
 	const [infoMessage, setInfoMessage] = useState('');
 	const [infoStatus, setInfoStatus] = useState(false);
+	const [emailSent, setEmailSent] = useState(false);
 
 	const fetchRecipes = async () => {
 		try {
@@ -45,26 +46,28 @@ const CalendarPage = () => {
 	const sendRecipeEmail = async (recipe) => {
 		const mailBody = { recipe: JSON.stringify({ recipe }), date: date };
 		setMailLoading(true);
+		console.log(JSON.stringify(mailBody));
 		try {
 			const response = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/sendRecipeEmail/${mailUser}`,
+				`https://recipesappfunctions.azurewebsites.net/api/sendRecipeMail/${mailUser}`,
 				{
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: mailBody,
+					body: JSON.stringify(mailBody),
 				}
 			);
 			if (response.ok) {
-				alert('Recipe email sent successfully.');
+				setInfoMessage('Mail envoyé avec succès');
+				setInfoStatus(true);
+				setEmailSent(true);
 			} else {
-				alert('Failed to send recipe email.');
+				setErrorMessage('Problèmes de connection...');
+				setErrorStatus(true);
 			}
-			setInfoMessage("Le service mail n'existe pas encore.");
-			setInfoStatus(true);
 		} catch {
-			setErrorMessage('Error sending recipe email:');
+			setErrorMessage('Problèmes de connection...');
 			setErrorStatus(true);
 		} finally {
 			setMailLoading(false);
@@ -84,8 +87,7 @@ const CalendarPage = () => {
 		}
 	};
 	const handleSendRecipe = () => {
-		setErrorStatus(false);
-		setInfoStatus(false);
+		resetInfosAndErrors();
 		const confirmSend = window.confirm(
 			`Voulez vous réellement recevoir "${
 				savedSelectedRecipe.labelRec
@@ -94,6 +96,10 @@ const CalendarPage = () => {
 		if (confirmSend) {
 			sendRecipeEmail(savedSelectedRecipe);
 		}
+	};
+	const resetInfosAndErrors = () => {
+		setErrorStatus(false);
+		setInfoStatus(false);
 	};
 
 	useEffect(() => {
@@ -122,7 +128,7 @@ const CalendarPage = () => {
 			</Box>
 			{recipes.length > 0 ? (
 				<Box className='calendar__recipes-container'>
-					<Box className='calendar__recipes-array-container'>
+					<Box className='calendar__recipes-array-row scrollbars'>
 						{recipes.map((recipe, recipeIndex) => {
 							return (
 								<Box
@@ -144,8 +150,9 @@ const CalendarPage = () => {
 							color='warning'
 							className='calendar__recipes__button-item'
 							onClick={handleSendRecipe}
-							disabled={!savedSelectedRecipe || mailLoading}>
+							disabled={!savedSelectedRecipe || mailLoading || emailSent}>
 							{(mailLoading && <LoadingBars />) ||
+								(emailSent && 'Vous avez déjà reçu la recette') ||
 								'Recevoir la recette sélectionnée'}
 						</Button>
 					</Box>

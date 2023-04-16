@@ -51,7 +51,7 @@ const MarketPage = () => {
 							<Typography component='p' variant='h4'>
 								{category.labelCat}
 							</Typography>
-							<Box className='marketplace__recipes-array-container scrollbar'>
+							<Box className='marketplace__recipes-array-container scrollbars'>
 								{recipes.map((recipe, recipeIndex) =>
 									recipe.idCat === category.idCat ? (
 										<RecipeItem key={recipeIndex} recipe={recipe} />

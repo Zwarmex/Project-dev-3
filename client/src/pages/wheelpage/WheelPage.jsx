@@ -1,15 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react';
 import './wheelpage.css';
 import { RecipeItem, UserContext, LoadingHamster } from '../../components';
-import { Typography } from '@mui/material';
+import { Box, Button, Container, Typography } from '@mui/material';
 
 const WheelPage = () => {
 	const { idUser } = useContext(UserContext);
 	const [recipes, setRecipes] = useState([]);
-	const wheelRadius = 200;
-	const itemRadius = 50;
-	const [rotation, setRotation] = useState(0);
 	const [loading, setLoading] = useState(false);
+	const [selectedIndex, setSelectedIndex] = useState(null);
 
 	const fetchRecipes = async () => {
 		setLoading(true);
@@ -31,69 +29,83 @@ const WheelPage = () => {
 		}
 	};
 	const startAnimation = () => {
-		const animationDuration = 3000;
-		const endRotation = Math.random() * 360 + 720;
+		const fixedRotations = 2;
+		const extraFullRotations = Math.floor(Math.random() * 3) + 1; // Random number between 1 and 3 (inclusive)
+		const totalRotations =
+			recipes.length * (fixedRotations + extraFullRotations);
+		const initialRotationTime = 50;
 
-		setRotation(endRotation);
+		const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
-		setTimeout(() => {
-			const selected =
-				Math.floor(((endRotation % 360) * recipes.length) / 360) + 1;
-			console.log(`Selected: ${recipes[selected].labelRec}`);
-		}, animationDuration);
+		const rotationTime = (iteration) => {
+			const progress = iteration / (totalRotations + recipes.length);
+			const easedProgress = easeOutCubic(progress);
+			return initialRotationTime + easedProgress * initialRotationTime * 2;
+		};
+
+		for (let i = 0; i < totalRotations; i++) {
+			setTimeout(() => {
+				setSelectedIndex(i % recipes.length);
+			}, i * rotationTime(i));
+		}
+
+		const randomIndex = Math.floor(Math.random() * recipes.length);
+		const extraIterations =
+			(randomIndex - (totalRotations % recipes.length) + recipes.length) %
+			recipes.length;
+		const totalIterations = totalRotations + extraIterations + 1;
+
+		for (let i = totalRotations; i < totalIterations; i++) {
+			setTimeout(() => {
+				setSelectedIndex(i % recipes.length);
+			}, i * rotationTime(i));
+		}
 	};
 
 	useEffect(() => {
 		fetchRecipes();
 		//eslint-disable-next-line
 	}, []);
+
 	return (
-		<>
+		<Container id='wheel__page-container'>
 			{recipes.length > 0 ? (
-				<>
-					<div
-						className='wheel-container'
-						style={{
-							transform: `rotate(${rotation}deg)`,
-							transition: 'transform 3s cubic-bezier(0.25, 0.1, 0.25, 1)',
-						}}>
+				<Box>
+					<Box id='wheel-container'>
 						{recipes.map((recipe, index) => {
 							const angle = (360 / recipes.length) * index;
-							const x =
-								wheelRadius -
-								itemRadius +
-								(wheelRadius - itemRadius) * Math.cos((angle * Math.PI) / 180);
-							const y =
-								wheelRadius -
-								itemRadius +
-								(wheelRadius - itemRadius) * Math.sin((angle * Math.PI) / 180);
+							const selected = selectedIndex === index ? 'selected-recipe' : '';
 							return (
-								<div
+								<Box
 									key={index}
-									className='wheel-items'
+									className={`wheel-items ${selected}`}
 									style={{
-										transform: `translate(${x}px, ${y}px)`,
+										'--rotation-angle': `${angle}deg`,
 									}}>
-									<RecipeItem recipe={recipe} />
-								</div>
+									<RecipeItem recipe={recipe} disabled={!selected} />
+								</Box>
 							);
 						})}
-					</div>
-					<div className='wheel__button-container'>
-						<button className='wheel__button-start' onClick={startAnimation}>
+					</Box>
+					<Box id='wheel__button-container'>
+						<Button
+							id='wheel__button-start'
+							onClick={startAnimation}
+							variant='contained'
+							color='warning'>
 							Start Animation {'>>>>'}
-						</button>
-					</div>
-				</>
+						</Button>
+					</Box>
+				</Box>
 			) : (
-				<div className='wheel__recipes-empty-message'>
+				<Box id='wheel__recipes-empty-message'>
 					{(loading && <LoadingHamster />) ||
 						(!loading && (
 							<Typography>Il n'y a pas de recettes pour le moment.</Typography>
 						))}
-				</div>
+				</Box>
 			)}
-		</>
+		</Container>
 	);
 };
 

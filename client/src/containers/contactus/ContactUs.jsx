@@ -17,10 +17,17 @@ const ContactUs = () => {
 	const [name, setName] = useState('');
 	const [message, setMessage] = useState('');
 
+	const handleMailInput = (newMail) => {
+		setEmailError(!validateEmail(newMail));
+		setEmail(newMail);
+	};
 	const handleSendMessage = () => {
 		alert('Ca ne marche pas encore');
 	};
-
+	const validateEmail = (email) => {
+		const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+		return emailRegex.test(email);
+	};
 	return (
 		<Box component='form' className='contact-form'>
 			<Typography component='p' variant='h4'>
@@ -48,7 +55,7 @@ const ContactUs = () => {
 					<Typography>Votre adresse mail</Typography>
 				</InputLabel>
 				<OutlinedInput
-					onChange={(input) => setEmail(input.target.value)}
+					onChange={(input) => handleMailInput(input.target.value)}
 					id='contactus__email'
 					name='contactus__email'
 					type='email'
