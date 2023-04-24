@@ -222,6 +222,7 @@ const Navbar = () => {
 												<Avatar>
 													{(avatarUser && (
 														<img
+															loading='lazy'
 															src={avatarUser}
 															alt='Avatar'
 															className='navbar__avatarImageUser'

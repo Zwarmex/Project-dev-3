@@ -21,6 +21,7 @@ const ImageUpload = ({ onImageUpload }) => {
 			<Input type='file' accept='image/*' onChange={handleChange} />
 			{image && (
 				<img
+					loading='lazy'
 					src={image}
 					alt='preview'
 					style={{ maxWidth: '200px', maxHeight: '200px' }}

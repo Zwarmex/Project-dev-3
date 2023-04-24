@@ -50,6 +50,7 @@ async function handlePost(context, req) {
 							Recette du ${new Date(date).toLocaleDateString('fr-FR')} : ${recipe.labelRec}
 						</h1>
 						<img
+							loading='lazy'
 							src="${recipe.imgRec}"
 							alt="Image de la recette ${recipe.labelRec}"
 						/>
