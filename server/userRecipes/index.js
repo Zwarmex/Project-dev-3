@@ -53,24 +53,7 @@ async function handleGet(context, req, pool) {
 		? +req.params.idUser
 		: null;
 	const topValue = req.query.hasOwnProperty('top') ? +req.query.top : 10;
-	const orderValue = req.query.hasOwnProperty('order')
-		? req.query.order.toUpperCase()
-		: 'IDREC';
-	const sortValue = req.query.hasOwnProperty('sort')
-		? req.query.sort.toUpperCase()
-		: 'ASC';
-	const validOrderValues = [
-		'IDREC',
-		'LABELREC',
-		'STEPSREC',
-		'NUMBEROFPERSONSREC',
-		'TIMREC',
-		'DIFFICULTYREC',
-		'IMGREC',
-		'IDCAT',
-		'IDUSER',
-	];
-	const validSortValues = ['ASC', 'DESC'];
+	const lastId = req.query.hasOwnProperty('lastId') ? +req.query.lastId : 0;
 
 	if (!Number.isInteger(topValue) || topValue <= 0) {
 		context.res = {
@@ -82,28 +65,8 @@ async function handleGet(context, req, pool) {
 		};
 		return;
 	}
-	if (!validOrderValues.includes(orderValue)) {
-		context.res = {
-			status: 400,
-			body: 'orderValue must be either IDREC,LABELREC,STEPSREC,NUMBEROFPERSONSREC,TIMREC,DIFFICULTYREC,IMGREC,IDCAT,IDUSER.',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-	if (!validSortValues.includes(sortValue)) {
-		context.res = {
-			status: 400,
-			body: "sortValue must be either 'ASC' or 'DESC', case insensitive.",
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
 
-	const query = queries.userRecipesGet(idUser, topValue, orderValue, sortValue);
+	const query = queries.userRecipesGet(idUser, topValue, lastId);
 	const result = await pool.request().query(query);
 
 	context.res = {

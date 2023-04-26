@@ -109,30 +109,25 @@ const CalendarPage = () => {
 
 	return (
 		<Container>
-			<Box className='calendar__title-container'>
+			<Box id='calendar__title-container'>
 				<Typography component='p' variant='h4'>
 					Planifier votre prochain repas :
 				</Typography>
 			</Box>
-			<Box className='calendar__error-container'>
+			<Box id='calendar__error-container'>
 				{errorStatus && <Typography color='error'>{errorMessage}</Typography>}
 				{infoStatus && <Typography>{infoMessage}</Typography>}
 			</Box>
-			<Box className='calendar__calendar-container'>
-				<Calendar
-					className='calendar__calendar-item'
-					onChange={handleSetDate}
-					value={date}
-					locale='fr-FR'
-				/>
+			<Box id='calendar__calendar-container'>
+				<Calendar onChange={handleSetDate} value={date} locale='fr-FR' />
 			</Box>
 			{recipes.length > 0 ? (
-				<Box className='calendar__recipes-container'>
-					<Box className='calendar__recipes-array-row scrollbars'>
+				<Box id='calendar__recipes-container'>
+					<Box id='calendar__recipes-array-row' className='scrollbars'>
 						{recipes.map((recipe, recipeIndex) => {
 							return (
 								<Box
-									className={`calendar__recipes-item${
+									className={`calendar__recipes-items${
 										savedSelectedRecipe === recipe ? ' active' : ''
 									}`}
 									key={recipeIndex}
@@ -144,11 +139,11 @@ const CalendarPage = () => {
 							);
 						})}
 					</Box>
-					<Box className='calendar__recipes__button-container'>
+					<Box id='calendar__recipes__button-container'>
 						<Button
 							variant='contained'
 							color='warning'
-							className='calendar__recipes__button-item'
+							id='calendar__recipes__button-item'
 							onClick={handleSendRecipe}
 							disabled={!savedSelectedRecipe || mailLoading || emailSent}>
 							{(mailLoading && <LoadingBars />) ||
@@ -158,7 +153,7 @@ const CalendarPage = () => {
 					</Box>
 				</Box>
 			) : (
-				<Box className='calendar__empty-recipes-message'>
+				<Box id='calendar__empty-recipes-message'>
 					{(recipesLoading && <LoadingHamster />) ||
 						(recipes.length === 0 && (
 							<Typography>Pas encore de recettes a choisir !</Typography>

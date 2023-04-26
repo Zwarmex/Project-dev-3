@@ -1,38 +1,7 @@
-.calendar__title-container {
-	display: grid;
-	place-content: center;
-	text-decoration: underline;
-	font-weight: bold;
-	margin: 0 0 0.5% 0;
-}
-.calendar__error-container {
-	display: grid;
-	place-content: center;
-}
-.calendar__calendar-container {
-	display: grid;
-	place-content: center;
-}
-.calendar__calendar-item {
-	padding: 5%;
-}
-.calendar__recipes-container {
-	margin: 2% 0 0 0;
-	display: grid;
-	place-content: center;
-}
-.calendar__recipes-array-row {
-	display: flex;
-	gap: 2%;
-	overflow-y: hidden;
-	overflow-x: auto;
-	width: 100%;
-	background-color: rgba(255, 255, 255, 0.5);
-}
-.calendar__recipes-item {
+.calendar__recipes-items {
 	position: relative;
 }
-.calendar__recipes-item::before {
+.calendar__recipes-items::before {
 	content: '';
 	position: absolute;
 	top: 0;
@@ -43,20 +12,53 @@
 	opacity: 0;
 	transition: opacity 0.3s ease-in-out;
 }
-.calendar__recipes-item.active::before {
+.calendar__recipes-items:hover {
+	background-color: rgba(0, 0, 0, 0.1);
+	cursor: pointer;
+	transform: scale(1.03);
+}
+.calendar__recipes-items.active::before {
 	opacity: 1;
 }
-.calendar__recipes__button-container {
+#calendar__title-container {
+	display: grid;
+	place-content: center;
+	text-decoration: underline;
+	font-weight: bold;
+	margin: 0 0 0.5% 0;
+}
+#calendar__error-container {
+	display: grid;
+	place-content: center;
+}
+#calendar__calendar-container {
+	display: grid;
+	place-content: center;
+}
+#calendar__recipes-container {
+	margin: 2% 0 0 0;
+	display: grid;
+	place-content: center;
+}
+#calendar__recipes-array-row {
+	display: flex;
+	gap: 2%;
+	overflow-y: hidden;
+	overflow-x: auto;
+	width: 100%;
+	background-color: rgba(255, 255, 255, 0.5);
+}
+#calendar__recipes__button-container {
 	display: flex;
 	justify-content: center;
 	margin: 5% 0 0 0;
 }
-.calendar__recipes__button-item {
+#calendar__recipes__button-item {
 	width: 35%;
 	padding: 1%;
 	margin: 0;
 }
-.calendar__empty-recipes-message {
+#calendar__empty-recipes-message {
 	margin: 5% 0 0 0;
 	display: grid;
 	place-content: center;

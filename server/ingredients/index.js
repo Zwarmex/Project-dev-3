@@ -42,14 +42,7 @@ module.exports = async function (context, req) {
 
 async function handleGet(context, req, pool) {
 	const topValue = req.query.hasOwnProperty('top') ? +req.query.top : 10;
-	const orderValue = req.query.hasOwnProperty('order')
-		? req.query.order.toUpperCase()
-		: 'IDING';
-	const sortValue = req.query.hasOwnProperty('sort')
-		? req.query.sort.toUpperCase()
-		: 'ASC';
-	const validOrderValues = ['IDING', 'LABELING'];
-	const validSortValues = ['ASC', 'DESC'];
+	const lastId = req.query.hasOwnProperty('lastId') ? +req.query.lastId : 0;
 
 	if (!Number.isInteger(topValue) || topValue <= 0) {
 		context.res = {
@@ -61,41 +54,9 @@ async function handleGet(context, req, pool) {
 		};
 		return;
 	}
-	if (!validOrderValues.includes(orderValue)) {
-		context.res = {
-			status: 400,
-			body: "orderValue must be either 'idCat' or 'labelCat'.",
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-	if (!validSortValues.includes(sortValue)) {
-		context.res = {
-			status: 400,
-			body: "sortValue must be either 'ASC' or 'DESC', case insensitive.",
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
 
-	const query = queries.ingredients(topValue, orderValue, sortValue);
+	const query = queries.ingredients(topValue, lastId);
 	const result = await pool.request().query(query);
-
-	// Verify that result is not null
-	if (!result.recordset || result.recordset.length === 0) {
-		context.res = {
-			status: 404,
-			body: `No ingredients found`,
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
 
 	context.res = {
 		status: 200,
