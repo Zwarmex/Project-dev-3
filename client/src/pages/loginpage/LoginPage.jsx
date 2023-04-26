@@ -198,16 +198,13 @@ const LoginPage = () => {
         }
       );
 
-<<<<<<< HEAD
       if (!response.ok) {
         const errorData = await response.json();
         if (response.status === 409) {
           setErrorMessage("L 'utilisateur existe déjà");
         } else {
           // Display a more specific error message if available in the response
-          setErrorMessage(
-            errorData.message ? errorData.message : "Inscription échouée"
-          );
+          setErrorMessage(errorData.message || "Inscription échouée");
         }
 
         return;
@@ -218,6 +215,12 @@ const LoginPage = () => {
       setErrorMessage("Inscription échouée");
     } finally {
       setLoading(false);
+    }
+  };
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      register ? handleRegister() : handleLogin();
     }
   };
   const validateEmail = (email) => {
@@ -235,18 +238,22 @@ const LoginPage = () => {
     <>
       <CssBaseline />
       <Container className="login__form-container" maxWidth="false">
-        <Box component="form" id="login__form-box" noValidate autoComplete="on">
+        <Box
+          component="form"
+          id="login__form-box"
+          noValidate
+          autoComplete="on"
+          onKeyPress={handleKeyPress}
+        >
           <Container maxWidth="false">
             <Typography variant="h2">
-              {register ? "Inscription" : "Connexion"}
+              {register ? "Inscription" : "Connection"}
             </Typography>
             <Typography variant="subtitle1" fontSize="medium">
               Restez en lien avec la nourriture
             </Typography>
             <Typography variant="subtitle1" color="error">
-              <pre style={{ fontFamily: "inherit" }}>
-                {errorMessage ? errorMessage : null}
-              </pre>
+              <pre style={{ fontFamily: "inherit" }}>{errorMessage}</pre>
             </Typography>
           </Container>
           {register ? (
@@ -336,17 +343,7 @@ const LoginPage = () => {
               required
             />
           </FormControl>
-          {!register ? (
-            <Container>
-              <Typography
-                variant="subtitle2"
-                align="right"
-                className="login__form-reset"
-              >
-                <NavLink to="/reset_password">Mot de passe oublié ?</NavLink>
-              </Typography>
-            </Container>
-          ) : (
+          {register ? (
             <FormControl
               id="register__password-copy"
               error={registerPasswordError}
@@ -380,6 +377,16 @@ const LoginPage = () => {
                 required
               />
             </FormControl>
+          ) : (
+            <Container>
+              <Typography
+                variant="subtitle2"
+                align="right"
+                className="login__form-reset"
+              >
+                <NavLink to="/reset_password">Mot de passe oublié ?</NavLink>
+              </Typography>
+            </Container>
           )}
           <Button
             className="login__form-buttons"
@@ -389,7 +396,7 @@ const LoginPage = () => {
             variant="contained"
             disabled={loading}
           >
-            {!loading ? (register ? "INSCRIPTION" : "CONNEXION") : null}
+            {loading ? null : register ? "INSCRIPTION" : "CONNECTION"}
             {loading && <LoadingBars />}
           </Button>
           <Box className="login__form-option-container">
@@ -407,231 +414,13 @@ const LoginPage = () => {
               }
               className="login__form-buttons login__form-option__buttons"
             >
-              {register ? "CONNEXION" : "INSCRIPTION"}
+              {register ? "CONNECTION" : "INSCRIPTION"}
             </Button>
           </Box>
         </Box>
       </Container>
     </>
   );
-=======
-			if (!response.ok) {
-				const errorData = await response.json();
-				if (response.status === 409) {
-					setErrorMessage("L 'utilisateur existe déjà");
-				} else {
-					// Display a more specific error message if available in the response
-					setErrorMessage(errorData.message || 'Inscription échouée');
-				}
-
-				return;
-			}
-			// If registration is successful, clear the form and display a success message
-			handleLogin();
-		} catch (error) {
-			setErrorMessage('Inscription échouée');
-		} finally {
-			setLoading(false);
-		}
-	};
-	const handleKeyPress = (event) => {
-		if (event.key === 'Enter') {
-			event.preventDefault();
-			register ? handleRegister() : handleLogin();
-		}
-	};
-	const validateEmail = (email) => {
-		const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
-		return emailRegex.test(email);
-	};
-	const validatePassword = (password) => {
-		return password.length >= 8;
-	};
-	const validateBirthday = (birthday) => {
-		return birthday;
-	};
-
-	return (
-		<>
-			<CssBaseline />
-			<Container className='login__form-container' maxWidth='false'>
-				<Box
-					component='form'
-					id='login__form-box'
-					noValidate
-					autoComplete='on'
-					onKeyPress={handleKeyPress}>
-					<Container maxWidth='false'>
-						<Typography variant='h2'>
-							{register ? 'Inscription' : 'Connection'}
-						</Typography>
-						<Typography variant='subtitle1' fontSize='medium'>
-							Restez en lien avec la nourriture
-						</Typography>
-						<Typography variant='subtitle1' color='error'>
-							<pre style={{ fontFamily: 'inherit' }}>{errorMessage}</pre>
-						</Typography>
-					</Container>
-					{register ? (
-						<>
-							<FormControl id='register__first-name' error={firstNameError}>
-								<InputLabel htmlFor='register__first-name'>
-									<Typography>Prénom</Typography>
-								</InputLabel>
-								<OutlinedInput
-									onChange={(input) => setFirstName(input.target.value)}
-									id='register__first-name'
-									name='register__first-name'
-									type='text'
-									value={firstName}
-									label='Prénom'
-									required
-								/>
-							</FormControl>
-							<FormControl id='register__last-name' error={lastNameError}>
-								<InputLabel htmlFor='register__last-name'>
-									<Typography>Nom de famille</Typography>
-								</InputLabel>
-								<OutlinedInput
-									onChange={(input) => setLastName(input.target.value)}
-									id='register__last-name'
-									name='register__last-name'
-									type='text'
-									value={lastName}
-									label='Nom de famille'
-									required
-								/>
-							</FormControl>
-							<TextField
-								id='register__birthday'
-								label='Date de naissance'
-								type='date'
-								value={birthday}
-								onChange={(event) => setBirthday(event.target.value)}
-								InputLabelProps={{
-									shrink: true,
-								}}
-								error={birthdayError}
-								inputProps={{
-									min: minDate.toISOString().split('T')[0], // Convert minDate to 'YYYY-MM-DD' format
-									max: maxDate.toISOString().split('T')[0], // Convert maxDate to 'YYYY-MM-DD' format
-								}}
-							/>
-						</>
-					) : null}
-					<FormControl id='login__email' error={emailError}>
-						<InputLabel htmlFor='input__mail'>
-							<Typography>Email</Typography>
-						</InputLabel>
-						<OutlinedInput
-							onChange={(input) => setEmail(input.target.value)}
-							id='input__mail'
-							name='input__mail'
-							type='email'
-							value={email}
-							label='Email'
-							required
-						/>
-					</FormControl>
-					<FormControl id='login__password' error={loginPasswordError}>
-						<InputLabel htmlFor='input__password-login'>
-							<Typography>Mot de passe</Typography>
-						</InputLabel>
-						<OutlinedInput
-							onChange={(input) => setLoginPassword(input.target.value)}
-							id='input__password-login'
-							name='input__password-login'
-							type={showLoginPassword ? 'text' : 'password'}
-							endAdornment={
-								<InputAdornment position='end'>
-									<IconButton
-										aria-label='toggle password visibility'
-										onClick={handleClickShowLoginPassword}
-										onMouseDown={handleMouseDownPassword}
-										edge='end'>
-										{showLoginPassword ? <Visibility /> : <VisibilityOff />}
-									</IconButton>
-								</InputAdornment>
-							}
-							value={loginPassword}
-							label='Mot de passe'
-							required
-						/>
-					</FormControl>
-					{register ? (
-						<FormControl
-							id='register__password-copy'
-							error={registerPasswordError}>
-							<InputLabel htmlFor='input__password-register'>
-								<Typography>Mot de passe</Typography>
-							</InputLabel>
-							<OutlinedInput
-								onChange={(input) => setRegisterPassword(input.target.value)}
-								id='input__password-register'
-								name='input__password-register'
-								type={showRegisterPassword ? 'text' : 'password'}
-								endAdornment={
-									<InputAdornment position='end'>
-										<IconButton
-											aria-label='toggle password visibility'
-											onClick={handleClickShowRegisterPassword}
-											onMouseDown={handleMouseDownPassword}
-											edge='end'>
-											{showRegisterPassword ? (
-												<Visibility />
-											) : (
-												<VisibilityOff />
-											)}
-										</IconButton>
-									</InputAdornment>
-								}
-								value={registerPassword}
-								label='Mot de passe'
-								required
-							/>
-						</FormControl>
-					) : (
-						<Container>
-							<Typography
-								variant='subtitle2'
-								align='right'
-								className='login__form-reset'>
-								<NavLink to='/reset_password'>Mot de passe oublié ?</NavLink>
-							</Typography>
-						</Container>
-					)}
-					<Button
-						className='login__form-buttons'
-						type='reset'
-						onClick={register ? handleRegister : handleLogin}
-						color='warning'
-						variant='contained'
-						disabled={loading}>
-						{loading ? null : register ? 'INSCRIPTION' : 'CONNECTION'}
-						{loading && <LoadingBars />}
-					</Button>
-					<Box className='login__form-option-container'>
-						<Typography variant='subtitle2' align='left'>
-							{register ? 'Déjà un compte ?' : 'Pas encore de compte ?'}
-						</Typography>
-						<Button
-							size='small'
-							variant='outlined'
-							color='warning'
-							onClick={
-								register
-									? () => handleChangingLoginOrRegister(false)
-									: () => handleChangingLoginOrRegister(true)
-							}
-							className='login__form-buttons login__form-option__buttons'>
-							{register ? 'CONNECTION' : 'INSCRIPTION'}
-						</Button>
-					</Box>
-				</Box>
-			</Container>
-		</>
-	);
->>>>>>> e2767a2e1d9048a5d6d4845f2c3d7a74ba017d70
 };
 
 export default LoginPage;
