@@ -42,24 +42,8 @@ module.exports = async function (context, req) {
 
 async function handleGet(context, req, pool) {
 	const topValue = req.query.hasOwnProperty('top') ? +req.query.top : 10;
-	const orderValue = req.query.hasOwnProperty('order')
-		? req.query.order.toUpperCase()
-		: 'IDREC';
-	const sortValue = req.query.hasOwnProperty('sort')
-		? req.query.sort.toUpperCase()
-		: 'ASC';
-	const validOrderValues = [
-		'IDREC',
-		'LABELREC',
-		'STEPSREC',
-		'NUMBEROFPERSONSREC',
-		'TIMREC',
-		'DIFFICULTYREC',
-		'IMGREC',
-		'IDCAT',
-		'IDUSER',
-	];
-	const validSortValues = ['ASC', 'DESC'];
+
+	const lastId = req.query.hasOwnProperty('lastId') ? +req.query.lastId : 0;
 
 	if (!Number.isInteger(topValue) || topValue <= 0) {
 		context.res = {
@@ -71,42 +55,10 @@ async function handleGet(context, req, pool) {
 		};
 		return;
 	}
-	if (!validOrderValues.includes(orderValue)) {
-		context.res = {
-			status: 400,
-			body: "orderValue must be either 'idCat' or 'labelCat'.",
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-	if (!validSortValues.includes(sortValue)) {
-		context.res = {
-			status: 400,
-			body: "sortValue must be either 'ASC' or 'DESC', case insensitive.",
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
 
 	// Execute SQL query
-	const query = queries.recipes(topValue, orderValue, sortValue);
+	const query = queries.recipes(topValue, lastId);
 	const result = await pool.request().query(query);
-
-	// Verify that the query was successful
-	if (!result.recordset || result.recordset.length === 0) {
-		context.res = {
-			status: 404,
-			body: 'No records found',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
 
 	context.res = {
 		status: 200,
