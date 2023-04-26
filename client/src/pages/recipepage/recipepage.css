@@ -37,3 +37,23 @@
 .recipe__delete-button-item {
 	width: fit-content;
 }
+.recipe__comment-form-container{
+	width: 10%;
+}
+label{
+	font-size:17px;
+}
+
+
+textarea {
+	width: 510px; 
+	height: 153px;
+
+}
+input.recipe__comment-form-input{
+		height: 30px;
+}
+.recipe__comment-form-input{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 17px;
+}

@@ -86,16 +86,17 @@ function recipePost(
 	labelRec,
 	stepsRec,
 	numberOfPersonsRec,
+    comments,
 	timeRec,
 	difficultyRec,
 	imgRec,
 	idCat,
 	idUser
 ) {
-	console.log(`INSERT INTO recipes (labelRec, stepsRec, numberOfPersonsRec, timeRec, difficultyRec, imgRec, idCat, idUser)
-	VALUES ('${labelRec}', '${stepsRec}', ${numberOfPersonsRec}, ${timeRec}, ${difficultyRec}, ${idCat}, ${idUser})`);
-	return `INSERT INTO recipes (labelRec, stepsRec, numberOfPersonsRec, timeRec, difficultyRec, imgRec, idCat, idUser)
-            VALUES ('${labelRec}', '${stepsRec}', ${numberOfPersonsRec}, ${timeRec}, ${difficultyRec}, CONVERT(varbinary(max), ${imgRec}), ${idCat}, ${idUser})`;
+	console.log(`INSERT INTO recipes (labelRec, stepsRec, numberOfPersonsRec, comments, timeRec, difficultyRec, imgRec, idCat, idUser)
+	VALUES ('${labelRec}', '${stepsRec}', ${numberOfPersonsRec}, ${comments}, ${timeRec}, ${difficultyRec}, ${idCat}, ${idUser})`);
+	return `INSERT INTO recipes (labelRec, stepsRec, comments, numberOfPersonsRec, timeRec, difficultyRec, imgRec, idCat, idUser)
+            VALUES ('${labelRec}', '${stepsRec}', ${numberOfPersonsRec}, ${comments}, ${timeRec}, ${difficultyRec}, CONVERT(varbinary(max), ${imgRec}), ${idCat}, ${idUser})`;
 }
 function recipeDelete(idRec, idUser) {
 	return `DELETE TOP(1) FROM recipes
@@ -106,6 +107,7 @@ function recipeGetById(idRec) {
 	labelRec,
 	stepsRec,
 	numberOfPersonsRec,
+    comments,
 	timeRec,
 	difficultyRec,
 	CONVERT(varchar(max), imgRec) as imgRec,
@@ -117,6 +119,7 @@ function recipeGetByLabel(labelRec, topValue, orderValue, sortValue) {
 	labelRec,
 	stepsRec,
 	numberOfPersonsRec,
+    comments,
 	timeRec,
 	difficultyRec,
 	CONVERT(varchar(max), imgRec) as imgRec,
@@ -129,6 +132,7 @@ function recipePut(
 	labelRec,
 	stepsRec,
 	numberOfPersonsRec,
+    comments,
 	timeRec,
 	difficultyRec,
 	imgRec,
@@ -139,6 +143,7 @@ function recipePut(
         SET labelRec='${labelRec}',
             stepsRec='${stepsRec}',
             numberOfPersonsRec=${numberOfPersonsRec},
+			comments=${comments},
             timeRec=${timeRec},
             difficultyRec=${difficultyRec},
             imgRec='${imgRec}',
@@ -151,6 +156,7 @@ function recipes(topValue, orderValue, sortValue) {
 	labelRec,
 	stepsRec,
 	numberOfPersonsRec,
+    comments,
 	timeRec,
 	difficultyRec,
 	CONVERT(varchar(max), imgRec) as imgRec,
@@ -265,6 +271,7 @@ function userRecipesGet(idUser, topValue, orderValue, sortValue) {
 	labelRec,
 	stepsRec,
 	numberOfPersonsRec,
+    comments,
 	timeRec,
 	difficultyRec,
 	CONVERT(varchar(max), imgRec) as imgRec,

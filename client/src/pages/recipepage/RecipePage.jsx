@@ -17,6 +17,7 @@ import defaultRecipeImage from '../../assets/images/defaultRecipeImage.jpg';
 
 const RecipePage = () => {
 	const navigate = useNavigate();
+	const [comments, setComments] = useState([]);
 	const [recipe, setRecipe] = useState([]);
 	const [category, setCategory] = useState([]);
 	const [editorState, setEditorState] = useState(() =>
@@ -38,6 +39,35 @@ const RecipePage = () => {
 
 		// setRecipe(recipe);
 	};
+	const fetchComments = async () => {
+		const data = await fetch(`https://recipesappfunctions.azurewebsites.net/api/comments/${idRec}`);
+		const commentsArray = await data.json();
+		setComments(commentsArray);
+	  };
+	const handleCommentSubmit = async (event) => {
+		event.preventDefault();
+	  
+		const formData = new FormData(event.target);
+		const author = formData.get('author');
+		const text = formData.get('text');
+	  
+		const response = await fetch(`https://recipesappfunctions.azurewebsites.net/api/comments/${idRec}`, {
+		  method: 'POST',
+		  headers: {
+			'Content-Type': 'application/json',
+		  },
+		  body: JSON.stringify({
+			authorCom: author,
+			textCom: text,
+		  }),
+		});
+	  
+		if (response.ok) {
+		  fetchComments();
+		} else {
+		  // Handle any errors during the comment submission process
+		}
+	  };
 	const fetchCategory = async (id) => {
 		const data = await fetch(
 			`https://recipesappfunctions.azurewebsites.net/api/category/${id}`
@@ -74,7 +104,7 @@ const RecipePage = () => {
 
 	useEffect(() => {
 		fetchRecipe();
-		// eslint-disable-next-line
+		fetchComments();
 	}, []);
 	return (
 		<Container>
@@ -130,6 +160,24 @@ const RecipePage = () => {
 					</Button>
 				</Box>
 			) : null}
+				<Box className='recipe__comment-form-container'>
+					<Typography component='p' variant='h5' className='recipe__comment-form-title'>
+						Ajouter un commentaire
+					</Typography>
+					<form onSubmit={handleCommentSubmit} className='recipe__comment-form'>
+						<label htmlFor='author' className='recipe__comment-form-label'>
+						Nom :
+						</label>
+						<input type='text' name='author' className='recipe__comment-form-input' required />
+						<label htmlFor='text' className='recipe__comment-form-label'>
+						Commentaire :
+						</label>
+						<textarea name='text' className='recipe__comment-form-input' required />
+						<Button type='submit' color='primary' variant='contained' className='recipe__delete-button-item'>
+						Ajouter
+						</Button>
+					</form>
+				</Box>
 		</Container>
 	);
 };
