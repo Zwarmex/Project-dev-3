@@ -179,6 +179,13 @@ const LoginPage = () => {
 			return;
 		}
 		setLoading(true);
+		const bodyRegister = JSON.stringify({
+			mail: email,
+			firstname: firstName,
+			lastname: lastName,
+			password: registerPassword,
+			birthday: birthday,
+		});
 		try {
 			// Replace the URL with the appropriate endpoint for user registration in your API
 			const response = await fetch(
@@ -188,13 +195,7 @@ const LoginPage = () => {
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify({
-						mail: email,
-						firstname: firstName,
-						lastname: lastName,
-						password: registerPassword,
-						birthday: birthday,
-					}),
+					body: bodyRegister,
 				}
 			);
 
