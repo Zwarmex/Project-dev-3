@@ -96,6 +96,7 @@ const RecipePage = () => {
 				) : null}
 			</Box>
 			<img
+				loading='lazy'
 				src={recipe.imgRec || defaultRecipeImage}
 				alt={recipe.labelRec || 'Default image for recipe'}
 				className='recipe__img'

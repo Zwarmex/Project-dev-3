@@ -93,7 +93,7 @@ const WheelPage = () => {
 							onClick={startAnimation}
 							variant='contained'
 							color='warning'>
-							Start Animation {'>>>>'}
+							Lancez l'animation
 						</Button>
 					</Box>
 				</Box>
