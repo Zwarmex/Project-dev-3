@@ -259,6 +259,36 @@ function userPutPassword(idUser = null, passwordUser = null, saltUser = null) {
 			saltUser='${saltUser}'
         WHERE idUser=${idUser};`;
 }
+function userGetFavoritesRecipes(idUser) {
+	return `SELECT * FROM userRecipesFav WHERE idUser=${idUser}`;
+}
+function userPostFavoritesRecipes(idUser, idRec) {
+	return `BEGIN TRY
+				INSERT INTO userRecipesFav VALUES(${idRec},${idUser});
+				SELECT 'Recipe added into favorites' as message;
+			END TRY
+			BEGIN CATCH
+				IF ERROR_NUMBER() = 2627 BEGIN
+					SELECT 'The user alredy like the recipe' as message;
+				END
+				ELSE BEGIN
+					SELECT 'Failed to execute query' as message;
+				END
+			END CATCH`;
+}
+function userDeleteFavoritesRecipes(idUser, idRec) {
+	return `BEGIN TRY
+				DELETE FROM userRecipesFav WHERE idUser=${idUser} AND idRec=${idRec};
+				IF @@ROWCOUNT = 0
+					RAISERROR('No favorite found to delete', 16, 1);
+				ELSE
+					SELECT 'Favorite deleted' as message;
+			END TRY
+			BEGIN CATCH
+				SELECT ERROR_MESSAGE() as message;
+			END CATCH`;
+}
+
 function userRecipesGet(idUser, topValue, orderValue, sortValue) {
 	return `SELECT TOP ${topValue} 
 	idRec,
@@ -309,5 +339,8 @@ module.exports = {
 	userPut: userPut,
 	userPutAvatar: userPutAvatar,
 	userPutPassword: userPutPassword,
+	userGetFavoritesRecipes: userGetFavoritesRecipes,
+	userPostFavoritesRecipes: userPostFavoritesRecipes,
+	userDeleteFavoritesRecipes: userDeleteFavoritesRecipes,
 	userRecipesGet: userRecipesGet,
 };
