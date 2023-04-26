@@ -35,12 +35,13 @@ const RecipePage = () => {
     const fav = await result.json();
     for (let index = 0; index < fav.length; index++) {
       const favRecipes = fav[index];
+      //   console.log(idRec == favRecipes.idRec);
       if (idRec === favRecipes.idRec) {
         setIsFav(true);
         break;
       }
     }
-    console.log(fav);
+    // console.log(isFav);
   };
   const fetchRecipe = async () => {
     const data = await fetch(
@@ -64,6 +65,8 @@ const RecipePage = () => {
     });
   };
   const handleFavorite = async () => {
+    const body = JSON.stringify({ idRec: idRec });
+    console.log(isFav);
     if (isFav) {
       const response = await fetch(
         `https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`,
@@ -72,7 +75,7 @@ const RecipePage = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: { idRec: idRec },
+          body: body,
         }
       );
       setIsFav(false);
@@ -84,7 +87,7 @@ const RecipePage = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: { idRec: idRec },
+          body: body,
         }
       );
       setIsFav(true);
@@ -152,7 +155,11 @@ const RecipePage = () => {
         <Typography component="p" variant="h5">
           Catégorie : {category.labelCat}
         </Typography>
-        <IconButton aria-label="add to favorites" onClick={handleFavorite}>
+        <IconButton
+          aria-label="add to favorites"
+          onClick={handleFavorite}
+          color={isFav ? "error" : ""}
+        >
           <FavoriteIcon />
         </IconButton>
       </Box>
