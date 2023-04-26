@@ -197,30 +197,6 @@ const LoginPage = () => {
           }),
         }
       );
-		if (errors) {
-			setErrorMessage(errorMessageRegister);
-			return;
-		}
-		setLoading(true);
-		const bodyRegister = JSON.stringify({
-			mail: email,
-			firstname: firstName,
-			lastname: lastName,
-			password: registerPassword,
-			birthday: birthday,
-		});
-		try {
-			// Replace the URL with the appropriate endpoint for user registration in your API
-			const response = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/user/account`,
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: bodyRegister,
-				}
-			);
 
       if (!response.ok) {
         const errorData = await response.json();
