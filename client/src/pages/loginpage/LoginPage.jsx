@@ -179,6 +179,13 @@ const LoginPage = () => {
 			return;
 		}
 		setLoading(true);
+		const bodyRegister = JSON.stringify({
+			mail: email,
+			firstname: firstName,
+			lastname: lastName,
+			password: registerPassword,
+			birthday: birthday,
+		});
 		try {
 			// Replace the URL with the appropriate endpoint for user registration in your API
 			const response = await fetch(
@@ -188,13 +195,7 @@ const LoginPage = () => {
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify({
-						mail: email,
-						firstname: firstName,
-						lastname: lastName,
-						password: registerPassword,
-						birthday: birthday,
-					}),
+					body: bodyRegister,
 				}
 			);
 
@@ -204,9 +205,7 @@ const LoginPage = () => {
 					setErrorMessage("L 'utilisateur existe déjà");
 				} else {
 					// Display a more specific error message if available in the response
-					setErrorMessage(
-						errorData.message ? errorData.message : 'Inscription échouée'
-					);
+					setErrorMessage(errorData.message || 'Inscription échouée');
 				}
 
 				return;
@@ -217,6 +216,12 @@ const LoginPage = () => {
 			setErrorMessage('Inscription échouée');
 		} finally {
 			setLoading(false);
+		}
+	};
+	const handleKeyPress = (event) => {
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			register ? handleRegister() : handleLogin();
 		}
 	};
 	const validateEmail = (email) => {
@@ -234,7 +239,12 @@ const LoginPage = () => {
 		<>
 			<CssBaseline />
 			<Container className='login__form-container' maxWidth='false'>
-				<Box component='form' id='login__form-box' noValidate autoComplete='on'>
+				<Box
+					component='form'
+					id='login__form-box'
+					noValidate
+					autoComplete='on'
+					onKeyPress={handleKeyPress}>
 					<Container maxWidth='false'>
 						<Typography variant='h2'>
 							{register ? 'Inscription' : 'Connection'}
@@ -243,9 +253,7 @@ const LoginPage = () => {
 							Restez en lien avec la nourriture
 						</Typography>
 						<Typography variant='subtitle1' color='error'>
-							<pre style={{ fontFamily: 'inherit' }}>
-								{errorMessage ? errorMessage : null}
-							</pre>
+							<pre style={{ fontFamily: 'inherit' }}>{errorMessage}</pre>
 						</Typography>
 					</Container>
 					{register ? (
@@ -334,16 +342,7 @@ const LoginPage = () => {
 							required
 						/>
 					</FormControl>
-					{!register ? (
-						<Container>
-							<Typography
-								variant='subtitle2'
-								align='right'
-								className='login__form-reset'>
-								<NavLink to='/reset_password'>Mot de passe oublié ?</NavLink>
-							</Typography>
-						</Container>
-					) : (
+					{register ? (
 						<FormControl
 							id='register__password-copy'
 							error={registerPasswordError}>
@@ -375,6 +374,15 @@ const LoginPage = () => {
 								required
 							/>
 						</FormControl>
+					) : (
+						<Container>
+							<Typography
+								variant='subtitle2'
+								align='right'
+								className='login__form-reset'>
+								<NavLink to='/reset_password'>Mot de passe oublié ?</NavLink>
+							</Typography>
+						</Container>
 					)}
 					<Button
 						className='login__form-buttons'
@@ -383,7 +391,7 @@ const LoginPage = () => {
 						color='warning'
 						variant='contained'
 						disabled={loading}>
-						{!loading ? (register ? 'INSCRIPTION' : 'CONNECTION') : null}
+						{loading ? null : register ? 'INSCRIPTION' : 'CONNECTION'}
 						{loading && <LoadingBars />}
 					</Button>
 					<Box className='login__form-option-container'>

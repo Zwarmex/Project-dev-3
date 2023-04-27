@@ -20,6 +20,7 @@ const RecipeItem = ({ recipe, disabled }) => {
 				component='img'
 				width='100'
 				height='150'
+				loading='lazy'
 				image={recipe.imgRec || defaultRecipeImage}
 				alt={recipe.labelRec || 'Default image for recipe'}
 				onError={handleImageError}

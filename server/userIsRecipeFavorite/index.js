@@ -27,6 +27,7 @@ module.exports = async function (context, req) {
 			case 'GET':
 				await handleGet(context, req, pool);
 				break;
+
 			default:
 				context.res = {
 					status: 405,
@@ -52,23 +53,10 @@ async function handleGet(context, req, pool) {
 	const idUser = req.params.hasOwnProperty('idUser')
 		? +req.params.idUser
 		: null;
-	const topValue = req.query.hasOwnProperty('top') ? +req.query.top : 10;
-	const lastId = req.query.hasOwnProperty('lastId') ? +req.query.lastId : 0;
+	const idRec = req.params.hasOwnProperty('idRec') ? +req.params.idRec : null;
 
-	if (!Number.isInteger(topValue) || topValue <= 0) {
-		context.res = {
-			status: 400,
-			body: 'topValue must be a positive integer.',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
-	const query = queries.userRecipesGet(idUser, topValue, lastId);
+	const query = queries.userGetIsFavoriteRecipe(idUser, idRec);
 	const result = await pool.request().query(query);
-
 	context.res = {
 		status: 200,
 		body: result.recordset,

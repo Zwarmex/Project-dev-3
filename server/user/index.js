@@ -64,7 +64,7 @@ async function handlePost(context, req, pool) {
 	const telephoneUser = req.body.hasOwnProperty('telephone')
 		? +req.body.telephone
 		: null;
-	const mailUser = req.body.hasOwnProperty('email') ? req.body.email : null;
+	const mailUser = req.body.hasOwnProperty('mail') ? req.body.mail : null;
 	const passwordUser = req.body.hasOwnProperty('password')
 		? req.body.password
 		: null;
@@ -179,7 +179,7 @@ async function handlePost(context, req, pool) {
 	} else {
 		context.res = {
 			status: result.recordset[0].status,
-			body: { message: result.recordset[0].message },
+			body: result.recordset[0].message,
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},

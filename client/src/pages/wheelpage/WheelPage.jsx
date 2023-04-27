@@ -30,7 +30,7 @@ const WheelPage = () => {
 	};
 	const startAnimation = () => {
 		const fixedRotations = 2;
-		const extraFullRotations = Math.floor(Math.random() * 3) + 1; // Random number between 1 and 3 (inclusive)
+		const extraFullRotations = Math.floor(Math.random() * 3) + 1;
 		const totalRotations =
 			recipes.length * (fixedRotations + extraFullRotations);
 		const initialRotationTime = 50;
@@ -93,7 +93,7 @@ const WheelPage = () => {
 							onClick={startAnimation}
 							variant='contained'
 							color='warning'>
-							Start Animation {'>>>>'}
+							Lancez l'animation
 						</Button>
 					</Box>
 				</Box>

@@ -1,5 +1,6 @@
-function categories(topValue, orderValue, sortValue) {
-	return `SELECT TOP ${topValue} * FROM categories ORDER BY ${orderValue} ${sortValue}`;
+function categories(topValue, lastId) {
+	const pagination = lastId ? `WHERE idCat > ${lastId}` : '';
+	return `SELECT TOP ${topValue} * FROM categories ${pagination} ORDER BY idCat`;
 }
 function categoryPost(labelCat) {
 	return `BEGIN TRY
@@ -34,8 +35,9 @@ function friendPost(idUser, idFriend) {
 function friendDelete(idUser, idFriend) {
 	return `DELETE FROM Friends WHERE idUser=${idUser} AND idFriend=${idFriend}`;
 }
-function friendGet(idUser, topValue, orderValue, sortValue) {
-	return `SELECT TOP ${topValue} * FROM friends where idUser=${idUser} ORDER BY ${orderValue} ${sortValue}`;
+function friendGet(idUser, topValue, lastId) {
+	const pagination = lastId ? `AND idFriend > ${lastId}` : '';
+	return `SELECT TOP ${topValue} * FROM friends where idUser=${idUser} ${pagination} ORDER BY idFriend`;
 }
 function friendPut(idUser, idFriend, newIdFriend) {
 	return `UPDATE Friends SET idFriend=${newIdFriend} WHERE idUser=${idUser} AND idFriend=${idFriend}`;
@@ -68,8 +70,9 @@ function ingredientGetByLabel(labelIng) {
 function ingredientPut(idIng, labelIng) {
 	return `UPDATE ingredients SET labelIng='${labelIng}' WHERE idIng=${idIng}; `;
 }
-function ingredients(topValue, orderValue, sortValue) {
-	return `SELECT TOP ${topValue} * FROM ingredients ORDER BY ${orderValue} ${sortValue}`;
+function ingredients(topValue, lastId) {
+	const pagination = lastId ? `WHERE idIng > ${lastId}` : '';
+	return `SELECT TOP ${topValue} * FROM ingredients ${pagination} ORDER BY idIng`;
 }
 function opinionPost(textOpi, idRec, idUser) {
 	return `INSERT INTO opinions (textOpi, idRec, idUser) VALUES (${textOpi}, ${idRec}, ${idUser})`;
@@ -77,8 +80,9 @@ function opinionPost(textOpi, idRec, idUser) {
 function opnionDelete(idRec, idUser) {
 	return `DELETE TOP(1) FROM opinions WHERE idRec=${idRec} AND idUser=${idUser}`;
 }
-function opinionGet(idUser, topValue, orderValue, sortValue) {
-	return `SELECT, TOP ${topValue} * FROM opinions WHERE idUser=${idUser} ORDER BY ${orderValue} ${sortValue}`;
+function opinionGet(idUser, topValue, lastId) {
+	const pagination = lastId ? `AND idOpi > ${lastId}` : '';
+	return `SELECT TOP ${topValue} * FROM opinions WHERE idUser=${idUser} ${pagination} ORDER BY ${idOpi}`;
 }
 function opinionPut(idRec, idUser, textOpi) {
 	return `UPDATE opinions SET textOpi='${textOpi}' WHERE idRec=${idRec} AND idUser=${idUser};`;
@@ -113,7 +117,8 @@ function recipeGetById(idRec) {
 	idCat,
 	idUser FROM recipes where idRec=${idRec}`;
 }
-function recipeGetByLabel(labelRec, topValue, orderValue, sortValue) {
+function recipeGetByLabel(labelRec, topValue, lastId) {
+	const pagination = lastId ? `AND idRec > ${lastId}` : '';
 	return `SELECT TOP ${topValue} idRec,
 	labelRec,
 	stepsRec,
@@ -122,7 +127,7 @@ function recipeGetByLabel(labelRec, topValue, orderValue, sortValue) {
 	difficultyRec,
 	CONVERT(varchar(max), imgRec) as imgRec,
 	idCat,
-	idUser FROM recipes WHERE labelRec LIKE '%${labelRec}%' ORDER BY ${orderValue} ${sortValue}`;
+	idUser FROM recipes WHERE labelRec LIKE '%${labelRec}%' ${pagination} ORDER BY idRec`;
 }
 function recipeIngredientsGet(idRec) {
 	return `select idIng, quantityRecIng, unitRecIng from recipeIngredients where idRec=${idRec}`;
@@ -154,7 +159,8 @@ function recipePut(
         WHERE idRec=${idRec} AND idUser=${idUser};
     `;
 }
-function recipes(topValue, orderValue, sortValue) {
+function recipes(topValue, lastId) {
+	const pagination = lastId ? `WHERE idRec > ${lastId}` : '';
 	return `SELECT TOP ${topValue} idRec,
 	labelRec,
 	stepsRec,
@@ -163,7 +169,7 @@ function recipes(topValue, orderValue, sortValue) {
 	difficultyRec,
 	CONVERT(varchar(max), imgRec) as imgRec,
 	idCat,
-	idUser FROM recipes ORDER BY ${orderValue} ${sortValue}`;
+	idUser FROM recipes ${pagination} ORDER BY idRec`;
 }
 function userPost(
 	firstnameUser,
@@ -267,7 +273,46 @@ function userPutPassword(idUser = null, passwordUser = null, saltUser = null) {
 			saltUser='${saltUser}'
         WHERE idUser=${idUser};`;
 }
-function userRecipesGet(idUser, topValue, orderValue, sortValue) {
+function userGetFavoritesRecipes(idUser) {
+	return `SELECT * FROM userRecipesFav WHERE idUser=${idUser}`;
+}
+function userPostFavoritesRecipes(idUser, idRec) {
+	return `BEGIN TRY
+				INSERT INTO userRecipesFav VALUES(${idRec},${idUser});
+				SELECT 'Recipe added into favorites' as message;
+			END TRY
+			BEGIN CATCH
+				IF ERROR_NUMBER() = 2627 BEGIN
+					SELECT 'The user alredy like the recipe' as message;
+				END
+				ELSE BEGIN
+					SELECT 'Failed to execute query' as message;
+				END
+			END CATCH`;
+}
+function userDeleteFavoritesRecipes(idUser, idRec) {
+	return `BEGIN TRY
+				DELETE FROM userRecipesFav WHERE idUser=${idUser} AND idRec=${idRec};
+				IF @@ROWCOUNT = 0
+					RAISERROR('No favorite found to delete', 16, 1);
+				ELSE
+					SELECT 'Favorite deleted' as message;
+			END TRY
+			BEGIN CATCH
+				SELECT ERROR_MESSAGE() as message;
+			END CATCH`;
+}
+function userGetIsFavoriteRecipe(idUser, idRec) {
+	return `SELECT CASE WHEN EXISTS (
+				SELECT * 
+				FROM userRecipesFav 
+				WHERE idUser=${idUser} AND idRec=${idRec}
+			)
+			THEN CAST(1 AS BIT)
+			ELSE CAST(0 AS BIT) END`;
+}
+function userRecipesGet(idUser, topValue, lastId) {
+	const pagination = lastId ? `AND idRec > ${lastId}` : '';
 	return `SELECT TOP ${topValue} 
 	idRec,
 	labelRec,
@@ -279,10 +324,9 @@ function userRecipesGet(idUser, topValue, orderValue, sortValue) {
 	idCat,
 	idUser 
 	FROM recipes 
-	WHERE idUser=${idUser}
-	ORDER BY ${orderValue} ${sortValue}`;
+	WHERE idUser=${idUser} ${pagination}
+	ORDER BY idRec`;
 }
-
 module.exports = {
 	categories: categories,
 	categoryPost: categoryPost,
@@ -319,5 +363,9 @@ module.exports = {
 	userPut: userPut,
 	userPutAvatar: userPutAvatar,
 	userPutPassword: userPutPassword,
+	userGetFavoritesRecipes: userGetFavoritesRecipes,
+	userPostFavoritesRecipes: userPostFavoritesRecipes,
+	userDeleteFavoritesRecipes: userDeleteFavoritesRecipes,
+	userGetIsFavoriteRecipe: userGetIsFavoriteRecipe,
 	userRecipesGet: userRecipesGet,
 };

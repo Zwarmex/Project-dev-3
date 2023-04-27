@@ -20,6 +20,7 @@
 		"react-dom": "^18.2.0",
 		"react-draft-wysiwyg": "^1.15.0",
 		"react-icons": "^4.7.1",
+		"react-infinite-scroll-component": "^6.1.0",
 		"react-rating-stars-component": "^2.2.0",
 		"react-responsive-carousel": "^3.2.23",
 		"react-router-dom": "^6.8.1",

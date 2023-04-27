@@ -1,6 +1,5 @@
 import 'react-calendar/dist/Calendar.css';
 import './calendarpage.css';
-import './dark-calendar.css';
 import { useContext, useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import {
@@ -14,30 +13,42 @@ import { Typography, Button, Box, Container } from '@mui/material';
 const CalendarPage = () => {
 	const { idUser, mailUser } = useContext(UserContext);
 	const [date, setDate] = useState(new Date().toLocaleDateString('en-CA'));
+	const [errorMessage, setErrorMessage] = useState('');
+	const [infoMessage, setInfoMessage] = useState('');
+	const [lastId, setLastId] = useState(0);
 	const [recipes, setRecipes] = useState([]);
 	const [savedSelectedRecipe, setSavedSelectedRecipe] = useState(null);
 	const [recipesLoading, setRecipesLoading] = useState(false);
 	const [mailLoading, setMailLoading] = useState(false);
-	const [errorMessage, setErrorMessage] = useState('');
 	const [errorStatus, setErrorStatus] = useState(false);
-	const [infoMessage, setInfoMessage] = useState('');
 	const [infoStatus, setInfoStatus] = useState(false);
 	const [emailSent, setEmailSent] = useState(false);
+	const [disableMore, setDisableMore] = useState(false);
 
-	const fetchRecipes = async () => {
+	const fetchRecipes = async (lastId, topValue) => {
+		const lastIdString = lastId ? `lastId=${lastId}` : '';
+		const topString = topValue ? `top=${topValue}` : '';
 		try {
-			setRecipesLoading(true);
-			const data = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/recipes`,
-				{
-					method: 'get',
-					headers: {
-						'Content-Type': 'application/json',
-					},
+			if (!disableMore) {
+				setRecipesLoading(true);
+				const data = await fetch(
+					`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/recipes?${lastIdString}&${topString}`,
+					{
+						method: 'get',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+					}
+				);
+				const newRecipes = await data.json();
+				const recipesUpdated = [...recipes, ...newRecipes];
+				const lastIdUpdated = recipesUpdated[recipesUpdated.length - 1].idRec;
+				if (lastId === lastIdUpdated) {
+					setDisableMore(true);
 				}
-			);
-			const recipes = await data.json();
-			setRecipes(recipes);
+				setRecipes(recipesUpdated);
+				setLastId(lastIdUpdated);
+			}
 		} catch {
 		} finally {
 			setRecipesLoading(false);
@@ -97,6 +108,14 @@ const CalendarPage = () => {
 			sendRecipeEmail(savedSelectedRecipe);
 		}
 	};
+	const handleScroll = (e) => {
+		const { scrollLeft, clientWidth, scrollWidth } = e.currentTarget;
+
+		if (scrollWidth - scrollLeft === clientWidth) {
+			fetchRecipes(lastId);
+		}
+	};
+
 	const resetInfosAndErrors = () => {
 		setErrorStatus(false);
 		setInfoStatus(false);
@@ -109,30 +128,28 @@ const CalendarPage = () => {
 
 	return (
 		<Container>
-			<Box className='calendar__title-container'>
+			<Box id='calendar__title-container'>
 				<Typography component='p' variant='h4'>
 					Planifier votre prochain repas :
 				</Typography>
 			</Box>
-			<Box className='calendar__error-container'>
+			<Box id='calendar__error-container'>
 				{errorStatus && <Typography color='error'>{errorMessage}</Typography>}
 				{infoStatus && <Typography>{infoMessage}</Typography>}
 			</Box>
-			<Box className='calendar__calendar-container'>
-				<Calendar
-					className='calendar__calendar-item'
-					onChange={handleSetDate}
-					value={date}
-					locale='fr-FR'
-				/>
+			<Box id='calendar__calendar-container'>
+				<Calendar onChange={handleSetDate} value={date} locale='fr-FR' />
 			</Box>
 			{recipes.length > 0 ? (
-				<Box className='calendar__recipes-container'>
-					<Box className='calendar__recipes-array-row scrollbars'>
+				<Box id='calendar__recipes-container'>
+					<Box
+						id='calendar__recipes-array-row'
+						className='scrollbars'
+						onScroll={handleScroll}>
 						{recipes.map((recipe, recipeIndex) => {
 							return (
 								<Box
-									className={`calendar__recipes-item${
+									className={`calendar__recipes-items${
 										savedSelectedRecipe === recipe ? ' active' : ''
 									}`}
 									key={recipeIndex}
@@ -144,11 +161,11 @@ const CalendarPage = () => {
 							);
 						})}
 					</Box>
-					<Box className='calendar__recipes__button-container'>
+					<Box id='calendar__recipes__button-container'>
 						<Button
 							variant='contained'
 							color='warning'
-							className='calendar__recipes__button-item'
+							id='calendar__recipes__button-item'
 							onClick={handleSendRecipe}
 							disabled={!savedSelectedRecipe || mailLoading || emailSent}>
 							{(mailLoading && <LoadingBars />) ||
@@ -158,7 +175,7 @@ const CalendarPage = () => {
 					</Box>
 				</Box>
 			) : (
-				<Box className='calendar__empty-recipes-message'>
+				<Box id='calendar__empty-recipes-message'>
 					{(recipesLoading && <LoadingHamster />) ||
 						(recipes.length === 0 && (
 							<Typography>Pas encore de recettes a choisir !</Typography>
