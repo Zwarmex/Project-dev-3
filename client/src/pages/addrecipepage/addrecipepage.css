@@ -1,13 +1,16 @@
 .recipe__add-ingredients-buttons {
 	width: fit-content;
 }
-.recipe__add-ingredients-choice-container {
+.recipe__add-ingredients-dropdown-containers {
+	width: 20%;
+}
+.recipe__add-ingredients-choice-containers {
 	display: flex;
 }
-.recipe__add-ingredients-choice-container > *:not(style) {
+.recipe__add-ingredients-choice-containers > *:not(style) {
 	margin: 0 1%;
 }
-.recipe__add-ingredients-choice-number {
+.recipe__add-ingredients-choice-numbers {
 	margin: 0 1% !important;
 	display: flex;
 	align-content: center;

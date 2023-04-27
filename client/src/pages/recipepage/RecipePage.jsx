@@ -26,17 +26,15 @@ const RecipePage = () => {
 	const { idUser } = useContext(UserContext);
 
 	const fetchRecipe = async () => {
-		const data = await fetch(
+		const resultRecipe = await fetch(
 			`https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`
 		);
-		await data.json().then((recipeArray) => {
-			setRecipe(recipeArray[0]);
-			fetchCategory(recipeArray[0].idCat);
-			const contentState = convertFromRaw(JSON.parse(recipeArray[0].stepsRec));
-			setEditorState(EditorState.createWithContent(contentState));
-		});
+		const localRecipe = await resultRecipe.json();
 
-		// setRecipe(recipe);
+		setRecipe(localRecipe);
+		fetchCategory(localRecipe.idCat);
+		const contentState = convertFromRaw(JSON.parse(localRecipe.stepsRec));
+		setEditorState(EditorState.createWithContent(contentState));
 	};
 	const fetchCategory = async (id) => {
 		const data = await fetch(
@@ -76,61 +74,85 @@ const RecipePage = () => {
 		fetchRecipe();
 		// eslint-disable-next-line
 	}, []);
-	return (
-		<Container>
-			<Box className='recipePage__title-container'>
-				<Typography component='p' variant='h4' className='recipe__title'>
-					{recipe.labelRec} ({recipe.numberOfPersonsRec} pers.)
-				</Typography>
-			</Box>
-			<Box className='recipe__rating-container'>
-				<Typography component='legend'>Difficulté :</Typography>
-				{recipe.difficultyRec ? (
-					<Rating
-						className='recipe__rating-stars'
-						name='difficulty'
-						value={recipe.difficultyRec}
-						size='large'
-						readOnly
-					/>
-				) : null}
-			</Box>
-			<img
-				src={recipe.imgRec || defaultRecipeImage}
-				alt={recipe.labelRec || 'Default image for recipe'}
-				className='recipe__img'
-				onError={handleImageError}
-			/>
-
-			<Box className='recipe__category-container'>
-				<Typography component='p' variant='h5'>
-					Catégorie : {category.labelCat}
-				</Typography>
-			</Box>
-			<Divider />
-			<Box className='recipe__steps-container'>
-				<Typography component='p' variant='h5' className='recipe__steps-title'>
-					Étapes ({recipe.timeRec} min.):
-				</Typography>
-				<Editor
-					editorClassName='recipe__steps-editor'
-					editorState={editorState}
-					readOnly
-					toolbarHidden
-				/>
-			</Box>
-			{+idUser === recipe.idUser ? (
-				<Box className='recipe__delete-button-container'>
-					<Button
-						onClick={handleDelete}
-						color='warning'
-						variant='contained'
-						className='recipe__delete-button-item'>
-						Supprimer la recette
-					</Button>
+	try {
+		return (
+			<Container>
+				<Box className='recipePage__title-container'>
+					<Typography component='p' variant='h4' className='recipe__title'>
+						{recipe.labelRec} ({recipe.numberOfPersonsRec} pers.)
+					</Typography>
 				</Box>
-			) : null}
-		</Container>
-	);
+				<Box className='recipe__rating-container'>
+					<Typography component='legend'>Difficulté :</Typography>
+					{recipe.difficultyRec ? (
+						<Rating
+							className='recipe__rating-stars'
+							name='difficulty'
+							value={recipe.difficultyRec}
+							size='large'
+							readOnly
+						/>
+					) : null}
+				</Box>
+				<img
+					src={recipe.imgRec || defaultRecipeImage}
+					alt={recipe.labelRec || 'Default image for recipe'}
+					className='recipe__img'
+					onError={handleImageError}
+				/>
+
+				<Box className='recipe__category-container'>
+					<Typography component='p' variant='h5'>
+						Catégorie : {category.labelCat}
+					</Typography>
+				</Box>
+				<Box className='recipe__ingredients-container'>
+					<Typography variant='h5' component='p'>
+						Ingrédients :
+					</Typography>
+					{(recipe.ingredients.length !== 0 &&
+						recipe.ingredients.map((ingredient, ingredientIndex) => {
+							return (
+								<Typography key={ingredientIndex} variant='h8' component='p'>
+									{ingredient.labelIng}
+								</Typography>
+							);
+						})) || (
+						<Typography variant='h8' component='p'>
+							Il n'y a pas d'ingrédients défini par le créateur de la recette.
+						</Typography>
+					)}
+				</Box>
+				<Divider />
+				<Box className='recipe__steps-container'>
+					<Typography
+						component='p'
+						variant='h5'
+						className='recipe__steps-title'>
+						Étapes ({recipe.timeRec} min.):
+					</Typography>
+					<Editor
+						editorClassName='recipe__steps-editor'
+						editorState={editorState}
+						readOnly
+						toolbarHidden
+					/>
+				</Box>
+				{+idUser === recipe.idUser ? (
+					<Box className='recipe__delete-button-container'>
+						<Button
+							onClick={handleDelete}
+							color='warning'
+							variant='contained'
+							className='recipe__delete-button-item'>
+							Supprimer la recette
+						</Button>
+					</Box>
+				) : null}
+			</Container>
+		);
+	} catch (error) {
+		console.log(error);
+	}
 };
 export default RecipePage;

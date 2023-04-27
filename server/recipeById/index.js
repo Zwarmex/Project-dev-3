@@ -74,7 +74,9 @@ async function handlePost(context, req, pool) {
 		: null;
 	const idCat = req.body.hasOwnProperty('idCat') ? +req.body.idCat : null;
 	const idUser = req.body.hasOwnProperty('idUser') ? +req.body.idUser : null;
-
+	const ingredients = req.body.hasOwnProperty('ingredients')
+		? req.body.ingredients
+		: null;
 	if (!labelRec) {
 		context.res = {
 			status: 400,
@@ -163,16 +165,38 @@ async function handlePost(context, req, pool) {
 		idCat,
 		idUser
 	);
-	const result = await pool.request().query(query);
-
-	result.recordsets.length > 0
+	const resultRecipe = await pool.request().query(query);
+	const idRec = resultRecipe.recordset[0][''];
+	if (ingredients && ingredients.length > 0) {
+		for (let index = 0; index < ingredients.length; index++) {
+			const ingredient = ingredients[index];
+			let idIng;
+			if (ingredient.idIng === null) {
+				const queryIngredientPost = queries.ingredientPost(ingredient.labelIng);
+				const resultIngredient = await pool
+					.request()
+					.query(queryIngredientPost);
+				idIng = +resultIngredient.recordset[0][''];
+			} else {
+				idIng = +ingredient.idIng;
+			}
+			const queryRecipeIngredientPost = queries.recipeIngredientsPost(
+				idIng,
+				idRec,
+				ingredient.quantityRecIng,
+				ingredient.unitRecIng
+			);
+			await pool.request().query(queryRecipeIngredientPost);
+		}
+	}
+	resultRecipe.rowsAffected[0] === 0
 		? (context.res = {
 				status: 409,
-				body: { message: result.recordset[0] },
+				body: 'Error in the insert statement',
 		  })
 		: (context.res = {
 				status: 200,
-				body: { message: 'Recipe added successfully' },
+				body: 'Recipe added successfully',
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
@@ -208,11 +232,22 @@ async function handleDelete(context, req, pool) {
 async function handleGet(context, req, pool) {
 	const idRec = req.params.hasOwnProperty('idRec') ? +req.params.idRec : null;
 
-	const query = queries.recipeGetById(idRec);
-	const result = await pool.request().query(query);
-
+	const queryRecipe = queries.recipeGetById(idRec);
+	const rawRecipe = await pool.request().query(queryRecipe);
+	const recipe = rawRecipe.recordset[0];
+	const queryIngredients = queries.recipeIngredientsGet(idRec);
+	const rawIngredients = await pool.request().query(queryIngredients);
+	const ingredients = rawIngredients.recordset;
+	for (let index = 0; index < ingredients.length; index++) {
+		const queryIngredient = queries.ingredientGetById(ingredients[index].idIng);
+		const rawIngredient = await pool.request().query(queryIngredient);
+		const ingredient = rawIngredient.recordset[0];
+		ingredients[index].labelIng = ingredient.labelIng;
+	}
+	recipe.ingredients = ingredients;
+	console.log(recipe);
 	// Verify that result is not null and contains at least one record
-	if (!result.recordset || result.recordset.length === 0) {
+	if (!recipe || recipe.length === 0) {
 		context.res = {
 			status: 404,
 			body: `No recipes found with the specified id ${idRec}`,
@@ -225,7 +260,7 @@ async function handleGet(context, req, pool) {
 
 	context.res = {
 		status: 200,
-		body: result.recordset,
+		body: recipe,
 		headers: {
 			'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 		},

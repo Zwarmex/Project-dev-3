@@ -1,11 +1,11 @@
-.navbar-container {
+#navbar-container {
 	display: flex;
 	align-items: center;
 	background-color: black;
 	color: white;
 	font-family: var(--font-family);
 }
-.navbar-title {
+#navbar-title {
 	flex: 1;
 	margin: 0.5rem;
 	font-size: xx-large;
@@ -31,14 +31,23 @@
 	justify-content: center;
 	display: inherit;
 }
-.activeLink {
+.activeLinks {
 	color: var(--color-primary);
 	text-decoration: underline;
 }
-.navbar__avatarImageUser {
+#navbar__avatarImageUser {
 	width: 100%;
 	height: auto;
 	object-fit: cover;
+}
+#navbar__avatarContainer {
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
 }
 .navbar__links {
 	display: grid;
@@ -52,7 +61,7 @@
 .navbar__menu-buttons:hover {
 	color: var(--color-primary);
 }
-.navbar__profil-iconButtons {
+#navbar__profil-iconButton {
 	width: 100%;
 }
 #navbar__title {

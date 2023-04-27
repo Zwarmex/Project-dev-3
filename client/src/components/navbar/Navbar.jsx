@@ -41,7 +41,7 @@ const Navbar = () => {
 		setAnchorEl(event.target);
 	};
 	return (
-		<>
+		<Box>
 			<ThemeProvider theme={DarkTheme}>
 				<AppBar position='static'>
 					<Container maxWidth='xl'>
@@ -138,7 +138,7 @@ const Navbar = () => {
 								<NavLink
 									to='/'
 									className={({ isActive }) =>
-										isActive ? 'activeLink navbar__links' : 'navbar__links'
+										isActive ? 'activeLinks navbar__links' : 'navbar__links'
 									}>
 									<Button
 										key='home'
@@ -151,7 +151,7 @@ const Navbar = () => {
 								<NavLink
 									to='/marketplace'
 									className={({ isActive }) =>
-										isActive ? 'activeLink navbar__links' : 'navbar__links'
+										isActive ? 'activeLinks navbar__links' : 'navbar__links'
 									}>
 									<Button
 										key='marketplace'
@@ -166,7 +166,7 @@ const Navbar = () => {
 										<NavLink
 											to='/calendar'
 											className={({ isActive }) =>
-												isActive ? 'activeLink navbar__links' : 'navbar__links'
+												isActive ? 'activeLinks navbar__links' : 'navbar__links'
 											}>
 											<Button
 												key='calendar'
@@ -179,7 +179,7 @@ const Navbar = () => {
 										<NavLink
 											to='/wheel'
 											className={({ isActive }) =>
-												isActive ? 'activeLink navbar__links' : 'navbar__links'
+												isActive ? 'activeLinks navbar__links' : 'navbar__links'
 											}>
 											<Button
 												key='wheel'
@@ -192,7 +192,7 @@ const Navbar = () => {
 										<NavLink
 											to='/recipe_add'
 											className={({ isActive }) =>
-												isActive ? 'activeLink navbar__links' : 'navbar__links'
+												isActive ? 'activeLinks navbar__links' : 'navbar__links'
 											}>
 											<Button
 												key='recipe_add'
@@ -213,7 +213,7 @@ const Navbar = () => {
 											<IconButton
 												onClick={handleClick}
 												size='small'
-												className='navbar__profil-iconButtons'
+												id='navbar__profil-iconButton'
 												aria-controls={
 													Boolean(anchorEl) ? 'account-menu' : undefined
 												}
@@ -221,11 +221,11 @@ const Navbar = () => {
 												aria-expanded={Boolean(anchorEl) ? 'true' : undefined}>
 												<Avatar>
 													{(avatarUser && (
-														<img
-															src={avatarUser}
-															alt='Avatar'
-															className='navbar__avatarImageUser'
-														/>
+														<div
+															id='navbar__avatarContainer'
+															style={{
+																backgroundImage: `url(${avatarUser})`,
+															}}></div>
 													)) || <AccountCircleOutlined />}
 												</Avatar>
 											</IconButton>
@@ -267,7 +267,7 @@ const Navbar = () => {
 									</Container>
 								) : (
 									<Tooltip title='Login'>
-										<IconButton className='navbar__profil-iconButtons'>
+										<IconButton id='navbar__profil-iconButtons'>
 											<NavLink to='/login'>
 												<Avatar>
 													<LoginRounded />
@@ -281,7 +281,7 @@ const Navbar = () => {
 					</Container>
 				</AppBar>
 			</ThemeProvider>
-		</>
+		</Box>
 	);
 };
 export default Navbar;

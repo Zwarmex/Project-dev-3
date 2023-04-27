@@ -42,7 +42,8 @@ function friendPut(idUser, idFriend, newIdFriend) {
 }
 function ingredientPost(labelIng) {
 	return `BEGIN TRY
-				INSERT INTO ingredients (labelIng) values (${labelIng});
+				INSERT INTO ingredients (labelIng) values ('${labelIng}');
+				SELECT SCOPE_IDENTITY();
 			END TRY
 			BEGIN CATCH
 				IF ERROR_NUMBER() = 2627
@@ -92,10 +93,10 @@ function recipePost(
 	idCat,
 	idUser
 ) {
-	console.log(`INSERT INTO recipes (labelRec, stepsRec, numberOfPersonsRec, timeRec, difficultyRec, imgRec, idCat, idUser)
-	VALUES ('${labelRec}', '${stepsRec}', ${numberOfPersonsRec}, ${timeRec}, ${difficultyRec}, ${idCat}, ${idUser})`);
 	return `INSERT INTO recipes (labelRec, stepsRec, numberOfPersonsRec, timeRec, difficultyRec, imgRec, idCat, idUser)
-            VALUES ('${labelRec}', '${stepsRec}', ${numberOfPersonsRec}, ${timeRec}, ${difficultyRec}, CONVERT(varbinary(max), ${imgRec}), ${idCat}, ${idUser})`;
+            VALUES ('${labelRec}', '${stepsRec}', ${numberOfPersonsRec}, ${timeRec}, ${difficultyRec}, 
+			CONVERT(varbinary(max), ${imgRec}), ${idCat}, ${idUser});
+			SELECT SCOPE_IDENTITY();`;
 }
 function recipeDelete(idRec, idUser) {
 	return `DELETE TOP(1) FROM recipes
@@ -122,6 +123,13 @@ function recipeGetByLabel(labelRec, topValue, orderValue, sortValue) {
 	CONVERT(varchar(max), imgRec) as imgRec,
 	idCat,
 	idUser FROM recipes WHERE labelRec LIKE '%${labelRec}%' ORDER BY ${orderValue} ${sortValue}`;
+}
+function recipeIngredientsGet(idRec) {
+	return `select idIng, quantityRecIng, unitRecIng from recipeIngredients where idRec=${idRec}`;
+}
+function recipeIngredientsPost(idIng, idRec, quantityRecIng, unitRecIng) {
+	return `INSERT INTO recipeIngredients
+			VALUES (${idIng}, ${idRec}, ${quantityRecIng},'${unitRecIng}')`;
 }
 function recipePut(
 	idRec,
@@ -300,6 +308,8 @@ module.exports = {
 	recipeDelete: recipeDelete,
 	recipeGetById: recipeGetById,
 	recipeGetByLabel: recipeGetByLabel,
+	recipeIngredientsGet: recipeIngredientsGet,
+	recipeIngredientsPost: recipeIngredientsPost,
 	recipePut: recipePut,
 	recipes: recipes,
 	userPost: userPost,
