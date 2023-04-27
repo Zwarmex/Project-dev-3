@@ -50,18 +50,6 @@ async function handleGet(context, req, pool) {
 	const query = queries.categoryGetByLabel(labelCat);
 	const result = await pool.request().query(query);
 
-	// Verify that result is not null
-	if (!result.recordset || result.recordset.length === 0) {
-		context.res = {
-			status: 404,
-			body: `No category found with the specified label ${labelCat}`,
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
 	context.res = {
 		status: 200,
 		body: result.recordset,

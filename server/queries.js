@@ -4,18 +4,19 @@ function categories(topValue, lastId) {
 }
 function categoryPost(labelCat) {
 	return `BEGIN TRY
-    INSERT INTO categories (labelCat) values (${labelCat});
-  END TRY
-  BEGIN CATCH
-    IF ERROR_NUMBER() = 2627
-    BEGIN
-      SELECT 'Error: The category already exists' as message;
-    END
-    ELSE
-    BEGIN
-      SELECT ' Error: Failed to execute query' as message;
-    END
-  END CATCH`;
+				INSERT INTO categories (labelCat) values (${labelCat});
+				SELECT 'Category added successfully' as message, '200' as status;
+			END TRY
+			BEGIN CATCH
+				IF ERROR_NUMBER() = 2627
+				BEGIN
+					SELECT 'Error: The category already exists' as message, '409' as status;
+				END
+				ELSE
+				BEGIN
+					SELECT ' Error: Failed to execute query' as message, '400' as status;
+				END
+			END CATCH`;
 }
 function categoryDelete(idCat) {
 	return `DELETE TOP(1) FROM recipes where idCat=${idCat}`;
@@ -75,14 +76,26 @@ function ingredients(topValue, lastId) {
 	return `SELECT TOP ${topValue} * FROM ingredients ${pagination} ORDER BY idIng`;
 }
 function opinionPost(textOpi, idRec, idUser) {
-	return `INSERT INTO opinions (textOpi, idRec, idUser) VALUES (${textOpi}, ${idRec}, ${idUser})`;
+	return `BEGIN TRY
+				INSERT INTO opinions (textOpi, idRec, idUser) VALUES ('${textOpi}', ${idRec}, ${idUser})
+			END TRY
+			BEGIN CATCH
+				IF ERROR_NUMBER() = 2627
+				BEGIN
+					SELECT 'Error : The user has already a opinion' as message, '409' as status;
+				END
+				ELSE
+				BEGIN
+					SELECT 'Error : Failed to execute query' as message, '400' as status;
+				END
+			END CATCH`;
 }
 function opnionDelete(idRec, idUser) {
 	return `DELETE TOP(1) FROM opinions WHERE idRec=${idRec} AND idUser=${idUser}`;
 }
 function opinionGet(idUser, topValue, lastId) {
 	const pagination = lastId ? `AND idOpi > ${lastId}` : '';
-	return `SELECT TOP ${topValue} * FROM opinions WHERE idUser=${idUser} ${pagination} ORDER BY ${idOpi}`;
+	return `SELECT TOP ${topValue} * FROM opinions WHERE idUser=${idUser} ${pagination} ORDER BY idOpi`;
 }
 function opinionPut(idRec, idUser, textOpi) {
 	return `UPDATE opinions SET textOpi='${textOpi}' WHERE idRec=${idRec} AND idUser=${idUser};`;
@@ -279,14 +292,14 @@ function userGetFavoritesRecipes(idUser) {
 function userPostFavoritesRecipes(idUser, idRec) {
 	return `BEGIN TRY
 				INSERT INTO userRecipesFav VALUES(${idRec},${idUser});
-				SELECT 'Recipe added into favorites' as message;
+				SELECT 'Recipe added into favorites' as message, '200' as status;
 			END TRY
 			BEGIN CATCH
 				IF ERROR_NUMBER() = 2627 BEGIN
-					SELECT 'The user alredy like the recipe' as message;
+					SELECT 'The user alredy like the recipe' as message, '409' as status;
 				END
 				ELSE BEGIN
-					SELECT 'Failed to execute query' as message;
+					SELECT 'Failed to execute query' as message, '400' as status;
 				END
 			END CATCH`;
 }

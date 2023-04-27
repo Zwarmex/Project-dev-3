@@ -33,9 +33,6 @@ module.exports = async function (context, req) {
 			case 'DELETE':
 				await handleDelete(context, req, pool);
 				break;
-			case 'PUT':
-				await handlePut(context, req, pool);
-				break;
 			default:
 				context.res = {
 					status: 400,
@@ -100,14 +97,14 @@ async function handlePost(context, req, pool) {
 	result.recordsets.length > 0
 		? (context.res = {
 				status: 409,
-				body: { message: result.recordset[0] },
+				body: result.recordset[0],
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
 		  })
 		: (context.res = {
 				status: 200,
-				body: { message: 'Friend added successfully' },
+				body: 'Friend added successfully',
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
@@ -125,7 +122,7 @@ async function handleDelete(context, req, pool) {
 	const query = queries.friendDelete(idUser, idFriend);
 	const result = await pool.request().query(query);
 
-	if (result.rowsAffected[0] === 1) {
+	if (result.rowsAffected[0] > 0) {
 		context.res = {
 			status: 200,
 			body: 'Friend successfully deleted',
@@ -171,63 +168,4 @@ async function handleGet(context, req, pool) {
 			'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 		},
 	};
-}
-async function handlePut(context, req, pool) {
-	// The PUT handler code goes here
-	const idUser = req.params.hasOwnProperty('idUser')
-		? +req.params.idUser
-		: null;
-	const idFriend = req.body.hasOwnProperty('idFriend')
-		? +req.body.idFriend
-		: null;
-	const newIdFriend = req.body.hasOwnProperty('newIdFriend')
-		? +req.body.newIdFriend
-		: null;
-
-	if (!idFriend || !newIdFriend) {
-		context.res = {
-			status: 400,
-			body: 'idFriend and newIdFriend parameters are required',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-	if (
-		!Number.isInteger(idFriend) ||
-		!Number.isInteger(newIdFriend) ||
-		idFriend <= 0 ||
-		newIdFriend <= 0
-	) {
-		context.res = {
-			status: 400,
-			body: 'idFriend and newIdFriend parameters must be positive integer',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
-	const query = queries.friendPut(idUser, idFriend, newIdFriend);
-	const result = await pool.request().query(query);
-
-	if (result.rowsAffected[0] === 1) {
-		context.res = {
-			status: 200,
-			body: 'Friend successfully updated',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-	} else {
-		context.res = {
-			status: 404,
-			body: 'Friend not found',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-	}
 }

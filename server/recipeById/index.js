@@ -189,17 +189,17 @@ async function handlePost(context, req, pool) {
 			await pool.request().query(queryRecipeIngredientPost);
 		}
 	}
-	resultRecipe.rowsAffected[0] === 0
+	resultRecipe.rowsAffected[0] > 0
 		? (context.res = {
-				status: 409,
-				body: 'Error in the insert statement',
-		  })
-		: (context.res = {
 				status: 200,
 				body: 'Recipe added successfully',
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
+		  })
+		: (context.res = {
+				status: 409,
+				body: 'Error in the insert statement',
 		  });
 }
 async function handleDelete(context, req, pool) {
@@ -211,7 +211,7 @@ async function handleDelete(context, req, pool) {
 	const query = queries.recipeDelete(idRec, idUser);
 	const result = await pool.request().query(query);
 
-	if (result.rowsAffected[0] === 1) {
+	if (result.rowsAffected[0] > 0) {
 		context.res = {
 			status: 200,
 			body: 'Entry successfully deleted',
@@ -246,18 +246,6 @@ async function handleGet(context, req, pool) {
 	}
 	recipe.ingredients = ingredients;
 	console.log(recipe);
-	// Verify that result is not null and contains at least one record
-	if (!recipe || recipe.length === 0) {
-		context.res = {
-			status: 404,
-			body: `No recipes found with the specified id ${idRec}`,
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
 	context.res = {
 		status: 200,
 		body: recipe,
@@ -296,7 +284,7 @@ async function handlePut(context, req, pool) {
 	);
 	const result = await pool.request().query(query);
 
-	if (result.rowsAffected[0] === 1) {
+	if (result.rowsAffected[0] > 0) {
 		context.res = {
 			status: 200,
 			body: 'Recipe updated successfully',

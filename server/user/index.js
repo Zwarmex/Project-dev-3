@@ -171,7 +171,7 @@ async function handlePost(context, req, pool) {
 	if (result.rowsAffected[0] > 0) {
 		context.res = {
 			status: 200,
-			body: { message: 'User added successfully' },
+			body: 'User added successfully',
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -189,21 +189,10 @@ async function handlePost(context, req, pool) {
 async function handleDelete(context, req, pool) {
 	const idUser = req.body.hasOwnProperty('idUser') ? +req.body.idUser : null;
 
-	if (!idUser || !Number.isInteger(idUser)) {
-		context.res = {
-			status: 400,
-			body: 'idUser parameter is required and must be a number',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
 	const query = queries.userDelete(idUser);
 	const result = await pool.request().query(query);
 
-	if (result.rowsAffected[0] === 1) {
+	if (result.rowsAffected[0] > 0) {
 		context.res = {
 			status: 200,
 			body: 'User successfully deleted',
@@ -246,7 +235,6 @@ async function handleGet(context, req, pool) {
 		}
 	}
 
-	// If the email is not found or the password is incorrect, return an appropriate error message.
 	context.res = {
 		status: 401,
 		body: 'Invalid email or password',
@@ -289,7 +277,7 @@ async function handlePut(context, req, pool) {
 	);
 	const result = await pool.request().query(query);
 
-	if (result.rowsAffected[0] === 1) {
+	if (result.rowsAffected[0] > 0) {
 		context.res = {
 			status: 200,
 			body: 'User successfully updated',

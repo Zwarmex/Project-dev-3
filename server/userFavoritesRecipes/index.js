@@ -99,23 +99,14 @@ async function handlePost(context, req, pool) {
 	}
 	const query = queries.userPostFavoritesRecipes(idUser, idRec);
 	const result = await pool.request().query(query);
-	if (result.rowsAffected[0] >= 1) {
-		context.res = {
-			status: 200,
-			body: result.recordset[0].message,
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-	} else {
-		context.res = {
-			status: 500,
-			body: result.recordset[0].message,
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-	}
+
+	context.res = {
+		status: result.recordset[0].status,
+		body: result.recordset[0].message,
+		headers: {
+			'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+		},
+	};
 }
 async function handleDelete(context, req, pool) {
 	const idUser = req.params.hasOwnProperty('idUser')
@@ -134,7 +125,7 @@ async function handleDelete(context, req, pool) {
 	}
 	const query = queries.userDeleteFavoritesRecipes(idUser, idRec);
 	const result = await pool.request().query(query);
-	if (result.rowsAffected[0] === 1) {
+	if (result.rowsAffected[0] > 0) {
 		context.res = {
 			status: 200,
 			body: result.recordset[0].message,

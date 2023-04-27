@@ -54,17 +54,6 @@ async function handleGet(context, req, pool) {
 	const query = queries.ingredientGetByLabel(labelIng);
 	const result = await pool.request().query(query);
 
-	if (!result.recordset || result.recordset.length === 0) {
-		context.res = {
-			status: 404,
-			body: `No ingredient found with the specified label ${labelIng}`,
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
 	context.res = {
 		status: 200,
 		body: result.recordset,

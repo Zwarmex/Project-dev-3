@@ -68,39 +68,22 @@ async function handlePost(context, req, pool) {
 	const query = queries.categoryPost(labelCat);
 	const result = await pool.request().query(query);
 
-	result.recordsets.length > 0
-		? (context.res = {
-				status: 409,
-				body: { message: result.recordset[0] },
-		  })
-		: (context.res = {
-				status: 200,
-				body: { message: 'Category added successfully' },
-				headers: {
-					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-				},
-		  });
+	context.res = {
+		status: result.recordset[0].status,
+		body: result.recordset[0].message,
+		headers: {
+			'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+		},
+	};
 }
 async function handleDelete(context, req, pool) {
 	// The DELETE handler code goes here
 	const idCat = req.params.hasOwnProperty('idCat') ? +req.params.idCat : null;
 
-	// Verify that idCat is not null
-	if (idCat <= 0) {
-		context.res = {
-			status: 400,
-			body: 'idCat parameter must be positive',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
 	const query = queries.categoryDelete(idCat);
 	const result = await pool.request().query(query);
 
-	if (result.rowsAffected[0] === 1) {
+	if (result.rowsAffected[0] > 0) {
 		context.res = {
 			status: 200,
 			body: 'Entry successfully deleted',
@@ -122,30 +105,8 @@ async function handleGet(context, req, pool) {
 	// The GET handler code goes here
 	const idCat = req.params.hasOwnProperty('idCat') ? +req.params.idCat : null;
 
-	if (idCat <= 0) {
-		context.res = {
-			status: 400,
-			body: 'id parameter must be positive',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
 	const query = queries.categoryGetById(idCat);
 	const result = await pool.request().query(query);
-
-	// Verify that result is not null
-	if (!result.recordset || result.recordset.length === 0) {
-		context.res = {
-			status: 404,
-			body: `No category found with the specified id ${idCat}`,
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
 
 	context.res = {
 		status: 200,
@@ -164,16 +125,6 @@ async function handlePut(context, req, pool) {
 		context.res = {
 			status: 400,
 			body: 'label parameter is required',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-	if (idCat <= 0) {
-		context.res = {
-			status: 400,
-			body: 'idCat parameter must be positive',
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
