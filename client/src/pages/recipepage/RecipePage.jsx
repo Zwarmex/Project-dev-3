@@ -33,15 +33,15 @@ const RecipePage = () => {
       `https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`
     );
     const fav = await result.json();
-    for (let index = 0; index < fav.length; index++) {
-      const favRecipes = fav[index];
-      //   console.log(idRec == favRecipes.idRec);
+    for (const element of fav) {
+      const favRecipes = element;
+      console.log("idRec === favRecipes.idRec ? :" + idRec == favRecipes.idRec);
       if (idRec === favRecipes.idRec) {
         setIsFav(true);
         break;
       }
     }
-    // console.log(isFav);
+    console.log("isFav : " + isFav);
   };
   const fetchRecipe = async () => {
     const data = await fetch(
@@ -53,8 +53,6 @@ const RecipePage = () => {
       const contentState = convertFromRaw(JSON.parse(recipeArray[0].stepsRec));
       setEditorState(EditorState.createWithContent(contentState));
     });
-
-    // setRecipe(recipe);
   };
   const fetchCategory = async (id) => {
     const data = await fetch(
