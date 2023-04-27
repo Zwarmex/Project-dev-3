@@ -7,6 +7,7 @@ const MarketPage = () => {
 	const [recipes, setRecipes] = useState([]);
 	const [categories, setCategories] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const [lastId, setLastId] = useState(0);
 
 	const fetchCategories = async () => {
 		setLoading(true);
@@ -21,22 +22,34 @@ const MarketPage = () => {
 			setLoading(false);
 		}
 	};
-
-	const fetchRecipes = async () => {
+	const fetchRecipes = async (lastId, category, topValue) => {
+		const lastIdString = lastId ? `lastId=${lastId}` : '';
+		const categoryString = category ? `category=${category}` : '';
+		const topString = topValue ? `top=${topValue}` : '';
 		setLoading(true);
 		try {
 			const data = await fetch(
-				'https://recipesappfunctions.azurewebsites.net/api/recipes?idCat=1&top=10'
+				`https://recipesappfunctions.azurewebsites.net/api/recipes?${lastIdString}&${topString}&${categoryString}`
 			);
 
-			const recipes = await data.json();
-			setRecipes(recipes);
+			const newRecipes = await data.json();
+			const recipesUpdated = [...recipes, ...newRecipes];
+			const lastIdUpdated = recipesUpdated[recipesUpdated.length - 1].idRec;
+
+			setRecipes(recipesUpdated);
+			setLastId(lastIdUpdated);
 		} catch {
 		} finally {
 			setLoading(false);
 		}
 	};
+	const handleScroll = (e) => {
+		const { scrollLeft, clientWidth, scrollWidth } = e.currentTarget;
 
+		if (scrollWidth - scrollLeft === clientWidth) {
+			fetchRecipes(lastId);
+		}
+	};
 	useEffect(() => {
 		fetchCategories();
 		fetchRecipes();
@@ -51,7 +64,9 @@ const MarketPage = () => {
 							<Typography component='p' variant='h4'>
 								{category.labelCat}
 							</Typography>
-							<Box className='marketplace__recipes-array-container scrollbars'>
+							<Box
+								className='marketplace__recipes-array-container scrollbars'
+								onScroll={handleScroll}>
 								{recipes.map((recipe, recipeIndex) =>
 									recipe.idCat === category.idCat ? (
 										<RecipeItem key={recipeIndex} recipe={recipe} />
