@@ -294,6 +294,15 @@ function userDeleteFavoritesRecipes(idUser, idRec) {
 				SELECT ERROR_MESSAGE() as message;
 			END CATCH`;
 }
+function userGetIsFavoriteRecipe(idUser, idRec) {
+	return `SELECT CASE WHEN EXISTS (
+				SELECT * 
+				FROM userRecipesFav 
+				WHERE idUser=${idUser} AND idRec=${idRec}
+			)
+			THEN CAST(1 AS BIT)
+			ELSE CAST(0 AS BIT) END`;
+}
 function userRecipesGet(idUser, topValue, lastId) {
 	const pagination = lastId ? `AND idRec > ${lastId}` : '';
 	return `SELECT TOP ${topValue} 
@@ -347,5 +356,6 @@ module.exports = {
 	userGetFavoritesRecipes: userGetFavoritesRecipes,
 	userPostFavoritesRecipes: userPostFavoritesRecipes,
 	userDeleteFavoritesRecipes: userDeleteFavoritesRecipes,
+	userGetIsFavoriteRecipe: userGetIsFavoriteRecipe,
 	userRecipesGet: userRecipesGet,
 };
