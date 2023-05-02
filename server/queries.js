@@ -115,9 +115,10 @@ function recipePost(
 			CONVERT(varbinary(max), ${imgRec}), ${idCat}, ${idUser});
 			SELECT SCOPE_IDENTITY();`;
 }
-function recipeDelete(idRec, idUser) {
+function recipeDelete(idRec, idUser, abilityUser) {
+	let userCondition = abilityUser === 1 ? '' : `AND idUser=${idUser}`;
 	return `DELETE TOP(1) FROM recipes
-            WHERE idRec=${idRec} AND idUser=${idUser}`;
+            WHERE idRec=${idRec} ${userCondition}`;
 }
 function recipeGetById(idRec) {
 	return `SELECT idRec,
@@ -172,17 +173,26 @@ function recipePut(
         WHERE idRec=${idRec} AND idUser=${idUser};
     `;
 }
-function recipes(topValue, lastId) {
-	const pagination = lastId ? `WHERE idRec > ${lastId}` : '';
+function recipes(topValue, lastId, idCat) {
+	let conditions = [];
+	if (lastId) {
+		conditions.push(`idRec > ${lastId}`);
+	}
+	if (idCat) {
+		conditions.push(`idCat = ${idCat}`);
+	}
+	const whereClause = conditions.length
+		? `WHERE ${conditions.join(' AND ')}`
+		: '';
 	return `SELECT TOP ${topValue} idRec,
-	labelRec,
-	stepsRec,
-	numberOfPersonsRec,
-	timeRec,
-	difficultyRec,
-	CONVERT(varchar(max), imgRec) as imgRec,
-	idCat,
-	idUser FROM recipes ${pagination} ORDER BY idRec`;
+        labelRec,
+        stepsRec,
+        numberOfPersonsRec,
+        timeRec,
+        difficultyRec,
+        CONVERT(varchar(max), imgRec) as imgRec,
+        idCat,
+        idUser FROM recipes ${whereClause} ORDER BY idRec`;
 }
 function userPost(
 	firstnameUser,

@@ -13,7 +13,7 @@ const MarketPage = () => {
 		setLoading(true);
 		try {
 			const data = await fetch(
-				'https://recipesappfunctions.azurewebsites.net/api/categories?top=10'
+				'https://recipesappfunctions.azurewebsites.net/api/categories'
 			);
 			const categories = await data.json();
 			setCategories(categories);
@@ -22,9 +22,9 @@ const MarketPage = () => {
 			setLoading(false);
 		}
 	};
-	const fetchRecipes = async (lastId, category, topValue) => {
+	const fetchRecipes = async (lastId, idCat, topValue) => {
 		const lastIdString = lastId ? `lastId=${lastId}` : '';
-		const categoryString = category ? `category=${category}` : '';
+		const categoryString = idCat ? `idCat=${idCat}` : '';
 		const topString = topValue ? `top=${topValue}` : '';
 		setLoading(true);
 		try {

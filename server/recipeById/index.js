@@ -207,8 +207,24 @@ async function handleDelete(context, req, pool) {
 	const idUser = req.params.hasOwnProperty('idUser')
 		? +req.params.idUser
 		: null;
+	const abilityUser = req.body.hasOwnProperty('abilityUser')
+		? +req.body.abilityUser
+		: null;
 
-	const query = queries.recipeDelete(idRec, idUser);
+	if (
+		abilityUser !== null &&
+		(!Number.isInteger(abilityUser) || abilityUser <= 0)
+	) {
+		context.res = {
+			status: 400,
+			body: 'abilityUser must be a positive integer.',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
+	const query = queries.recipeDelete(idRec, idUser, abilityUser);
 	const result = await pool.request().query(query);
 
 	if (result.rowsAffected[0] > 0) {

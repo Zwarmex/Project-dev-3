@@ -42,8 +42,8 @@ module.exports = async function (context, req) {
 
 async function handleGet(context, req, pool) {
 	const topValue = req.query.hasOwnProperty('top') ? +req.query.top : 10;
-
 	const lastId = req.query.hasOwnProperty('lastId') ? +req.query.lastId : 0;
+	const idCat = req.query.hasOwnProperty('idCat') ? +req.query.idCat : null;
 
 	if (!Number.isInteger(topValue) || topValue <= 0) {
 		context.res = {
@@ -55,9 +55,19 @@ async function handleGet(context, req, pool) {
 		};
 		return;
 	}
+	if (idCat !== null && (!Number.isInteger(idCat) || idCat <= 0)) {
+		context.res = {
+			status: 400,
+			body: 'idCat must be a positive integer.',
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+		return;
+	}
 
 	// Execute SQL query
-	const query = queries.recipes(topValue, lastId);
+	const query = queries.recipes(topValue, lastId, idCat);
 	const result = await pool.request().query(query);
 
 	context.res = {
