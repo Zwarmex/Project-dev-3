@@ -10,7 +10,6 @@ const FavoritePage = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [lastId, setLastId] = useState(0);
-  const { idRec } = useParams();
   const { idUser } = useContext(UserContext);
 
   const fetchFavoritesRecipes = async () => {
@@ -19,12 +18,18 @@ const FavoritePage = () => {
       const result = await fetch(
         `https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`
       );
-      const favoritesrecipes = await result.json();
-      console.log(favoritesrecipes);
-      const data = await fetch(
-        `https://recipesappfunctions.azurewebsites.net/api/recipes`
-      );
-      const recipes = await data.json();
+      const favoritesRecipes = await result.json();
+      console.log(favoritesRecipes);
+      let localRecipes = [];
+      for (let index = 0; index < favoritesRecipes.length; index++) {
+        const idRec = favoritesRecipes[index].idRec;
+        const data = await fetch(
+          `https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`
+        );
+        let recipe = await data.json();
+        localRecipes.push(recipe);
+      }
+      setRecipes(localRecipes);
     } catch {
     } finally {
       setLoading(false);
@@ -44,37 +49,9 @@ const FavoritePage = () => {
       setLoading(false);
     }
   };
-  const fetchRecipes = async (lastId, idCat, topValue) => {
-    const lastIdString = lastId ? `lastId=${lastId}` : "";
-    const categoryString = idCat ? `idCat=${idCat}` : "";
-    const topString = topValue ? `top=${topValue}` : "";
-    setLoading(true);
-    try {
-      const data = await fetch(
-        `https://recipesappfunctions.azurewebsites.net/api/recipes?${lastIdString}&${topString}&${categoryString}`
-      );
 
-      const newRecipes = await data.json();
-      const recipesUpdated = [...recipes, ...newRecipes];
-      const lastIdUpdated = recipesUpdated[recipesUpdated.length - 1].idRec;
-
-      setRecipes(recipesUpdated);
-      setLastId(lastIdUpdated);
-    } catch {
-    } finally {
-      setLoading(false);
-    }
-  };
-  const handleScroll = (e) => {
-    const { scrollLeft, clientWidth, scrollWidth } = e.currentTarget;
-
-    if (scrollWidth - scrollLeft === clientWidth) {
-      fetchRecipes(lastId);
-    }
-  };
   useEffect(() => {
     fetchCategories();
-    fetchRecipes();
     fetchFavoritesRecipes();
   }, []);
 
