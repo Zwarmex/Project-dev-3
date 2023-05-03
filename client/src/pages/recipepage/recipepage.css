@@ -40,10 +40,6 @@
 .recipe__comment-form-container{
 	width: 10%;
 }
-label{
-	font-size:17px;
-}
-
 
 textarea {
 	width: 510px; 
@@ -53,7 +49,23 @@ textarea {
 input.recipe__comment-form-input{
 		height: 30px;
 }
-.recipe__comment-form-input{
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 17px;
+.recipe__comment-form-title{
+	width: 2000%;
 }
+.recipePage__comment{
+	display: inline-block;
+	width: 20%;
+	height: auto;
+	background-color: white;
+	border-radius: 5%;
+	text-align: center;
+	font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+}
+.commentaires{
+	height: 100px;
+	border-radius: 5%;
+	border-color: rgb(255, 127, 127);
+	border: 10%;
+}
+
+	
