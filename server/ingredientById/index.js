@@ -77,14 +77,14 @@ async function handlePost(context, req, pool) {
 	result.recordsets.length > 0
 		? (context.res = {
 				status: 409,
-				body: { message: result.recordset[0] },
+				body: result.recordset[0],
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
 		  })
 		: (context.res = {
 				status: 200,
-				body: { message: 'Ingredient added successfully' },
+				body: 'Ingredient added successfully',
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
@@ -96,7 +96,7 @@ async function handleDelete(context, req, pool) {
 	const query = queries.ingredientDelete(idIng);
 	const result = await pool.request().query(query);
 
-	if (result.rowsAffected[0] === 1) {
+	if (result.rowsAffected[0] > 0) {
 		context.res = {
 			status: 200,
 			body: 'Entry successfully deleted',
@@ -119,17 +119,6 @@ async function handleGet(context, req, pool) {
 
 	const query = queries.ingredientGetById(idIng);
 	const result = await pool.request().query(query);
-
-	if (!result.recordset || result.recordset.length === 0) {
-		context.res = {
-			status: 404,
-			body: `No ingredient found with the specified id ${idIng}`,
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
 
 	context.res = {
 		status: 200,

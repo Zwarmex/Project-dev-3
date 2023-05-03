@@ -6,7 +6,7 @@
 			"direction": "in",
 			"name": "req",
 			"methods": ["get", "post", "delete", "put"],
-			"route": "opinion/{user?}/{idUser:int?}/{recipe?}/{idRec:int?}",
+			"route": "opinion/user/{idUser:int}/recipe/{idRec:int}",
 			"webHookType": "genericJson"
 		},
 		{

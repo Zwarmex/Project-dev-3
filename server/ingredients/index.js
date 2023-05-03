@@ -54,7 +54,6 @@ async function handleGet(context, req, pool) {
 		};
 		return;
 	}
-
 	const query = queries.ingredients(topValue, lastId);
 	const result = await pool.request().query(query);
 

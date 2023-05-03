@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { Combobox } from 'react-widgets';
+import { DropdownList } from 'react-widgets';
 import 'react-widgets/styles.css';
 import {
 	Box,
@@ -29,6 +29,20 @@ import {
 } from '../../components';
 
 const AddRecipePage = () => {
+	const [units, setUnits] = useState([
+		'cm³',
+		'g',
+		'mg',
+		'kg',
+		'l',
+		'ml',
+		'cl',
+		'pouce',
+		'tasse',
+		'cuillère à café',
+		'cuillère à soupe',
+		'pièce',
+	]);
 	const navigate = useNavigate();
 	const maxImageSize = 1024 * 1024; // 1MB
 	const { idUser } = useContext(UserContext);
@@ -44,6 +58,7 @@ const AddRecipePage = () => {
 	const [loadingIngredients, setLoadingIngredients] = useState(false);
 	const [loadingAddRecipe, setLoadingAddRecipe] = useState(false);
 	const [ingredients, setIngredients] = useState([]);
+	const [ingredientsSelected, setIngredientsSelected] = useState([]);
 	const [categories, setCategories] = useState([]);
 	const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
 	const [base64Image, setBase64Image] = useState(null);
@@ -76,6 +91,34 @@ const AddRecipePage = () => {
 		setSelectedCategoryId(event.target.value);
 	};
 	const handleAddRecipe = async () => {
+		resetError();
+		let labelError = false;
+		let quantityError = false;
+		let unitError = false;
+		let errorMessageRecipe = '';
+		for (let index = 0; index < ingredientsSelected.length; index++) {
+			const ingredient = ingredientsSelected[index];
+			if (!labelError && ingredient.labelIng === '') {
+				labelError = true;
+				errorMessageRecipe += "- Il manque au moins un nom d'ingrédient\n";
+			}
+			if (!quantityError && !ingredient.quantityRecIng) {
+				quantityError = true;
+				errorMessageRecipe += '- Il manque au moins une quantité\n';
+			}
+			if (!unitError && !ingredient.unitRecIng) {
+				unitError = true;
+				errorMessageRecipe += '- Il manque au moins une unité\n';
+			}
+			if (labelError && quantityError && unitError) {
+				break;
+			}
+		}
+		if (labelError || quantityError || unitError) {
+			setErrorStatus(true);
+			setErrorMessage(errorMessageRecipe);
+			return;
+		}
 		if (
 			!title.trim() ||
 			editorState.getCurrentContent().getPlainText().trim() === ''
@@ -94,7 +137,9 @@ const AddRecipePage = () => {
 			idCat: selectedCategoryId,
 			idUser: idUser,
 			img: base64Image,
+			ingredients: ingredientsSelected,
 		};
+		console.log(JSON.stringify(recipeData));
 		const requestOptions = {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -119,10 +164,56 @@ const AddRecipePage = () => {
 		}
 	};
 	const handleAddIngredient = () => {
-		setNumberOfIngredients(numberOfIngredients + 1);
+		setNumberOfIngredients(
+			(prevNumberOfIngredients) => prevNumberOfIngredients + 1
+		);
+		setIngredientsSelected((prevSelectedIngredients) => [
+			...prevSelectedIngredients,
+			{ quantityRecIng: 0 },
+		]);
 	};
 	const handleRemoveIngredient = () => {
-		numberOfIngredients > 0 && setNumberOfIngredients(numberOfIngredients - 1);
+		if (numberOfIngredients > 0) {
+			const newLength = numberOfIngredients - 1;
+			setNumberOfIngredients(newLength);
+			setIngredientsSelected((prevSelectedIngredients) =>
+				prevSelectedIngredients.slice(0, newLength)
+			);
+		}
+	};
+	const handleNewIngredient = (newLabel) => {
+		setIngredients([...ingredients, { labelIng: newLabel }]);
+	};
+	const handleNewUnit = (newUnit) => {
+		setUnits([...units, newUnit]);
+	};
+	const handleIngredientQuantityChange = (index, newValue) => {
+		const updatedIngredientsSelected = [...ingredientsSelected];
+		updatedIngredientsSelected[index].quantityRecIng = newValue;
+		setIngredientsSelected(updatedIngredientsSelected);
+	};
+	const handleIngredientSelectedChange = (index, newIngredient) => {
+		const updatedIngredientsSelected = [...ingredientsSelected];
+		updatedIngredientsSelected[index].labelIng = newIngredient.labelIng;
+		updatedIngredientsSelected[index].idIng = newIngredient.hasOwnProperty(
+			'idIng'
+		)
+			? newIngredient.idIng
+			: null;
+		console.log(updatedIngredientsSelected);
+		setIngredientsSelected(updatedIngredientsSelected);
+	};
+	const handleIngredientUnitChange = (index, newUnit) => {
+		const updatedIngredientsSelected = [...ingredientsSelected];
+		updatedIngredientsSelected[index].unitRecIng = newUnit;
+		setIngredientsSelected(updatedIngredientsSelected);
+	};
+	const preventNegativeInput = (event) => {
+		// Check if the pressed key is a minus sign
+		if (event.key === '-') {
+			// Prevent the minus sign from being entered
+			event.preventDefault();
+		}
 	};
 	const fetchIngredients = async () => {
 		resetError();
@@ -174,7 +265,6 @@ const AddRecipePage = () => {
 				imageSize > maxImageSize
 		);
 	}, [title, editorState, imageSize, maxImageSize]);
-
 	useEffect(() => {
 		fetchCategories();
 		fetchIngredients();
@@ -293,65 +383,82 @@ const AddRecipePage = () => {
 					{(loadingIngredients && <LoadingHamster />) ||
 						Array.from(
 							{ length: numberOfIngredients },
-							(_, index) => index + 1
-						).map((value) => {
+							(_, index) => index
+						).map((index) => {
 							return (
 								<Box
-									key={value}
-									className='recipe__add-ingredients-choice-container'>
+									key={index}
+									className='recipe__add-ingredients-choice-containers'>
 									<Typography
 										component='p'
-										className='recipe__add-ingredients-choice-number'>
-										{value}.
+										className='recipe__add-ingredients-choice-numbers'>
+										{index + 1}.
 									</Typography>
-									<Box>
-										<Typography component='p'>
-											Choix de l'ingrédient :
-										</Typography>
-										<Combobox
-											data={ingredients.map((ingredient) => {
-												return ingredient.labelIng;
-											})}
+									<Box className='recipe__add-ingredients-dropdown-containers'>
+										<DropdownList
+											data={ingredients}
+											dataKey='idIng'
+											textField='labelIng'
 											placeholder='Ingrédient'
+											onCreate={handleNewIngredient}
+											allowCreate='onFilter'
+											onChange={(ingredient) => {
+												handleIngredientSelectedChange(index, ingredient);
+											}}
 										/>
 									</Box>
-									{/* <FormControl id='recipe__add-ingredients-quantity'>
-										<InputLabel htmlFor='input__recipe__add-ingredients-quantity'>
-											<Typography>Quantité</Typography>
-										</InputLabel>
-										<OutlinedInput
-											id='input__recipe__add-ingredients-quantity'
-											name='input__recipe__add-ingredients-quantity'
-											type='number'
-											value={ingredient.quantity}
-											onChange={(input) => {
-												handleIngredientQuantityChange(
-													ingredient,
-													input.target.value
-												);
-											}}
-											label='Quantité'
-											required
-										/>
-									</FormControl> */}
-									<Box>
-										<Typography component='p'>Choix de l'unité :</Typography>
-										<Combobox placeholder='Unité'></Combobox>
+									<Box className='recipe__add-ingredients-dropdown-containers'>
+										<FormControl id='recipe__add-ingredients-quantity'>
+											<InputLabel htmlFor='input__recipe__add-ingredients-quantity'>
+												<Typography>Quantité</Typography>
+											</InputLabel>
+											<OutlinedInput
+												id='input__recipe__add-ingredients-quantity'
+												name='input__recipe__add-ingredients-quantity'
+												type='number'
+												inputProps={{ min: 0 }}
+												value={ingredientsSelected[index].quantityRecIng}
+												onChange={(input) => {
+													handleIngredientQuantityChange(
+														index,
+														input.target.value
+													);
+												}}
+												onKeyDown={preventNegativeInput}
+												label='Quantité'
+												fullWidth
+												required
+											/>
+										</FormControl>
+									</Box>
+									<Box className='recipe__add-ingredients-dropdown-containers'>
+										<DropdownList
+											placeholder='Unité'
+											data={units}
+											allowCreate='onFilter'
+											onCreate={handleNewUnit}
+											onChange={(unit) => {
+												handleIngredientUnitChange(index, unit);
+											}}></DropdownList>
 									</Box>
 								</Box>
 							);
 						})}
-					<IconButton
-						className='recipe__add-ingredients-buttons'
-						onClick={handleAddIngredient}>
-						<Add />
-					</IconButton>
-					{numberOfIngredients > 0 && (
-						<IconButton
-							className='recipe__add-ingredients-buttons'
-							onClick={handleRemoveIngredient}>
-							<Remove />
-						</IconButton>
+					{!loadingIngredients && (
+						<>
+							<IconButton
+								className='recipe__add-ingredients-buttons'
+								onClick={handleAddIngredient}>
+								<Add />
+							</IconButton>
+							{numberOfIngredients > 0 && (
+								<IconButton
+									className='recipe__add-ingredients-buttons'
+									onClick={handleRemoveIngredient}>
+									<Remove />
+								</IconButton>
+							)}
+						</>
 					)}
 				</Box>
 			</Box>
@@ -381,8 +488,8 @@ const AddRecipePage = () => {
 					</Typography>
 				)}
 				{errorStatus && (
-					<Typography color='error' component='p'>
-						{errorMessage}
+					<Typography color='error' component='h1'>
+						<pre style={{ fontFamily: 'inherit' }}>{errorMessage}</pre>
 					</Typography>
 				)}
 			</Box>

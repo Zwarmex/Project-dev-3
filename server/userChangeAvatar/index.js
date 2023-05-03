@@ -58,7 +58,7 @@ async function handlePut(context, req, pool) {
 	const query = queries.userPutAvatar(idUser, avatarUser);
 	const result = await pool.request().query(query);
 
-	if (result.rowsAffected[0] === 1) {
+	if (result.rowsAffected[0] > 0) {
 		context.res = {
 			status: 200,
 			body: 'User successfully updated',

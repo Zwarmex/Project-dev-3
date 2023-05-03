@@ -5,7 +5,7 @@
 			"type": "httpTrigger",
 			"direction": "in",
 			"name": "req",
-			"methods": ["get", "post", "put", "delete"],
+			"methods": ["get", "post", "delete"],
 			"route": "friend/{user?}/{idUser:int?}/{idFriend:int?}",
 			"webHookType": "genericJson"
 		},

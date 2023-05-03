@@ -48,6 +48,37 @@ const LoginPage = () => {
     today.getMonth(),
     today.getDate()
   );
+  const navigate = useNavigate();
+  const { setIdUser, setAvatarUser, setMailUser, setAbilityUser } =
+    useContext(UserContext);
+  const [email, setEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [registerPassword, setRegisterPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [birthday, setBirthday] = useState("");
+  const [register, setRegister] = useState(0);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [loginPasswordError, setLoginPasswordError] = useState(false);
+  const [registerPasswordError, setRegisterPasswordError] = useState(false);
+  const [firstNameError, setFirstNameError] = useState(false);
+  const [lastNameError, setLastNameError] = useState(false);
+  const [birthdayError, setBirthdayError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const today = new Date();
+  const maxDate = new Date(
+    today.getFullYear() - 3,
+    today.getMonth(),
+    today.getDate()
+  );
+  const minDate = new Date(
+    today.getFullYear() - 150,
+    today.getMonth(),
+    today.getDate()
+  );
 
   const handleChangingLoginOrRegister = (isRegister) => {
     setRegister(isRegister);

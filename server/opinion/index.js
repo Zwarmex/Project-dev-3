@@ -58,73 +58,35 @@ module.exports = async function (context, req) {
 
 async function handlePost(context, req, pool) {
 	const textOpi = req.body.hasOwnProperty('textOpi') ? req.body.textOpi : null;
-	const idRec = req.body.hasOwnProperty('idRec') ? +req.body.idRec : null;
-	const idUser = req.body.hasOwnProperty('idUser') ? +req.body.idUser : null;
+	const idRec = req.params.hasOwnProperty('idRec') ? +req.params.idRec : null;
+	const idUser = req.params.hasOwnProperty('idUser')
+		? +req.params.idUser
+		: null;
 
 	if (!textOpi) {
 		context.res = {
 			status: 400,
-			body: { message: 'textOpi parameter is required' },
+			body: 'textOpi parameter is required',
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
 		};
 		return;
 	}
-	if (!idRec) {
-		context.res = {
-			status: 400,
-			body: { message: 'idRec parameter is required' },
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-	if (!idUser) {
-		context.res = {
-			status: 400,
-			body: { message: 'idUser parameter is required' },
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-	if (!Number.isInteger(idRec) || idRec <= 0) {
-		context.res = {
-			status: 400,
-			body: { message: 'idRec parameter must be positive integer' },
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-	if (!Number.isInteger(idUser) || idUser <= 0) {
-		context.res = {
-			status: 400,
-			body: { message: 'idUser parameter must be positive integer' },
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
+
 	const query = queries.opinionPost(textOpi, idRec, idUser);
 	const result = await pool.request().query(query);
-
-	result.recordsets.length > 0
+	result.rowsAffected[0] >= 1
 		? (context.res = {
-				status: 409,
-				body: { message: result.recordset[0] },
+				status: 200,
+				body: 'Opinion added successfully',
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
 		  })
 		: (context.res = {
-				status: 200,
-				body: { message: 'Ingredient added successfully' },
+				status: result.recordset[0].status,
+				body: result.recordset[0].message,
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
