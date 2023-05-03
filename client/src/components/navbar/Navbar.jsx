@@ -280,6 +280,13 @@ const Navbar = () => {
                       </MenuItem>
                       <MenuItem
                         onClick={() => {
+                          navigate("/favoritepage");
+                        }}
+                      >
+                        Mes favoris
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
                           logout();
                           navigate("/");
                         }}

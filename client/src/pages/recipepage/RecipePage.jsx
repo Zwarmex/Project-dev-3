@@ -57,7 +57,6 @@ const RecipePage = () => {
   };
   const handleFavorite = async () => {
     const body = JSON.stringify({ idRec: idRec });
-    console.log(isFav);
     if (isFav) {
       const response = await fetch(
         `https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`,
