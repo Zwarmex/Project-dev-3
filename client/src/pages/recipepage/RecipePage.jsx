@@ -26,15 +26,23 @@ const RecipePage = () => {
   );
   const { idRec } = useParams();
   const { idUser } = useContext(UserContext);
-  const navigate = useNavigate();
-  const [recipe, setRecipe] = useState([]);
-  const [category, setCategory] = useState([]);
-  const [editorState, setEditorState] = useState(() =>
-    EditorState.createEmpty()
-  );
-  const { idRec } = useParams();
-  const { idUser, abilityUser } = useContext(UserContext);
 
+  const [isFav, setIsFav] = useState(false);
+  const getFav = async () => {
+    const result = await fetch(
+      `https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`
+    );
+    const fav = await result.json();
+    for (const element of fav) {
+      const favRecipes = element;
+      console.log("idRec === favRecipes.idRec ? :" + idRec == favRecipes.idRec);
+      if (idRec === favRecipes.idRec) {
+        setIsFav(true);
+        break;
+      }
+    }
+    console.log("isFav : " + isFav);
+  };
   const fetchRecipe = async () => {
     const data = await fetch(
       `https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`
@@ -45,8 +53,6 @@ const RecipePage = () => {
       const contentState = convertFromRaw(JSON.parse(recipeArray[0].stepsRec));
       setEditorState(EditorState.createWithContent(contentState));
     });
-
-    // setRecipe(recipe);
   };
   const fetchCategory = async (id) => {
     const data = await fetch(
@@ -55,6 +61,35 @@ const RecipePage = () => {
     await data.json().then((categoryArray) => {
       setCategory(categoryArray[0]);
     });
+  };
+  const handleFavorite = async () => {
+    const body = JSON.stringify({ idRec: idRec });
+    console.log(isFav);
+    if (isFav) {
+      const response = await fetch(
+        `https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: body,
+        }
+      );
+      setIsFav(false);
+    } else {
+      const response = await fetch(
+        `https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: body,
+        }
+      );
+      setIsFav(true);
+    }
   };
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
@@ -84,6 +119,7 @@ const RecipePage = () => {
 
   useEffect(() => {
     fetchRecipe();
+    getFav();
     // eslint-disable-next-line
   }, []);
   return (
@@ -117,6 +153,13 @@ const RecipePage = () => {
         <Typography component="p" variant="h5">
           Catégorie : {category.labelCat}
         </Typography>
+        <IconButton
+          aria-label="add to favorites"
+          onClick={handleFavorite}
+          color={isFav ? "error" : ""}
+        >
+          <FavoriteIcon />
+        </IconButton>
       </Box>
       <Divider />
       <Box className="recipe__steps-container">

@@ -19,36 +19,6 @@ import {
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { setIdUser, setAvatarUser, setMailUser } = useContext(UserContext);
-  const [email, setEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
-  const [registerPassword, setRegisterPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [birthday, setBirthday] = useState("");
-  const [register, setRegister] = useState(0);
-  const [showLoginPassword, setShowLoginPassword] = useState(false);
-  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
-  const [emailError, setEmailError] = useState(false);
-  const [loginPasswordError, setLoginPasswordError] = useState(false);
-  const [registerPasswordError, setRegisterPasswordError] = useState(false);
-  const [firstNameError, setFirstNameError] = useState(false);
-  const [lastNameError, setLastNameError] = useState(false);
-  const [birthdayError, setBirthdayError] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const today = new Date();
-  const maxDate = new Date(
-    today.getFullYear() - 3,
-    today.getMonth(),
-    today.getDate()
-  );
-  const minDate = new Date(
-    today.getFullYear() - 150,
-    today.getMonth(),
-    today.getDate()
-  );
-  const navigate = useNavigate();
   const { setIdUser, setAvatarUser, setMailUser, setAbilityUser } =
     useContext(UserContext);
   const [email, setEmail] = useState("");
@@ -144,9 +114,11 @@ const LoginPage = () => {
       setIdUser(data.idUser);
       setMailUser(data.mailUser);
       setAvatarUser(data.avatarUser);
+      setAbilityUser(data.abilityUser);
       localStorage.setItem("idUser", data.idUser);
       localStorage.setItem("mailUser", data.mailUser);
       localStorage.setItem("avatarUser", data.avatarUser);
+      localStorage.setItem("abilityUser", data.abilityUser);
       navigate("/");
     } catch (error) {
       setErrorMessage("Connection échouée");
@@ -210,6 +182,13 @@ const LoginPage = () => {
       return;
     }
     setLoading(true);
+    const bodyRegister = JSON.stringify({
+      mail: email,
+      firstname: firstName,
+      lastname: lastName,
+      password: registerPassword,
+      birthday: birthday,
+    });
     try {
       // Replace the URL with the appropriate endpoint for user registration in your API
       const response = await fetch(
@@ -219,13 +198,7 @@ const LoginPage = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            mail: email,
-            firstname: firstName,
-            lastname: lastName,
-            password: registerPassword,
-            birthday: birthday,
-          }),
+          body: bodyRegister,
         }
       );
 
