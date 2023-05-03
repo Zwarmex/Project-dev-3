@@ -30,29 +30,22 @@ const RecipePage = () => {
   const [isFav, setIsFav] = useState(false);
   const getFav = async () => {
     const result = await fetch(
-      `https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`
+      `https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/isFavoriteRecipe/${idRec}`
     );
     const fav = await result.json();
-    for (const element of fav) {
-      const favRecipes = element;
-      console.log("idRec === favRecipes.idRec ? :" + idRec == favRecipes.idRec);
-      if (idRec === favRecipes.idRec) {
-        setIsFav(true);
-        break;
-      }
-    }
-    console.log("isFav : " + isFav);
+    setIsFav(fav[0][""]);
   };
+
   const fetchRecipe = async () => {
-    const data = await fetch(
+    const resultRecipe = await fetch(
       `https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`
     );
-    await data.json().then((recipeArray) => {
-      setRecipe(recipeArray[0]);
-      fetchCategory(recipeArray[0].idCat);
-      const contentState = convertFromRaw(JSON.parse(recipeArray[0].stepsRec));
-      setEditorState(EditorState.createWithContent(contentState));
-    });
+    const localRecipe = await resultRecipe.json();
+
+    setRecipe(localRecipe);
+    fetchCategory(localRecipe.idCat);
+    const contentState = convertFromRaw(JSON.parse(localRecipe.stepsRec));
+    setEditorState(EditorState.createWithContent(contentState));
   };
   const fetchCategory = async (id) => {
     const data = await fetch(
