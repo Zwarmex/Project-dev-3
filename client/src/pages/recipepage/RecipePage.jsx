@@ -72,6 +72,7 @@ const RecipePage = () => {
 		event.target.alt = 'Default image for recipe';
 	};
 
+<<<<<<< Updated upstream
 	useEffect(() => {
 		fetchRecipe();
 		// eslint-disable-next-line
@@ -133,5 +134,124 @@ const RecipePage = () => {
 			) : null}
 		</Container>
 	);
+=======
+  
+    const response = await fetch(`https://recipesappfunctions.azurewebsites.net/api/opinion/user/${idUser}/recipe/${idRec}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: author,
+        textOpi: text,
+        idUser: idUser,
+      }),
+    }
+    );
+    fetch(`https://recipesappfunctions.azurewebsites.net/api/opinion/user/${idUser}/recipe/${idRec}`)
+    .then(response => response.json())
+    .then(data => setComments(data));
+  };
+
+  useEffect(() => {
+    fetchRecipe();
+    getFav();
+}, []);
+  return (
+    <Container>
+      <Box className="recipePage__title-container">
+        <Typography component="p" variant="h4" className="recipe__title">
+          {recipe.labelRec} ({recipe.numberOfPersonsRec} pers.)
+        </Typography>
+      </Box>
+      <Box className="recipe__rating-container">
+        <Typography component="legend">Difficulté :</Typography>
+        {recipe.difficultyRec ? (
+          <Rating
+            className="recipe__rating-stars"
+            name="difficulty"
+            value={recipe.difficultyRec}
+            size="large"
+            readOnly
+          />
+        ) : null}
+      </Box>
+      <img
+        loading="lazy"
+        src={recipe.imgRec || defaultRecipeImage}
+        alt={recipe.labelRec || "Default image for recipe"}
+        className="recipe__img"
+        onError={handleImageError}
+      />
+
+      <Box className="recipe__category-container">
+        <Typography component="p" variant="h5">
+          Catégorie : {category.labelCat}
+        </Typography>
+        <IconButton
+          aria-label="add to favorites"
+          onClick={handleFavorite}
+          color={isFav ? "error" : ""}
+        >
+          <FavoriteIcon />
+        </IconButton>
+      </Box>
+      <Divider />
+      <Box className="recipe__steps-container">
+        <Typography component="p" variant="h5" className="recipe__steps-title">
+          Étapes ({recipe.timeRec} min.):
+        </Typography>
+        <Editor
+          editorClassName="recipe__steps-editor"
+          editorState={editorState}
+          readOnly
+          toolbarHidden
+        />
+      </Box>
+      {+idUser === recipe.idUser ? (
+        <Box className="recipe__delete-button-container">
+          <Button
+            onClick={handleDelete}
+            color="warning"
+            variant="contained"
+            className="recipe__delete-button-item"
+          >
+            Supprimer la recette
+          </Button>
+        </Box>
+      ) : null}
+    <Box className="recipePage__comments-container">
+      <Typography variant="h5">Espace commentaire</Typography>
+      <Divider />
+      {comments.map((comment) => (
+        <Box key={comment.idOpi} className="recipePage__comment">
+          <p>{comment.idUser}</p>
+          <hr></hr>
+          <p className="commentaires">{comment.textOpi}</p>
+        </Box>
+      ))}
+    </Box>
+	  <Box className='recipe__comment-form-container'>
+		<Typography  variant='h5' className='recipe__comment-form-title'>
+			Ajouter un commentaire
+		</Typography>
+		<form onSubmit={handleCommentSubmit} className='recipe__comment-form'>
+			<label htmlFor='author' className='recipe__comment-form-label'>
+				Nom :
+			</label>
+				<input type='text' name='author' className='recipe__comment-form-input' required />
+			<label htmlFor='text' className='recipe__comment-form-label'>
+				Commentaire :
+			</label>
+			<textarea name='text' className='recipe__comment-form-input' required />
+			<Button type='submit' color='primary' variant='contained' className='recipe__delete-button-item'>
+				Ajouter
+			</Button>
+		</form>
+		</Box>
+
+    </Container>
+  );
+>>>>>>> Stashed changes
 };
 export default RecipePage;
