@@ -28,6 +28,10 @@ import {
 	UserContext,
 } from '../../components';
 
+const TestComponent = ({ handleAddRecipe }) => {
+	return null;
+};
+
 const AddRecipePage = () => {
 	const [units, setUnits] = useState([
 		'cm³',
@@ -493,6 +497,7 @@ const AddRecipePage = () => {
 					</Typography>
 				)}
 			</Box>
+			<TestComponent handleAddRecipe={handleAddRecipe} />
 		</Container>
 	);
 };

@@ -93,9 +93,9 @@ function opinionPost(textOpi, idRec, idUser) {
 function opnionDelete(idRec, idUser) {
 	return `DELETE TOP(1) FROM opinions WHERE idRec=${idRec} AND idUser=${idUser}`;
 }
-function opinionGet(idUser, topValue, lastId) {
+function opinionGet(idUser, idRec, topValue, lastId) {
 	const pagination = lastId ? `AND idOpi > ${lastId}` : '';
-	return `SELECT TOP ${topValue} * FROM opinions WHERE idUser=${idUser} ${pagination} ORDER BY idOpi`;
+	return `SELECT TOP ${topValue} * FROM opinions WHERE idUser=${idUser} and idRec=${idRec} ${pagination} ORDER BY idOpi`;
 }
 function opinionPut(idRec, idUser, textOpi) {
 	return `UPDATE opinions SET textOpi='${textOpi}' WHERE idRec=${idRec} AND idUser=${idUser};`;

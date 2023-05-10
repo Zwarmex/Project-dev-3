@@ -12,8 +12,8 @@ const WheelPage = () => {
 	const fetchRecipes = async () => {
 		setLoading(true);
 		try {
-			const data = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/recipes`,
+			const rawFavoritesRecipes = await fetch(
+				`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`,
 				{
 					method: 'get',
 					headers: {
@@ -21,8 +21,17 @@ const WheelPage = () => {
 					},
 				}
 			);
-			const recipes = await data.json();
-			setRecipes(recipes);
+			const favoritesRecipes = await rawFavoritesRecipes.json();
+			let localRecipes = [];
+			for (let index = 0; index < favoritesRecipes.length; index++) {
+				const idRec = favoritesRecipes[index].idRec;
+				const rawRecipe = await fetch(
+					`https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`
+				);
+				const recipe = await rawRecipe.json();
+				localRecipes.push(recipe);
+			}
+			setRecipes(localRecipes);
 		} catch {
 		} finally {
 			setLoading(false);
