@@ -100,6 +100,8 @@ const LoginPage = () => {
 				{
 					method: 'get',
 					headers: {
+						'x-functions-key':
+							'dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==',
 						'Content-Type': 'application/json',
 					},
 				}
@@ -196,6 +198,8 @@ const LoginPage = () => {
 				{
 					method: 'POST',
 					headers: {
+						'x-functions-key':
+							'dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==',
 						'Content-Type': 'application/json',
 					},
 					body: bodyRegister,
