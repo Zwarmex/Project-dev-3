@@ -14,7 +14,13 @@ const FavoritePage = () => {
     setLoading(true);
     try {
       const result = await fetch(
-        `https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`
+        `https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`,
+        {
+          headers: {
+            "x-functions-key":
+              "dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==",
+          },
+        }
       );
       const favoritesRecipes = await result.json();
       console.log(favoritesRecipes);
@@ -22,7 +28,13 @@ const FavoritePage = () => {
       for (let index = 0; index < favoritesRecipes.length; index++) {
         const idRec = favoritesRecipes[index].idRec;
         const data = await fetch(
-          `https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`
+          `https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`,
+          {
+            headers: {
+              "x-functions-key":
+                "dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==",
+            },
+          }
         );
         let recipe = await data.json();
         localRecipes.push(recipe);
@@ -38,7 +50,13 @@ const FavoritePage = () => {
     setLoading(true);
     try {
       const data = await fetch(
-        "https://recipesappfunctions.azurewebsites.net/api/categories"
+        "https://recipesappfunctions.azurewebsites.net/api/categories",
+        {
+          headers: {
+            "x-functions-key":
+              "dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==",
+          },
+        }
       );
       const categories = await data.json();
       setCategories(categories);

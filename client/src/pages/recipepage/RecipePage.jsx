@@ -25,7 +25,7 @@ const RecipePage = () => {
     EditorState.createEmpty()
   );
   const { idRec } = useParams();
-  const { idUser } = useContext(UserContext);
+  const { idUser, abilityUser } = useContext(UserContext);
 
   const [isFav, setIsFav] = useState(false);
   const getFav = async () => {
