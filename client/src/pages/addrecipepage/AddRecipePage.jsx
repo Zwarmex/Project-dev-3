@@ -501,7 +501,7 @@ const AddRecipePage = () => {
 					</Typography>
 				)}
 			</Box>
-			<TestComponent handleAddRecipe={handleAddRecipe} />
+			<TestComponent id='test-component' handleAddRecipe={handleAddRecipe} />
 		</Container>
 	);
 };
