@@ -1,7 +1,7 @@
-import React, { useState, useContext, useEffect } from "react";
-import "./wheelpage.css";
-import { RecipeItem, UserContext, LoadingHamster } from "../../components";
-import { Box, Button, Container, Typography } from "@mui/material";
+import React, { useState, useContext, useEffect } from 'react';
+import './wheelpage.css';
+import { RecipeItem, UserContext, LoadingHamster } from '../../components';
+import { Box, Button, Container, Typography } from '@mui/material';
 
 const WheelPage = () => {
   const { idUser } = useContext(UserContext);
@@ -15,11 +15,11 @@ const WheelPage = () => {
       const rawFavoritesRecipes = await fetch(
         `https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`,
         {
-          method: "get",
+          method: 'get',
           headers: {
-            "x-functions-key":
-              "dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==",
-            "Content-Type": "application/json",
+            'x-functions-key':
+              'dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==',
+            'Content-Type': 'application/json',
           },
         }
       );
@@ -28,7 +28,14 @@ const WheelPage = () => {
       for (let index = 0; index < favoritesRecipes.length; index++) {
         const idRec = favoritesRecipes[index].idRec;
         const rawRecipe = await fetch(
-          `https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`
+          `https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`,
+          {
+            headers: {
+              'x-functions-key':
+                'dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==',
+              'Content-Type': 'application/json',
+            },
+          }
         );
         const recipe = await rawRecipe.json();
         localRecipes.push(recipe);
@@ -79,39 +86,37 @@ const WheelPage = () => {
   }, []);
 
   return (
-    <Container id="wheel__page-container">
+    <Container id='wheel__page-container'>
       {recipes.length > 0 ? (
         <Box>
-          <Box id="wheel-container">
+          <Box id='wheel-container'>
             {recipes.map((recipe, index) => {
               const angle = (360 / recipes.length) * index;
-              const selected = selectedIndex === index ? "selected-recipe" : "";
+              const selected = selectedIndex === index ? 'selected-recipe' : '';
               return (
                 <Box
                   key={index}
                   className={`wheel-items ${selected}`}
                   style={{
-                    "--rotation-angle": `${angle}deg`,
-                  }}
-                >
+                    '--rotation-angle': `${angle}deg`,
+                  }}>
                   <RecipeItem recipe={recipe} disabled={!selected} />
                 </Box>
               );
             })}
           </Box>
-          <Box id="wheel__button-container">
+          <Box id='wheel__button-container'>
             <Button
-              id="wheel__button-start"
+              id='wheel__button-start'
               onClick={startAnimation}
-              variant="contained"
-              color="warning"
-            >
+              variant='contained'
+              color='warning'>
               Lancez l'animation
             </Button>
           </Box>
         </Box>
       ) : (
-        <Box id="wheel__recipes-empty-message">
+        <Box id='wheel__recipes-empty-message'>
           {(loading && <LoadingHamster />) ||
             (!loading && (
               <Typography>Il n'y a pas de recettes pour le moment.</Typography>
