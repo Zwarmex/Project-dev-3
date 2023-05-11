@@ -146,11 +146,7 @@ const AddRecipePage = () => {
     console.log(JSON.stringify(recipeData));
     const requestOptions = {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-functions-key":
-          "dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(recipeData),
     };
     setLoadingAddRecipe(true);

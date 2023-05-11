@@ -36,9 +36,9 @@ const CalendarPage = () => {
           {
             method: "get",
             headers: {
-              "Content-Type": "application/json",
               "x-functions-key":
                 "dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==",
+              "Content-Type": "application/json",
             },
           }
         );
@@ -66,9 +66,9 @@ const CalendarPage = () => {
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
             "x-functions-key":
               "dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==",
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(mailBody),
         }

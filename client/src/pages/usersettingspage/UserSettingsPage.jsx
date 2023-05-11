@@ -34,113 +34,113 @@ const UserSettingsPage = () => {
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [avatarLoading, setAvatarLoading] = useState(false);
 
-  const handleClickShowNewPassword1 = () => {
-    setShowNewPassword1((show) => !show);
-  };
-  const handleClickShowNewPassword2 = () => {
-    setShowNewPassword2((show) => !show);
-  };
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-  const handleAvatarUpload = (base64, fileSize) => {
-    setBase64Avatar(base64);
-    // setAvatarSize(fileSize);
-    if (fileSize > maxImageSize) {
-      setIsAvatarAddButtonDisabled(true);
-      setErrorStatus(true);
-      setErrorMessage(
-        "La taille de l'image dépasse la limite de 1MB. Charger une image plus petite s'il vous plaît."
-      );
-    } else {
-      setIsAvatarAddButtonDisabled(false);
-      setErrorMessage("");
-      setErrorStatus(false);
-    }
-  };
-  const handlePasswordChanging = async () => {
-    let newPassword1HasError = false;
-    let newPassword2HasError = false;
-    let errorMessagePasswordChanging = "";
-    if (!validatePassword(newPassword1)) {
-      newPassword2HasError = true;
-      newPassword1HasError = true;
-      errorMessagePasswordChanging +=
-        "- Le nouveau mot de passe doit contenir 8 caractères minimum.\n";
-    }
-    if (newPassword2 !== newPassword1) {
-      newPassword1HasError = true;
-      newPassword2HasError = true;
-      errorMessagePasswordChanging +=
-        "- Les deux nouveaux mots de passe doivent être identiques.\n";
-    }
-    setErrorMessage(errorMessagePasswordChanging);
-    setNewPassword1Error(false);
-    setNewPassword2Error(false);
-    if (errorMessagePasswordChanging !== "") {
-      setErrorStatus(true);
-      if (newPassword1HasError) {
-        setNewPassword1Error(true);
-      }
-      if (newPassword2HasError) {
-        setNewPassword2Error(true);
-      }
-      return;
-    }
-    setErrorStatus(false);
-    setPasswordLoading(true);
-    const userData = {
-      password: newPassword1,
-    };
-    const requestOptions = {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "x-functions-key":
-          "dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==",
-      },
-      body: JSON.stringify(userData),
-    };
-    try {
-      const response = await fetch(
-        `https://recipesappfunctions.azurewebsites.net/api/user/account/newPassword/${idUser}`,
-        requestOptions
-      );
+	const handleClickShowNewPassword1 = () => {
+		setShowNewPassword1((show) => !show);
+	};
+	const handleClickShowNewPassword2 = () => {
+		setShowNewPassword2((show) => !show);
+	};
+	const handleMouseDownPassword = (event) => {
+		event.preventDefault();
+	};
+	const handleAvatarUpload = (base64, fileSize) => {
+		setBase64Avatar(base64);
+		// setAvatarSize(fileSize);
+		if (fileSize > maxImageSize) {
+			setIsAvatarAddButtonDisabled(true);
+			setErrorStatus(true);
+			setErrorMessage(
+				"La taille de l'image dépasse la limite de 1MB. Charger une image plus petite s'il vous plaît."
+			);
+		} else {
+			setIsAvatarAddButtonDisabled(false);
+			setErrorMessage('');
+			setErrorStatus(false);
+		}
+	};
+	const handlePasswordChanging = async () => {
+		let newPassword1HasError = false;
+		let newPassword2HasError = false;
+		let errorMessagePasswordChanging = '';
+		if (!validatePassword(newPassword1)) {
+			newPassword2HasError = true;
+			newPassword1HasError = true;
+			errorMessagePasswordChanging +=
+				'- Le nouveau mot de passe doit contenir 8 caractères minimum.\n';
+		}
+		if (newPassword2 !== newPassword1) {
+			newPassword1HasError = true;
+			newPassword2HasError = true;
+			errorMessagePasswordChanging +=
+				'- Les deux nouveaux mots de passe doivent être identiques.\n';
+		}
+		setErrorMessage(errorMessagePasswordChanging);
+		setNewPassword1Error(false);
+		setNewPassword2Error(false);
+		if (errorMessagePasswordChanging !== '') {
+			setErrorStatus(true);
+			if (newPassword1HasError) {
+				setNewPassword1Error(true);
+			}
+			if (newPassword2HasError) {
+				setNewPassword2Error(true);
+			}
+			return;
+		}
+		setErrorStatus(false);
+		setPasswordLoading(true);
+		const userData = {
+			password: newPassword1,
+		};
+		const requestOptions = {
+			method: 'PUT',
+			headers: {
+				'x-functions-key':
+					'dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(userData),
+		};
+		try {
+			const response = await fetch(
+				`https://recipesappfunctions.azurewebsites.net/api/user/account/newPassword/${idUser}`,
+				requestOptions
+			);
 
-      if (!response.ok) {
-        setErrorMessage("Connection échouée");
-        setErrorStatus(true);
-      }
-      if (response.ok) {
-        setInfoStatus(true);
-        setInfoMessage("Changement de mot de passe effectué");
-      }
-    } catch {
-      setErrorStatus(true);
-      setErrorMessage("Problèmes dans le changement de mot de passe");
-    } finally {
-      setPasswordLoading(false);
-    }
-  };
-  const handleAvatarChanging = async () => {
-    const userData = {
-      avatar: base64Avatar,
-    };
-    const requestOptions = {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "x-functions-key":
-          "dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==",
-      },
-      body: JSON.stringify(userData),
-    };
-    setAvatarLoading(true);
-    try {
-      const response = await fetch(
-        `https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/updateAvatar`,
-        requestOptions
-      );
+			if (!response.ok) {
+				setErrorMessage('Connection échouée');
+				setErrorStatus(true);
+			}
+			if (response.ok) {
+				setInfoStatus(true);
+				setInfoMessage('Changement de mot de passe effectué');
+			}
+		} catch {
+			setErrorStatus(true);
+			setErrorMessage('Problèmes dans le changement de mot de passe');
+		} finally {
+			setPasswordLoading(false);
+		}
+	};
+	const handleAvatarChanging = async () => {
+		const userData = {
+			avatar: base64Avatar,
+		};
+		const requestOptions = {
+			method: 'PUT',
+			headers: {
+				'x-functions-key':
+					'dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(userData),
+		};
+		setAvatarLoading(true);
+		try {
+			const response = await fetch(
+				`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/updateAvatar`,
+				requestOptions
+			);
 
       if (response.ok) {
         setInfoStatus(true);

@@ -18,9 +18,9 @@ const UserRecipesPage = () => {
         {
           method: "get",
           headers: {
-            "Content-Type": "application/json",
             "x-functions-key":
               "dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==",
+            "Content-Type": "application/json",
           },
         }
       );
