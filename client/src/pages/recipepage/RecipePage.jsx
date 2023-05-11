@@ -63,6 +63,8 @@ const RecipePage = () => {
         {
           method: "DELETE",
           headers: {
+            "x-functions-key":
+              "dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==",
             "Content-Type": "application/json",
           },
           body: body,
@@ -75,6 +77,8 @@ const RecipePage = () => {
         {
           method: "POST",
           headers: {
+            "x-functions-key":
+              "dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==",
             "Content-Type": "application/json",
           },
           body: body,

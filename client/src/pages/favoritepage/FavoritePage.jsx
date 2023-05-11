@@ -1,10 +1,8 @@
 import "./favoritepage.css";
 import { Container, Box, Typography } from "@mui/material";
-import { UserContext } from "../../components";
-import { useParams } from "react-router-dom";
-
 import React, { useEffect, useState, useContext } from "react";
-import { LoadingHamster, RecipeItem } from "../../components";
+import { LoadingHamster, RecipeItem, UserContext } from "../../components";
+
 const FavoritePage = () => {
   const [recipes, setRecipes] = useState([]);
   const [categories, setCategories] = useState([]);
