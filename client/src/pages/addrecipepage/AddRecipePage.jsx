@@ -1,11 +1,11 @@
-import "./addrecipepage.css";
-import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { EditorState, convertToRaw } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { DropdownList } from "react-widgets";
-import "react-widgets/styles.css";
+import './addrecipepage.css';
+import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { EditorState, convertToRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { DropdownList } from 'react-widgets';
+import 'react-widgets/styles.css';
 import {
   Box,
   FormControl,
@@ -19,14 +19,14 @@ import {
   Container,
   Divider,
   IconButton,
-} from "@mui/material";
-import { Add, Remove } from "@mui/icons-material";
+} from '@mui/material';
+import { Add, Remove } from '@mui/icons-material';
 import {
   ImageUpload,
   LoadingBars,
   LoadingHamster,
   UserContext,
-} from "../../components";
+} from '../../components';
 
 const TestComponent = ({ handleAddRecipe }) => {
   return null;
@@ -34,18 +34,18 @@ const TestComponent = ({ handleAddRecipe }) => {
 
 const AddRecipePage = () => {
   const [units, setUnits] = useState([
-    "cm³",
-    "g",
-    "mg",
-    "kg",
-    "l",
-    "ml",
-    "cl",
-    "pouce",
-    "tasse",
-    "cuillère à café",
-    "cuillère à soupe",
-    "pièce",
+    'cm³',
+    'g',
+    'mg',
+    'kg',
+    'l',
+    'ml',
+    'cl',
+    'pouce',
+    'tasse',
+    'cuillère à café',
+    'cuillère à soupe',
+    'pièce',
   ]);
   const navigate = useNavigate();
   const maxImageSize = 1024 * 1024; // 1MB
@@ -54,9 +54,9 @@ const AddRecipePage = () => {
   const [difficulty, setDifficulty] = useState(1);
   const [numberOfPersons, setNumberOfPersons] = useState(2);
   const [time, setTime] = useState(15);
-  const [title, setTitle] = useState("");
-  const [selectedCategoryId, setSelectedCategoryId] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [title, setTitle] = useState('');
+  const [selectedCategoryId, setSelectedCategoryId] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [errorStatus, setErrorStatus] = useState(false);
   const [loadingCategories, setLoadingCategories] = useState(false);
   const [loadingIngredients, setLoadingIngredients] = useState(false);
@@ -99,20 +99,20 @@ const AddRecipePage = () => {
     let labelError = false;
     let quantityError = false;
     let unitError = false;
-    let errorMessageRecipe = "";
+    let errorMessageRecipe = '';
     for (let index = 0; index < ingredientsSelected.length; index++) {
       const ingredient = ingredientsSelected[index];
-      if (!labelError && ingredient.labelIng === "") {
+      if (!labelError && ingredient.labelIng === '') {
         labelError = true;
         errorMessageRecipe += "- Il manque au moins un nom d'ingrédient\n";
       }
       if (!quantityError && !ingredient.quantityRecIng) {
         quantityError = true;
-        errorMessageRecipe += "- Il manque au moins une quantité\n";
+        errorMessageRecipe += '- Il manque au moins une quantité\n';
       }
       if (!unitError && !ingredient.unitRecIng) {
         unitError = true;
-        errorMessageRecipe += "- Il manque au moins une unité\n";
+        errorMessageRecipe += '- Il manque au moins une unité\n';
       }
       if (labelError && quantityError && unitError) {
         break;
@@ -125,7 +125,7 @@ const AddRecipePage = () => {
     }
     if (
       !title.trim() ||
-      editorState.getCurrentContent().getPlainText().trim() === ""
+      editorState.getCurrentContent().getPlainText().trim() === ''
     ) {
       setIsAddButtonDisabled(true);
       return;
@@ -145,19 +145,19 @@ const AddRecipePage = () => {
     };
     console.log(JSON.stringify(recipeData));
     const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(recipeData),
     };
     setLoadingAddRecipe(true);
     try {
       const response = await fetch(
-        "https://recipesappfunctions.azurewebsites.net/api/recipe",
+        'https://recipesappfunctions.azurewebsites.net/api/recipe',
         requestOptions
       );
 
       if (response.ok) {
-        navigate("/");
+        navigate('/');
       } else {
         console.error("L'ajout de recette a échoué");
       }
@@ -200,7 +200,7 @@ const AddRecipePage = () => {
     const updatedIngredientsSelected = [...ingredientsSelected];
     updatedIngredientsSelected[index].labelIng = newIngredient.labelIng;
     updatedIngredientsSelected[index].idIng = newIngredient.hasOwnProperty(
-      "idIng"
+      'idIng'
     )
       ? newIngredient.idIng
       : null;
@@ -214,7 +214,7 @@ const AddRecipePage = () => {
   };
   const preventNegativeInput = (event) => {
     // Check if the pressed key is a minus sign
-    if (event.key === "-") {
+    if (event.key === '-') {
       // Prevent the minus sign from being entered
       event.preventDefault();
     }
@@ -224,18 +224,18 @@ const AddRecipePage = () => {
     setLoadingIngredients(true);
     try {
       const response = await fetch(
-        "https://recipesappfunctions.azurewebsites.net/api/ingredients"
+        'https://recipesappfunctions.azurewebsites.net/api/ingredients'
       );
       if (response.ok) {
         const data = await response.json();
         setIngredients(data);
       } else {
         setErrorStatus(true);
-        setErrorMessage("Erreur de connection.");
+        setErrorMessage('Erreur de connection.');
       }
     } catch {
       setErrorStatus(true);
-      setErrorMessage("Erreur de connection.");
+      setErrorMessage('Erreur de connection.');
     } finally {
       setLoadingIngredients(false);
     }
@@ -245,13 +245,7 @@ const AddRecipePage = () => {
     setLoadingCategories(true);
     try {
       const response = await fetch(
-        "https://recipesappfunctions.azurewebsites.net/api/categories",
-        {
-          headers: {
-            "x-functions-key":
-              "dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==",
-          },
-        }
+        'https://recipesappfunctions.azurewebsites.net/api/categories'
       );
       if (response.ok) {
         const data = await response.json();
@@ -259,11 +253,11 @@ const AddRecipePage = () => {
         setSelectedCategoryId(data[0].idCat);
       } else {
         setErrorStatus(true);
-        setErrorMessage("Erreur de connection.");
+        setErrorMessage('Erreur de connection.');
       }
     } catch {
       setErrorStatus(true);
-      setErrorMessage("Erreur de connection.");
+      setErrorMessage('Erreur de connection.');
     } finally {
       setLoadingCategories(false);
     }
@@ -271,7 +265,7 @@ const AddRecipePage = () => {
   useEffect(() => {
     setIsAddButtonDisabled(
       !title.trim() ||
-        editorState.getCurrentContent().getPlainText().trim() === "" ||
+        editorState.getCurrentContent().getPlainText().trim() === '' ||
         imageSize > maxImageSize
     );
   }, [title, editorState, imageSize, maxImageSize]);
@@ -283,35 +277,34 @@ const AddRecipePage = () => {
   return (
     <Container>
       {/* Title */}
-      <Box id="recipe__add-top-title">
-        <Typography component="p" variant="h4">
-          Ajoute une recette :{" "}
+      <Box id='recipe__add-top-title'>
+        <Typography component='p' variant='h4'>
+          Ajoute une recette :{' '}
         </Typography>
       </Box>
-      <Box component="form" id="recipe__add-form" noValidate autoComplete="off">
-        <FormControl id="recipe__add-title">
-          <InputLabel htmlFor="recipe__add-title-input">
+      <Box component='form' id='recipe__add-form' noValidate autoComplete='off'>
+        <FormControl id='recipe__add-title'>
+          <InputLabel htmlFor='recipe__add-title-input'>
             <Typography>Titre</Typography>
           </InputLabel>
           <OutlinedInput
             onChange={(input) => setTitle(input.target.value)}
-            id="recipe__add-title-input"
-            name="recipe__add-title-input"
-            type="text"
+            id='recipe__add-title-input'
+            name='recipe__add-title-input'
+            type='text'
             value={title}
-            label="Titre"
+            label='Titre'
           />
         </FormControl>
-        <FormControl id="recipe__add-number-of-persons">
-          <InputLabel htmlFor="recipe__add-number-of-persons-input">
+        <FormControl id='recipe__add-number-of-persons'>
+          <InputLabel htmlFor='recipe__add-number-of-persons-input'>
             <Typography>Nombre de personnes</Typography>
           </InputLabel>
           <Select
             value={numberOfPersons}
             onChange={handleNumberOfPersonsChange}
-            label="Nombre de personnes"
-            id="recipe__add-number-of-persons-input"
-          >
+            label='Nombre de personnes'
+            id='recipe__add-number-of-persons-input'>
             {Array.from({ length: 15 }, (_, index) => index + 1).map(
               (value) => (
                 <MenuItem key={value} value={value}>
@@ -321,16 +314,15 @@ const AddRecipePage = () => {
             )}
           </Select>
         </FormControl>
-        <FormControl id="recipe__add-time">
-          <InputLabel htmlFor="recipe__add-time-input">
+        <FormControl id='recipe__add-time'>
+          <InputLabel htmlFor='recipe__add-time-input'>
             <Typography>Temps</Typography>
           </InputLabel>
           <Select
             value={time}
             onChange={handleTimeChange}
-            label="Temps"
-            id="recipe__add-time-input"
-          >
+            label='Temps'
+            id='recipe__add-time-input'>
             {Array.from({ length: 10 }, (_, index) => (index + 1) * 15).map(
               (value) => (
                 <MenuItem key={value} value={value}>
@@ -340,15 +332,15 @@ const AddRecipePage = () => {
             )}
           </Select>
         </FormControl>
-        <FormControl id="recipe__add-category">
-          <InputLabel htmlFor="recipe__add-category-input">
+        <FormControl id='recipe__add-category'>
+          <InputLabel htmlFor='recipe__add-category-input'>
             <Typography>Catégorie</Typography>
           </InputLabel>
           <Select
             value={selectedCategoryId}
             onChange={handleCategoryChange}
-            label="Catégorie"
-            id="recipe__add-category-input"
+            label='Catégorie'
+            id='recipe__add-category-input'
             renderValue={
               loadingCategories
                 ? () => <LoadingBars />
@@ -356,8 +348,7 @@ const AddRecipePage = () => {
                     categories.find(
                       (category) => category.idCat === selectedValue
                     )?.labelCat
-            }
-          >
+            }>
             {categories.map((category) => (
               <MenuItem key={category.idCat} value={category.idCat}>
                 {category.labelCat}
@@ -365,32 +356,32 @@ const AddRecipePage = () => {
             ))}
           </Select>
         </FormControl>
-        <Box id="recipe__add-image-container">
-          <Typography component="p" variant="h6">
+        <Box id='recipe__add-image-container'>
+          <Typography component='p' variant='h6'>
             Photo :
           </Typography>
           <ImageUpload onImageUpload={handleImageUpload} />
           {imageSize > maxImageSize && (
-            <Typography color="error">
+            <Typography color='error'>
               La taille de l'image dépasse la limite de 1MB. Charger une image
               plus petite s'il vous plaît.
             </Typography>
           )}
         </Box>
-        <Box id="recipe__add-difficulty-container">
-          <Typography component="p" variant="h6">
+        <Box id='recipe__add-difficulty-container'>
+          <Typography component='p' variant='h6'>
             Difficulté :
           </Typography>
           <Rating
-            name="recipe-rating"
+            name='recipe-rating'
             value={difficulty}
             onChange={handleDifficultyChange}
             precision={1}
-            size="medium"
+            size='medium'
           />
         </Box>
-        <Box id="recipe__add-ingredients-container">
-          <Typography component="p" variant="h5">
+        <Box id='recipe__add-ingredients-container'>
+          <Typography component='p' variant='h5'>
             Ingredients (optionel) :
           </Typography>
           {(loadingIngredients && <LoadingHamster />) ||
@@ -401,36 +392,34 @@ const AddRecipePage = () => {
               return (
                 <Box
                   key={index}
-                  className="recipe__add-ingredients-choice-containers"
-                >
+                  className='recipe__add-ingredients-choice-containers'>
                   <Typography
-                    component="p"
-                    className="recipe__add-ingredients-choice-numbers"
-                  >
+                    component='p'
+                    className='recipe__add-ingredients-choice-numbers'>
                     {index + 1}.
                   </Typography>
-                  <Box className="recipe__add-ingredients-dropdown-containers">
+                  <Box className='recipe__add-ingredients-dropdown-containers'>
                     <DropdownList
                       data={ingredients}
-                      dataKey="idIng"
-                      textField="labelIng"
-                      placeholder="Ingrédient"
+                      dataKey='idIng'
+                      textField='labelIng'
+                      placeholder='Ingrédient'
                       onCreate={handleNewIngredient}
-                      allowCreate="onFilter"
+                      allowCreate='onFilter'
                       onChange={(ingredient) => {
                         handleIngredientSelectedChange(index, ingredient);
                       }}
                     />
                   </Box>
-                  <Box className="recipe__add-ingredients-dropdown-containers">
-                    <FormControl id="recipe__add-ingredients-quantity">
-                      <InputLabel htmlFor="input__recipe__add-ingredients-quantity">
+                  <Box className='recipe__add-ingredients-dropdown-containers'>
+                    <FormControl id='recipe__add-ingredients-quantity'>
+                      <InputLabel htmlFor='input__recipe__add-ingredients-quantity'>
                         <Typography>Quantité</Typography>
                       </InputLabel>
                       <OutlinedInput
-                        id="input__recipe__add-ingredients-quantity"
-                        name="input__recipe__add-ingredients-quantity"
-                        type="number"
+                        id='input__recipe__add-ingredients-quantity'
+                        name='input__recipe__add-ingredients-quantity'
+                        type='number'
                         inputProps={{ min: 0 }}
                         value={ingredientsSelected[index].quantityRecIng}
                         onChange={(input) => {
@@ -440,22 +429,21 @@ const AddRecipePage = () => {
                           );
                         }}
                         onKeyDown={preventNegativeInput}
-                        label="Quantité"
+                        label='Quantité'
                         fullWidth
                         required
                       />
                     </FormControl>
                   </Box>
-                  <Box className="recipe__add-ingredients-dropdown-containers">
+                  <Box className='recipe__add-ingredients-dropdown-containers'>
                     <DropdownList
-                      placeholder="Unité"
+                      placeholder='Unité'
                       data={units}
-                      allowCreate="onFilter"
+                      allowCreate='onFilter'
                       onCreate={handleNewUnit}
                       onChange={(unit) => {
                         handleIngredientUnitChange(index, unit);
-                      }}
-                    ></DropdownList>
+                      }}></DropdownList>
                   </Box>
                 </Box>
               );
@@ -463,16 +451,14 @@ const AddRecipePage = () => {
           {!loadingIngredients && (
             <>
               <IconButton
-                className="recipe__add-ingredients-buttons"
-                onClick={handleAddIngredient}
-              >
+                className='recipe__add-ingredients-buttons'
+                onClick={handleAddIngredient}>
                 <Add />
               </IconButton>
               {numberOfIngredients > 0 && (
                 <IconButton
-                  className="recipe__add-ingredients-buttons"
-                  onClick={handleRemoveIngredient}
-                >
+                  className='recipe__add-ingredients-buttons'
+                  onClick={handleRemoveIngredient}>
                   <Remove />
                 </IconButton>
               )}
@@ -481,34 +467,33 @@ const AddRecipePage = () => {
         </Box>
       </Box>
       <Divider />
-      <Box id="recipe__add-rich__editor-container">
-        <Typography component="p" variant="h5">
-          Ajoutez les étapes :{" "}
+      <Box id='recipe__add-rich__editor-container'>
+        <Typography component='p' variant='h5'>
+          Ajoutez les étapes :{' '}
         </Typography>
         <Editor
           editorState={editorState}
           onEditorStateChange={handleEditorChange}
-          placeholder="Écrivez ici"
+          placeholder='Écrivez ici'
         />
       </Box>
-      <Box id="recipe__add-button__warning-container">
+      <Box id='recipe__add-button__warning-container'>
         <Button
-          variant="contained"
+          variant='contained'
           onClick={handleAddRecipe}
-          id="recipe__add-button"
-          disabled={isAddButtonDisabled}
-        >
-          {(loadingAddRecipe && <LoadingBars />) || "Ajouter la recette"}
+          id='recipe__add-button'
+          disabled={isAddButtonDisabled}>
+          {(loadingAddRecipe && <LoadingBars />) || 'Ajouter la recette'}
         </Button>
         {isAddButtonDisabled && (
-          <Typography color="error" component="p" id="recipe__add-error">
+          <Typography color='error' component='p' id='recipe__add-error'>
             Il n'y a pas de titre ou de description. Ajoutez en une s'il vous
             plait.
           </Typography>
         )}
         {errorStatus && (
-          <Typography color="error" component="h1">
-            <pre style={{ fontFamily: "inherit" }}>{errorMessage}</pre>
+          <Typography color='error' component='h1'>
+            <pre style={{ fontFamily: 'inherit' }}>{errorMessage}</pre>
           </Typography>
         )}
       </Box>
