@@ -2,9 +2,15 @@ const sql = require('mssql');
 const config = require('../config.js');
 const queries = require('../queries.js');
 require('dotenv').config();
+const { verificationJWT } = require('../jwtFunctionalities.js');
 
 module.exports = async function (context, req) {
 	try {
+		const jwtVerificationResult = verificationJWT(req);
+		if (jwtVerificationResult) {
+			context.res = jwtVerificationResult;
+			return;
+		}
 		if (
 			!config ||
 			!config.server ||

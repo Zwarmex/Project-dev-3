@@ -19,7 +19,7 @@ import {
 
 const LoginPage = () => {
 	const navigate = useNavigate();
-	const { setIdUser, setAvatarUser, setMailUser, setAbilityUser } =
+	const { setIdUser, setAvatarUser, setMailUser, setAbilityUser, setTokenJWT } =
 		useContext(UserContext);
 	const [email, setEmail] = useState('');
 	const [loginPassword, setLoginPassword] = useState('');
@@ -100,8 +100,6 @@ const LoginPage = () => {
 				{
 					method: 'get',
 					headers: {
-						'x-functions-key':
-							'dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==',
 						'Content-Type': 'application/json',
 					},
 				}
@@ -113,14 +111,16 @@ const LoginPage = () => {
 
 			const data = await response.json();
 
-			setIdUser(data.idUser);
-			setMailUser(data.mailUser);
-			setAvatarUser(data.avatarUser);
-			setAbilityUser(data.abilityUser);
-			localStorage.setItem('idUser', data.idUser);
-			localStorage.setItem('mailUser', data.mailUser);
-			localStorage.setItem('avatarUser', data.avatarUser);
-			localStorage.setItem('abilityUser', data.abilityUser);
+			setIdUser(data.user.idUser);
+			setMailUser(data.user.mailUser);
+			setAvatarUser(data.user.avatarUser);
+			setAbilityUser(data.user.abilityUser);
+			setTokenJWT(data.tokenJWT);
+			localStorage.setItem('idUser', data.user.idUser);
+			localStorage.setItem('mailUser', data.user.mailUser);
+			localStorage.setItem('avatarUser', data.user.avatarUser);
+			localStorage.setItem('abilityUser', data.user.abilityUser);
+			localStorage.setItem('tokenJWT', data.tokenJWT);
 			navigate('/');
 		} catch (error) {
 			setErrorMessage('Connection échouée');
@@ -198,8 +198,6 @@ const LoginPage = () => {
 				{
 					method: 'POST',
 					headers: {
-						'x-functions-key':
-							'dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==',
 						'Content-Type': 'application/json',
 					},
 					body: bodyRegister,

@@ -3,49 +3,61 @@ const config = require('../config.js');
 const queries = require('../queries.js');
 const hashPassword = require('../hashPassword.js');
 const bcrypt = require('bcryptjs');
+require('dotenv').config();
+const { verificationJWT, generateJWT } = require('../jwtFunctionalities.js');
 
 module.exports = async function (context, req) {
-	if (
-		!config ||
-		!config.server ||
-		!config.database ||
-		!config.user ||
-		!config.password
-	) {
-		context.res = {
-			status: 500,
-			body: 'Database configuration is missing or incomplete',
-			headers: {
-				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-			},
-		};
-		return;
-	}
-
-	const pool = await sql.connect(config);
-
-	switch (req.method) {
-		case 'GET':
-			await handleGet(context, req, pool);
-			break;
-		case 'POST':
-			await handlePost(context, req, pool);
-			break;
-		case 'PUT':
-			await handlePut(context, req, pool);
-			break;
-		case 'DELETE':
-			await handleDelete(context, req, pool);
-			break;
-		default:
+	try {
+		if (
+			!config ||
+			!config.server ||
+			!config.database ||
+			!config.user ||
+			!config.password
+		) {
 			context.res = {
-				status: 405,
-				body: 'Method not allowed',
+				status: 500,
+				body: 'Database configuration is missing or incomplete',
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
 			};
-			break;
+			return;
+		}
+
+		const pool = await sql.connect(config);
+
+		switch (req.method) {
+			case 'GET':
+				await handleGet(context, req, pool);
+				break;
+			case 'POST':
+				await handlePost(context, req, pool);
+				break;
+			case 'PUT':
+				await handlePut(context, req, pool);
+				break;
+			case 'DELETE':
+				await handleDelete(context, req, pool);
+				break;
+			default:
+				context.res = {
+					status: 405,
+					body: 'Method not allowed',
+					headers: {
+						'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+					},
+				};
+				break;
+		}
+	} catch (err) {
+		context.res = {
+			status: 500,
+			body: `API Failed : ${err}`,
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
 	}
 };
 
@@ -187,6 +199,11 @@ async function handlePost(context, req, pool) {
 	}
 }
 async function handleDelete(context, req, pool) {
+	const jwtVerificationResult = verificationJWT(req);
+	if (jwtVerificationResult) {
+		context.res = jwtVerificationResult;
+		return;
+	}
 	const idUser = req.body.hasOwnProperty('idUser') ? +req.body.idUser : null;
 
 	const query = queries.userDelete(idUser);
@@ -224,9 +241,13 @@ async function handleGet(context, req, pool) {
 		if (hashedPassword === storedHashedPassword) {
 			const queryUser = queries.userGet(mailUser);
 			const userDetails = await pool.request().query(queryUser);
+
+			// generate JWT
+			const tokenJWT = generateJWT(mailUser);
+
 			context.res = {
 				status: 200,
-				body: userDetails.recordset[0],
+				body: { user: userDetails.recordset[0], tokenJWT: tokenJWT },
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
@@ -242,6 +263,11 @@ async function handleGet(context, req, pool) {
 	};
 }
 async function handlePut(context, req, pool) {
+	const jwtVerificationResult = verificationJWT(req);
+	if (jwtVerificationResult) {
+		context.res = jwtVerificationResult;
+		return;
+	}
 	const idUser = +req.params.idUser;
 	const firstnameUser = req.body.hasOwnProperty('firstname')
 		? req.body.firstname

@@ -12,12 +12,16 @@ const UserProvider = ({ children }) => {
 	const [abilityUser, setAbilityUser] = useState(
 		localStorage.getItem('abilityUser') || null
 	);
+	const [tokenJWT, setTokenJWT] = useState(
+		localStorage.getItem('tokenJWT') || null
+	);
 
 	useEffect(() => {
 		const storedIdUser = localStorage.getItem('idUser');
 		const storedMailUser = localStorage.getItem('mailUser');
 		const storedAvatarUser = localStorage.getItem('avatarUser');
 		const storedAbilityUser = localStorage.getItem('abilityUser');
+		const storedTokenJWT = localStorage.getItem('tokenJWT');
 		//get the id
 		if (storedIdUser) {
 			setIdUser(storedIdUser);
@@ -34,6 +38,10 @@ const UserProvider = ({ children }) => {
 		if (storedAbilityUser) {
 			setAbilityUser(storedAbilityUser);
 		}
+		//get the ability
+		if (storedTokenJWT) {
+			setTokenJWT(storedTokenJWT);
+		}
 	}, []);
 
 	const logout = () => {
@@ -41,10 +49,12 @@ const UserProvider = ({ children }) => {
 		setMailUser(null);
 		setAvatarUser(null);
 		setAbilityUser(null);
+		setTokenJWT(null);
 		localStorage.removeItem('idUser');
 		localStorage.removeItem('mailUser');
 		localStorage.removeItem('avatarUser');
 		localStorage.removeItem('abilityUser');
+		localStorage.removeItem('tokenJWT');
 	};
 
 	return (
@@ -54,10 +64,12 @@ const UserProvider = ({ children }) => {
 				mailUser,
 				avatarUser,
 				abilityUser,
+				tokenJWT,
 				setIdUser,
 				setMailUser,
 				setAvatarUser,
 				setAbilityUser,
+				setTokenJWT,
 				logout,
 			}}>
 			{children}
