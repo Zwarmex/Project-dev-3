@@ -1,6 +1,8 @@
 const sql = require('mssql');
 const config = require('../config.js');
 const queries = require('../queries.js');
+require('dotenv').config();
+const { verificationJWT } = require('../jwtFunctionalities.js');
 
 module.exports = async function (context, req) {
 	try {
@@ -58,6 +60,11 @@ module.exports = async function (context, req) {
 };
 
 async function handlePost(context, req, pool) {
+	const jwtVerificationResult = verificationJWT(req);
+	if (jwtVerificationResult) {
+		context.res = jwtVerificationResult;
+		return;
+	}
 	const labelRec = req.body.hasOwnProperty('label') ? req.body.label : null;
 	const stepsRec = req.body.hasOwnProperty('steps') ? req.body.steps : null;
 	const numberOfPersonsRec = req.body.hasOwnProperty('numberOfPersons')
@@ -203,6 +210,11 @@ async function handlePost(context, req, pool) {
 		  });
 }
 async function handleDelete(context, req, pool) {
+	const jwtVerificationResult = verificationJWT(req);
+	if (jwtVerificationResult) {
+		context.res = jwtVerificationResult;
+		return;
+	}
 	const idRec = req.params.hasOwnProperty('idRec') ? +req.params.idRec : null;
 	const idUser = req.params.hasOwnProperty('idUser')
 		? +req.params.idUser
@@ -271,6 +283,11 @@ async function handleGet(context, req, pool) {
 	};
 }
 async function handlePut(context, req, pool) {
+	const jwtVerificationResult = verificationJWT(req);
+	if (jwtVerificationResult) {
+		context.res = jwtVerificationResult;
+		return;
+	}
 	const idRec = req.params.hasOwnProperty('idRec') ? +req.params.idRec : null;
 	const idUser = req.params.hasOwnProperty('idUser')
 		? +req.params.idUser

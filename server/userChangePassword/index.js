@@ -3,9 +3,16 @@ const config = require('../config.js');
 const queries = require('../queries.js');
 const hashPassword = require('../hashPassword.js');
 const bcrypt = require('bcryptjs');
+const { verificationJWT } = require('../jwtFunctionalities.js');
+require('dotenv').config();
 
 module.exports = async function (context, req) {
 	try {
+		const jwtVerificationResult = verificationJWT(req);
+		if (jwtVerificationResult) {
+			context.res = jwtVerificationResult;
+			return;
+		}
 		if (
 			!config ||
 			!config.server ||

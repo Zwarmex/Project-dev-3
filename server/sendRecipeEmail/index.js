@@ -3,12 +3,15 @@ const {
 	KnownEmailSendStatus,
 } = require('@azure/communication-email');
 require('dotenv').config();
-
-// This code demonstrates how to fetch your connection string
-// from an environment variable.
+const { verificationJWT } = require('../jwtFunctionalities.js');
 
 module.exports = async function (context, req) {
 	try {
+		const jwtVerificationResult = verificationJWT(req);
+		if (jwtVerificationResult) {
+			context.res = jwtVerificationResult;
+			return;
+		}
 		switch (req.method) {
 			case 'POST':
 				await handlePost(context, req);
