@@ -30,7 +30,12 @@ const RecipePage = () => {
 	const [isFav, setIsFav] = useState(false);
 	const getFav = async () => {
 		const result = await fetch(
-			`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/isFavoriteRecipe/${idRec}`
+			`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/isFavoriteRecipe/${idRec}`,
+			{
+				headers: {
+					authorization: tokenJWT,
+				},
+			}
 		);
 		const fav = await result.json();
 		setIsFav(fav[0]['']);
@@ -58,28 +63,26 @@ const RecipePage = () => {
 	const handleFavorite = async () => {
 		const body = JSON.stringify({ idRec: idRec });
 		if (isFav) {
-			const response = await fetch(
+			await fetch(
 				`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`,
 				{
 					method: 'DELETE',
 					headers: {
-						'x-functions-key':
-							'dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==',
 						'Content-Type': 'application/json',
+						authorization: tokenJWT,
 					},
 					body: body,
 				}
 			);
 			setIsFav(false);
 		} else {
-			const response = await fetch(
+			await fetch(
 				`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`,
 				{
 					method: 'POST',
 					headers: {
-						'x-functions-key':
-							'dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==',
 						'Content-Type': 'application/json',
+						authorization: tokenJWT,
 					},
 					body: body,
 				}
@@ -102,9 +105,7 @@ const RecipePage = () => {
 					navigate(-1);
 				} else {
 				}
-			} catch (error) {
-				// Handle any network errors
-			}
+			} catch (error) {}
 		}
 	};
 	const handleImageError = (event) => {

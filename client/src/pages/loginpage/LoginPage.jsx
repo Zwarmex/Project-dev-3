@@ -96,15 +96,7 @@ const LoginPage = () => {
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/user/account/${email}/${loginPassword}`,
-				{
-					method: 'get',
-					headers: {
-						'Content-Type': 'application/json',
-						'x-functions-key':
-							'dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==',
-					},
-				}
+				`https://recipesappfunctions.azurewebsites.net/api/user/account/${email}/${loginPassword}`
 			);
 
 			if (!response.ok) {
@@ -186,13 +178,7 @@ const LoginPage = () => {
 			return;
 		}
 		setLoading(true);
-		const bodyRegister = JSON.stringify({
-			mail: email,
-			firstname: firstName,
-			lastname: lastName,
-			password: registerPassword,
-			birthday: birthday,
-		});
+
 		try {
 			const response = await fetch(
 				`https://recipesappfunctions.azurewebsites.net/api/user/account`,
@@ -201,7 +187,13 @@ const LoginPage = () => {
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: bodyRegister,
+					body: JSON.stringify({
+						mail: email,
+						firstname: firstName,
+						lastname: lastName,
+						password: registerPassword,
+						birthday: birthday,
+					}),
 				}
 			);
 

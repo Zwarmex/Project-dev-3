@@ -15,12 +15,8 @@ const WheelPage = () => {
 			const rawFavoritesRecipes = await fetch(
 				`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`,
 				{
-					method: 'get',
 					headers: {
 						authorization: tokenJWT,
-						'Content-Type': 'application/json',
-						'x-functions-key':
-							'dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==',
 					},
 				}
 			);
@@ -29,13 +25,7 @@ const WheelPage = () => {
 			for (let index = 0; index < favoritesRecipes.length; index++) {
 				const idRec = favoritesRecipes[index].idRec;
 				const rawRecipe = await fetch(
-					`https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`,
-					{
-						headers: {
-							'x-functions-key':
-								'dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==',
-						},
-					}
+					`https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`
 				);
 				const recipe = await rawRecipe.json();
 				localRecipes.push(recipe);

@@ -13,13 +13,7 @@ const MarketPage = () => {
 		setLoading(true);
 		try {
 			const data = await fetch(
-				'https://recipesappfunctions.azurewebsites.net/api/categories',
-				{
-					headers: {
-						'x-functions-key':
-							'dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==',
-					},
-				}
+				'https://recipesappfunctions.azurewebsites.net/api/categories'
 			);
 			const categories = await data.json();
 			setCategories(categories);
@@ -35,13 +29,7 @@ const MarketPage = () => {
 		setLoading(true);
 		try {
 			const data = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/recipes?${lastIdString}&${topString}&${categoryString}`,
-				{
-					headers: {
-						'x-functions-key':
-							'dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==',
-					},
-				}
+				`https://recipesappfunctions.azurewebsites.net/api/recipes?${lastIdString}&${topString}&${categoryString}`
 			);
 
 			const newRecipes = await data.json();
