@@ -23,7 +23,7 @@ const RecipePage = () => {
 		EditorState.createEmpty()
 	);
 	const { idRec } = useParams();
-	const { idUser, abilityUser } = useContext(UserContext);
+	const { idUser, abilityUser, tokenJWT } = useContext(UserContext);
 
 	const fetchRecipe = async () => {
 		const resultRecipe = await fetch(
@@ -52,13 +52,12 @@ const RecipePage = () => {
 			try {
 				const response = await fetch(
 					`https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}/user/${idUser}`,
-					{ method: 'DELETE' }
+					{ method: 'DELETE', authorization: tokenJWT }
 				);
 
 				if (response.ok) {
 					navigate(-1);
 				} else {
-					// Handle any errors during the deletion process
 				}
 			} catch (error) {
 				// Handle any network errors

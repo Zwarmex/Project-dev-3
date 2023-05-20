@@ -4,7 +4,7 @@ import { RecipeItem, UserContext, LoadingHamster } from '../../components';
 import { Box, Button, Container, Typography } from '@mui/material';
 
 const WheelPage = () => {
-	const { idUser } = useContext(UserContext);
+	const { idUser, tokenJWT } = useContext(UserContext);
 	const [recipes, setRecipes] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [selectedIndex, setSelectedIndex] = useState(null);
@@ -17,6 +17,7 @@ const WheelPage = () => {
 				{
 					method: 'get',
 					headers: {
+						authorization: tokenJWT,
 						'Content-Type': 'application/json',
 					},
 				}

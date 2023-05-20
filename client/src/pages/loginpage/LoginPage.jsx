@@ -192,7 +192,6 @@ const LoginPage = () => {
 			birthday: birthday,
 		});
 		try {
-			// Replace the URL with the appropriate endpoint for user registration in your API
 			const response = await fetch(
 				`https://recipesappfunctions.azurewebsites.net/api/user/account`,
 				{
@@ -215,7 +214,6 @@ const LoginPage = () => {
 
 				return;
 			}
-			// If registration is successful, clear the form and display a success message
 			handleLogin();
 		} catch (error) {
 			setErrorMessage('Inscription échouée');

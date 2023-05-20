@@ -53,6 +53,7 @@ const MarketPage = () => {
 	useEffect(() => {
 		fetchCategories();
 		fetchRecipes();
+		//eslint-disable-next-line
 	}, []);
 
 	return (

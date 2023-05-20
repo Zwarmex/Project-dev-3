@@ -11,7 +11,7 @@ import {
 import { Typography, Button, Box, Container } from '@mui/material';
 
 const CalendarPage = () => {
-	const { idUser, mailUser } = useContext(UserContext);
+	const { idUser, mailUser, tokenJWT } = useContext(UserContext);
 	const [date, setDate] = useState(new Date().toLocaleDateString('en-CA'));
 	const [errorMessage, setErrorMessage] = useState('');
 	const [infoMessage, setInfoMessage] = useState('');
@@ -36,6 +36,7 @@ const CalendarPage = () => {
 					{
 						method: 'get',
 						headers: {
+							authorization: tokenJWT,
 							'Content-Type': 'application/json',
 						},
 					}
@@ -64,6 +65,7 @@ const CalendarPage = () => {
 				{
 					method: 'POST',
 					headers: {
+						authorization: tokenJWT,
 						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify(mailBody),

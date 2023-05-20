@@ -49,7 +49,7 @@ const AddRecipePage = () => {
 	]);
 	const navigate = useNavigate();
 	const maxImageSize = 1024 * 1024; // 1MB
-	const { idUser } = useContext(UserContext);
+	const { idUser, tokenJWT } = useContext(UserContext);
 	const [numberOfIngredients, setNumberOfIngredients] = useState(0);
 	const [difficulty, setDifficulty] = useState(1);
 	const [numberOfPersons, setNumberOfPersons] = useState(2);
@@ -144,18 +144,18 @@ const AddRecipePage = () => {
 			ingredients: ingredientsSelected,
 		};
 		console.log(JSON.stringify(recipeData));
-		const requestOptions = {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(recipeData),
-		};
 		setLoadingAddRecipe(true);
 		try {
 			const response = await fetch(
 				'https://recipesappfunctions.azurewebsites.net/api/recipe',
-				requestOptions
+				{
+					method: 'POST',
+					headers: {
+						authorization: tokenJWT,
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(recipeData),
+				}
 			);
 
 			if (response.ok) {

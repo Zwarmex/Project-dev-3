@@ -16,7 +16,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const UserSettingsPage = () => {
 	const maxImageSize = 1024 * 1024; // 1MB
-	const { idUser, setAvatarUser } = useContext(UserContext);
+	const { idUser, setAvatarUser, tokenJWT } = useContext(UserContext);
 	const [base64Avatar, setBase64Avatar] = useState(null);
 	// const [avatarSize, setAvatarSize] = useState(null);
 	const [newPassword1, setNewPassword1] = useState('');
@@ -92,17 +92,17 @@ const UserSettingsPage = () => {
 		const userData = {
 			password: newPassword1,
 		};
-		const requestOptions = {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(userData),
-		};
 		try {
 			const response = await fetch(
 				`https://recipesappfunctions.azurewebsites.net/api/user/account/newPassword/${idUser}`,
-				requestOptions
+				{
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+						authorization: tokenJWT,
+					},
+					body: JSON.stringify(userData),
+				}
 			);
 
 			if (!response.ok) {
@@ -124,18 +124,18 @@ const UserSettingsPage = () => {
 		const userData = {
 			avatar: base64Avatar,
 		};
-		const requestOptions = {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(userData),
-		};
 		setAvatarLoading(true);
 		try {
 			const response = await fetch(
 				`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/updateAvatar`,
-				requestOptions
+				{
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+						authorization: tokenJWT,
+					},
+					body: JSON.stringify(userData),
+				}
 			);
 
 			if (response.ok) {
