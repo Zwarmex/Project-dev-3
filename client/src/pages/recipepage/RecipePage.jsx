@@ -115,6 +115,7 @@ const RecipePage = () => {
 
   useEffect(() => {
     fetchRecipe();
+    getFav();
     // eslint-disable-next-line
   }, []);
 
