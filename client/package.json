@@ -13,6 +13,7 @@
 		"fetch-plus": "^3.10.6",
 		"react": "^18.2.0",
 		"react-calendar": "^4.2.1",
+		"react-cookie-consent": "^8.0.1",
 		"react-d3-library": "^1.1.8",
 		"react-dom": "^18.2.0",
 		"react-draft-wysiwyg": "^1.15.0",
