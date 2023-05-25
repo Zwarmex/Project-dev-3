@@ -13,10 +13,12 @@ import {
 	Container,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const UserSettingsPage = () => {
 	const maxImageSize = 1024 * 1024; // 1MB
-	const { idUser, setAvatarUser, tokenJWT } = useContext(UserContext);
+	const { idUser, setAvatarUser, tokenJWT, logout } = useContext(UserContext);
+	const navigate = useNavigate();
 	const [base64Avatar, setBase64Avatar] = useState(null);
 	// const [avatarSize, setAvatarSize] = useState(null);
 	const [newPassword1, setNewPassword1] = useState('');
@@ -105,13 +107,15 @@ const UserSettingsPage = () => {
 				}
 			);
 
-			if (!response.ok) {
-				setErrorMessage('Connection échouée');
-				setErrorStatus(true);
-			}
 			if (response.ok) {
 				setInfoStatus(true);
 				setInfoMessage('Changement de mot de passe effectué');
+			} else if (response.status === 401) {
+				logout();
+				navigate('/');
+			} else {
+				setErrorMessage('Connection échouée');
+				setErrorStatus(true);
 			}
 		} catch {
 			setErrorStatus(true);
@@ -142,6 +146,9 @@ const UserSettingsPage = () => {
 				setInfoStatus(true);
 				setInfoMessage('Votre avatar a été mis a jour.');
 				setAvatarUser(base64Avatar);
+			} else if (response.status === 401) {
+				logout();
+				navigate('/');
 			} else {
 				setErrorMessage('Erreur dans la modification de votre avatar.');
 				setErrorStatus(true);

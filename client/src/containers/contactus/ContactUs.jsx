@@ -73,7 +73,6 @@ const ContactUs = () => {
 					value={message}
 					onChange={(input) => {
 						setMessage(input.target.value);
-						console.log(input.target.value);
 					}}
 				/>
 			</FormControl>

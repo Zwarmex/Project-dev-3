@@ -2,9 +2,11 @@ import React, { useState, useContext, useEffect } from 'react';
 import './wheelpage.css';
 import { RecipeItem, UserContext, LoadingHamster } from '../../components';
 import { Box, Button, Container, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const WheelPage = () => {
-	const { idUser, tokenJWT } = useContext(UserContext);
+	const { idUser, tokenJWT, logout } = useContext(UserContext);
+	const navigate = useNavigate();
 	const [recipes, setRecipes] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [selectedIndex, setSelectedIndex] = useState(null);
@@ -20,17 +22,22 @@ const WheelPage = () => {
 					},
 				}
 			);
-			const favoritesRecipes = await rawFavoritesRecipes.json();
-			let localRecipes = [];
-			for (let index = 0; index < favoritesRecipes.length; index++) {
-				const idRec = favoritesRecipes[index].idRec;
-				const rawRecipe = await fetch(
-					`https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`
-				);
-				const recipe = await rawRecipe.json();
-				localRecipes.push(recipe);
+			if (rawFavoritesRecipes.ok) {
+				const favoritesRecipes = await rawFavoritesRecipes.json();
+				let localRecipes = [];
+				for (let index = 0; index < favoritesRecipes.length; index++) {
+					const { idRec } = favoritesRecipes[index];
+					const rawRecipe = await fetch(
+						`https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`
+					);
+					const recipe = await rawRecipe.json();
+					localRecipes.push(recipe);
+				}
+				setRecipes(localRecipes);
+			} else if (rawFavoritesRecipes.status === 401) {
+				logout();
+				navigate('/');
 			}
-			setRecipes(localRecipes);
 		} catch {
 		} finally {
 			setLoading(false);

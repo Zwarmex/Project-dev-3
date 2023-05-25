@@ -273,7 +273,6 @@ async function handleGet(context, req, pool) {
 		ingredients[index].labelIng = ingredient.labelIng;
 	}
 	recipe.ingredients = ingredients;
-	console.log(recipe);
 	context.res = {
 		status: 200,
 		body: recipe,

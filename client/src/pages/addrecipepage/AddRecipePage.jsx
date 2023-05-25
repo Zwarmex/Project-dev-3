@@ -49,7 +49,7 @@ const AddRecipePage = () => {
 	]);
 	const navigate = useNavigate();
 	const maxImageSize = 1024 * 1024; // 1MB
-	const { idUser, tokenJWT } = useContext(UserContext);
+	const { idUser, tokenJWT, logout } = useContext(UserContext);
 	const [numberOfIngredients, setNumberOfIngredients] = useState(0);
 	const [difficulty, setDifficulty] = useState(1);
 	const [numberOfPersons, setNumberOfPersons] = useState(2);
@@ -143,7 +143,6 @@ const AddRecipePage = () => {
 			img: base64Image,
 			ingredients: ingredientsSelected,
 		};
-		console.log(JSON.stringify(recipeData));
 		setLoadingAddRecipe(true);
 		try {
 			const response = await fetch(
@@ -160,11 +159,11 @@ const AddRecipePage = () => {
 
 			if (response.ok) {
 				navigate('/');
-			} else {
-				console.error("L'ajout de recette a échoué");
+			} else if (response.status === 401) {
+				logout();
+				navigate('/');
 			}
 		} catch {
-			console.error("L'ajout de recette a échoué");
 		} finally {
 			setLoadingAddRecipe(false);
 		}
@@ -206,7 +205,6 @@ const AddRecipePage = () => {
 		)
 			? newIngredient.idIng
 			: null;
-		console.log(updatedIngredientsSelected);
 		setIngredientsSelected(updatedIngredientsSelected);
 	};
 	const handleIngredientUnitChange = (index, newUnit) => {

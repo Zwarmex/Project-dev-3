@@ -1,6 +1,7 @@
 import 'react-calendar/dist/Calendar.css';
 import './calendarpage.css';
 import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import {
 	LoadingBars,
@@ -11,7 +12,8 @@ import {
 import { Typography, Button, Box, Container } from '@mui/material';
 
 const CalendarPage = () => {
-	const { idUser, mailUser, tokenJWT } = useContext(UserContext);
+	const { idUser, mailUser, tokenJWT, logout } = useContext(UserContext);
+	const navigate = useNavigate();
 	const [date, setDate] = useState(new Date().toLocaleDateString('en-CA'));
 	const [errorMessage, setErrorMessage] = useState('');
 	const [infoMessage, setInfoMessage] = useState('');
@@ -41,14 +43,19 @@ const CalendarPage = () => {
 						},
 					}
 				);
-				const newRecipes = await data.json();
-				const recipesUpdated = [...recipes, ...newRecipes];
-				const lastIdUpdated = recipesUpdated[recipesUpdated.length - 1].idRec;
-				if (lastId === lastIdUpdated) {
-					setDisableMore(true);
+				if (data.ok) {
+					const newRecipes = await data.json();
+					const recipesUpdated = [...recipes, ...newRecipes];
+					const lastIdUpdated = recipesUpdated[recipesUpdated.length - 1].idRec;
+					if (lastId === lastIdUpdated) {
+						setDisableMore(true);
+					}
+					setRecipes(recipesUpdated);
+					setLastId(lastIdUpdated);
+				} else if (data.status === 401) {
+					logout();
+					navigate('/');
 				}
-				setRecipes(recipesUpdated);
-				setLastId(lastIdUpdated);
 			}
 		} catch {
 		} finally {
@@ -58,7 +65,6 @@ const CalendarPage = () => {
 	const sendRecipeEmail = async (recipe) => {
 		const mailBody = { recipe: JSON.stringify({ recipe }), date: date };
 		setMailLoading(true);
-		console.log(JSON.stringify(mailBody));
 		try {
 			const response = await fetch(
 				`https://recipesappfunctions.azurewebsites.net/api/sendRecipeMail/${mailUser}`,
@@ -75,6 +81,9 @@ const CalendarPage = () => {
 				setInfoMessage('Mail envoyé avec succès');
 				setInfoStatus(true);
 				setEmailSent(true);
+			} else if (response.status === 401) {
+				logout();
+				navigate('/');
 			} else {
 				setErrorMessage('Problèmes de connection...');
 				setErrorStatus(true);
@@ -90,7 +99,6 @@ const CalendarPage = () => {
 		// Format the date as YYYY-MM-DD
 		const formattedDate = selectedDate.toLocaleDateString('en-CA');
 		setDate(formattedDate);
-		console.log(formattedDate);
 	};
 	const handleSelectRecipe = (selectedRecipe) => {
 		if (selectedRecipe === savedSelectedRecipe) {
