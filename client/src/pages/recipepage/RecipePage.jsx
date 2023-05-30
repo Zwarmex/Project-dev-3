@@ -50,7 +50,7 @@ const RecipePage = () => {
 
 	const fetchRecipe = async () => {
 		const response = await fetch(
-			`https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`
+			`${process.env.REACT_APP_API_END_POINT}recipe/${idRec}`
 		);
 		const data = await response.json();
 

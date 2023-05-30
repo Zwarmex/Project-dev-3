@@ -46,8 +46,6 @@ const handlePost = async (context, req) => {
 };
 
 module.exports = function (context, req) {
-	context.log('JavaScript HTTP trigger function processed a request.');
-
 	switch (req.method) {
 		case 'POST':
 			handlePost(context, req);

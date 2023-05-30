@@ -4,8 +4,6 @@ const queries = require('../queries.js');
 require('dotenv').config();
 
 module.exports = async function (context, req) {
-	context.log('Processing a request for recipe API.');
-
 	if (
 		!config ||
 		!config.server ||

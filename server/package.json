@@ -8,9 +8,9 @@
 	},
 	"dependencies": {
 		"@azure/communication-email": "^1.0.0",
-		"azure-functions-core-tools": "^4.0.5085",
+		"azure-functions-core-tools": "^4.0.5198",
 		"bcryptjs": "^2.4.3",
-		"dotenv": "^16.0.3",
+		"dotenv": "^16.1.0",
 		"jsonwebtoken": "^9.0.0",
 		"jwks-rsa": "^3.0.1",
 		"mssql": "^9.1.1",
