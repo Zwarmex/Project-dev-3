@@ -17,7 +17,9 @@ module.exports = async function (context, req) {
 		) {
 			context.res = {
 				status: 500,
-				body: 'Database configuration is missing or incomplete',
+				body: {
+					message: 'Database configuration is missing or incomplete',
+				},
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
@@ -43,7 +45,9 @@ module.exports = async function (context, req) {
 			default:
 				context.res = {
 					status: 405,
-					body: 'Method not allowed',
+					body: {
+						message: 'Method not allowed',
+					},
 					headers: {
 						'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 					},
@@ -53,7 +57,9 @@ module.exports = async function (context, req) {
 	} catch (err) {
 		context.res = {
 			status: 500,
-			body: `API Failed : ${err}`,
+			body: {
+				message: `API Failed : ${err}`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -88,7 +94,9 @@ async function handlePost(context, req, pool) {
 	if (!firstnameUser) {
 		context.res = {
 			status: 400,
-			body: 'firstname parameter is required and must be a string',
+			body: {
+				message: 'firstname parameter is required and must be a string',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -98,7 +106,9 @@ async function handlePost(context, req, pool) {
 	if (!lastnameUser) {
 		context.res = {
 			status: 400,
-			body: 'lastname parameter is required and must be a string',
+			body: {
+				message: 'lastname parameter is required and must be a string',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -108,7 +118,9 @@ async function handlePost(context, req, pool) {
 	if (!mailUser) {
 		context.res = {
 			status: 400,
-			body: 'mail parameter is required and must be a string',
+			body: {
+				message: 'mail parameter is required and must be a string',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -118,7 +130,9 @@ async function handlePost(context, req, pool) {
 	if (!passwordUser) {
 		context.res = {
 			status: 400,
-			body: 'password parameter is required and must be a string',
+			body: {
+				message: 'password parameter is required and must be a string',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -131,7 +145,10 @@ async function handlePost(context, req, pool) {
 	) {
 		context.res = {
 			status: 400,
-			body: 'birthday parameter is required, must be a string, and must be a valid date (format: DD/MM/YYYY)',
+			body: {
+				message:
+					'birthday parameter is required, must be a string, and must be a valid date (format: DD/MM/YYYY)',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -145,7 +162,9 @@ async function handlePost(context, req, pool) {
 	) {
 		context.res = {
 			status: 400,
-			body: 'telephone must be an integer',
+			body: {
+				message: 'telephone must be an integer',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -183,7 +202,9 @@ async function handlePost(context, req, pool) {
 	if (result.rowsAffected[0] > 0) {
 		context.res = {
 			status: 200,
-			body: 'User added successfully',
+			body: {
+				message: 'User added successfully',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -191,7 +212,9 @@ async function handlePost(context, req, pool) {
 	} else {
 		context.res = {
 			status: result.recordset[0].status,
-			body: result.recordset[0].message,
+			body: {
+				message: result.recordset[0].message,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -212,7 +235,9 @@ async function handleDelete(context, req, pool) {
 	if (result.rowsAffected[0] > 0) {
 		context.res = {
 			status: 200,
-			body: 'User successfully deleted',
+			body: {
+				message: 'User successfully deleted',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -220,7 +245,9 @@ async function handleDelete(context, req, pool) {
 	} else {
 		context.res = {
 			status: 404,
-			body: 'User not found',
+			body: {
+				message: 'User not found',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -230,6 +257,7 @@ async function handleDelete(context, req, pool) {
 async function handleGet(context, req, pool) {
 	const mailUser = req.params.mail;
 	const passwordUser = req.params.password;
+	const idUser = req.body.idUser;
 
 	const queryByMail = queries.userGetPasswordAndSaltByMail(mailUser);
 	const result = await pool.request().query(queryByMail);
@@ -243,11 +271,14 @@ async function handleGet(context, req, pool) {
 			const userDetails = await pool.request().query(queryUser);
 
 			// generate JWT
-			const tokenJWT = generateJWT(mailUser);
+			const tokenJWT = generateJWT(idUser);
 
 			context.res = {
 				status: 200,
-				body: { user: userDetails.recordset[0], tokenJWT: tokenJWT },
+				body: {
+					result: userDetails.recordset[0],
+					tokenJWT: tokenJWT,
+				},
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
@@ -258,7 +289,9 @@ async function handleGet(context, req, pool) {
 
 	context.res = {
 		status: 401,
-		body: 'Invalid email or password',
+		body: {
+			message: 'Invalid email or password',
+		},
 		headers: { 'Access-Control-Allow-Origin': process.env.CORS_ORIGIN },
 	};
 }
@@ -302,11 +335,14 @@ async function handlePut(context, req, pool) {
 		birthdayUser
 	);
 	const result = await pool.request().query(query);
-
 	if (result.rowsAffected[0] > 0) {
+		const tokenJWT = generateJWT(idUser);
 		context.res = {
 			status: 200,
-			body: 'User successfully updated',
+			body: {
+				message: 'User successfully updated',
+				tokenJWT: tokenJWT,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -314,7 +350,9 @@ async function handlePut(context, req, pool) {
 	} else {
 		context.res = {
 			status: 404,
-			body: 'User not found',
+			body: {
+				message: 'User not found',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},

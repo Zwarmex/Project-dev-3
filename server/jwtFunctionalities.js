@@ -17,9 +17,9 @@ function verificationJWT(req) {
 		};
 	}
 }
-function generateJWT(mailUser) {
+function generateJWT(idUser) {
 	// generate JWT
-	return jwt.sign({ mail: mailUser }, process.env.JWT_SECRET, {
+	return jwt.sign({ idUser: idUser }, process.env.JWT_SECRET, {
 		expiresIn: '1h',
 	});
 }

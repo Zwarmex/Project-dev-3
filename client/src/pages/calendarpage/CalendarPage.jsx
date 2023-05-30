@@ -9,9 +9,12 @@ import {
 	UserContext,
 } from '../../components';
 import { Typography, Button, Box, Container } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const CalendarPage = () => {
-	const { idUser, mailUser, tokenJWT } = useContext(UserContext);
+	const { idUser, mailUser, tokenJWT, setTokenJWT, logout } =
+		useContext(UserContext);
+	const navigate = useNavigate();
 	const [date, setDate] = useState(new Date().toLocaleDateString('en-CA'));
 	const [errorMessage, setErrorMessage] = useState('');
 	const [infoMessage, setInfoMessage] = useState('');
@@ -32,23 +35,27 @@ const CalendarPage = () => {
 			if (!disableMore) {
 				setRecipesLoading(true);
 				const data = await fetch(
-					`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/recipes?${lastIdString}&${topString}`,
+					`${process.env.REACT_APP_API_END_POINT}user/${idUser}/recipes?${lastIdString}&${topString}`,
 					{
-						method: 'get',
 						headers: {
 							authorization: tokenJWT,
-							'Content-Type': 'application/json',
 						},
 					}
 				);
-				const newRecipes = await data.json();
-				const recipesUpdated = [...recipes, ...newRecipes];
-				const lastIdUpdated = recipesUpdated[recipesUpdated.length - 1].idRec;
-				if (lastId === lastIdUpdated) {
-					setDisableMore(true);
+				if (data.ok) {
+					setTokenJWT(data.tokenJWT);
+					const newRecipes = await data.result.json();
+					const recipesUpdated = [...recipes, ...newRecipes];
+					const lastIdUpdated = recipesUpdated[recipesUpdated.length - 1].idRec;
+					if (lastId === lastIdUpdated) {
+						setDisableMore(true);
+					}
+					setRecipes(recipesUpdated);
+					setLastId(lastIdUpdated);
+				} else if (data.status === 401) {
+					logout();
+					navigate('/login');
 				}
-				setRecipes(recipesUpdated);
-				setLastId(lastIdUpdated);
 			}
 		} catch {
 		} finally {
@@ -56,25 +63,33 @@ const CalendarPage = () => {
 		}
 	};
 	const sendRecipeEmail = async (recipe) => {
-		const mailBody = { recipe: JSON.stringify({ recipe }), date: date };
 		setMailLoading(true);
-		console.log(JSON.stringify(mailBody));
 		try {
 			const response = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/sendRecipeMail/${mailUser}`,
+				`${process.env.REACT_APP_API_END_POINT}sendRecipeMail/${mailUser}`,
 				{
 					method: 'POST',
 					headers: {
 						authorization: tokenJWT,
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify(mailBody),
+					body: JSON.stringify({
+						recipe: JSON.stringify({
+							recipe,
+						}),
+						date: date,
+						idUser: idUser,
+					}),
 				}
 			);
 			if (response.ok) {
+				setTokenJWT(response.tokenJWT);
 				setInfoMessage('Mail envoyé avec succès');
 				setInfoStatus(true);
 				setEmailSent(true);
+			} else if (response.status === 401) {
+				logout();
+				navigate('/login');
 			} else {
 				setErrorMessage('Problèmes de connection...');
 				setErrorStatus(true);

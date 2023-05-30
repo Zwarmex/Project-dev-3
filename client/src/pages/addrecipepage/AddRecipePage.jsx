@@ -49,7 +49,7 @@ const AddRecipePage = () => {
 	]);
 	const navigate = useNavigate();
 	const maxImageSize = 1024 * 1024; // 1MB
-	const { idUser, tokenJWT } = useContext(UserContext);
+	const { idUser, tokenJWT, setTokenJWT, logout } = useContext(UserContext);
 	const [numberOfIngredients, setNumberOfIngredients] = useState(0);
 	const [difficulty, setDifficulty] = useState(1);
 	const [numberOfPersons, setNumberOfPersons] = useState(2);
@@ -132,39 +132,39 @@ const AddRecipePage = () => {
 		}
 		const rawContentState = convertToRaw(editorState.getCurrentContent());
 		const stepsJsonString = JSON.stringify(rawContentState);
-		const recipeData = {
-			label: title,
-			steps: stepsJsonString,
-			numberOfPersons: numberOfPersons,
-			time: time,
-			difficulty: difficulty,
-			idCat: selectedCategoryId,
-			idUser: idUser,
-			img: base64Image,
-			ingredients: ingredientsSelected,
-		};
-		console.log(JSON.stringify(recipeData));
 		setLoadingAddRecipe(true);
 		try {
 			const response = await fetch(
-				'https://recipesappfunctions.azurewebsites.net/api/recipe',
+				`${process.env.REACT_APP_API_END_POINT}recipe`,
 				{
 					method: 'POST',
 					headers: {
 						authorization: tokenJWT,
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify(recipeData),
+					body: JSON.stringify({
+						label: title,
+						steps: stepsJsonString,
+						numberOfPersons: numberOfPersons,
+						time: time,
+						difficulty: difficulty,
+						idCat: selectedCategoryId,
+						idUser: idUser,
+						img: base64Image,
+						ingredients: ingredientsSelected,
+					}),
 				}
 			);
 
 			if (response.ok) {
+				setTokenJWT(response.tokenJWT);
 				navigate('/');
+			} else if (response.status === 401) {
+				logout();
+				navigate('/login');
 			} else {
-				console.error("L'ajout de recette a échoué");
 			}
 		} catch {
-			console.error("L'ajout de recette a échoué");
 		} finally {
 			setLoadingAddRecipe(false);
 		}
@@ -226,10 +226,10 @@ const AddRecipePage = () => {
 		setLoadingIngredients(true);
 		try {
 			const response = await fetch(
-				'https://recipesappfunctions.azurewebsites.net/api/ingredients'
+				`${process.env.REACT_APP_API_END_POINT}ingredients`
 			);
 			if (response.ok) {
-				const data = await response.json();
+				const data = await response.result.json();
 				setIngredients(data);
 			} else {
 				setErrorStatus(true);
@@ -247,18 +247,16 @@ const AddRecipePage = () => {
 		setLoadingCategories(true);
 		try {
 			const response = await fetch(
-				'https://recipesappfunctions.azurewebsites.net/api/categories',
-				{
-					headers: {
-						'x-functions-key':
-							'dLciv3NwRJcYeSIsPaUl2aaaJb6aYoAY3NtlnNZAHBPVAzFusKw_9A==',
-					},
-				}
+				`${process.env.REACT_APP_API_END_POINT}categories`
 			);
 			if (response.ok) {
-				const data = await response.json();
+				setTokenJWT(response.tokenJWT);
+				const data = await response.result.json();
 				setCategories(data);
 				setSelectedCategoryId(data[0].idCat);
+			} else if (response.status === 401) {
+				logout();
+				navigate('/login');
 			} else {
 				setErrorStatus(true);
 				setErrorMessage('Erreur de connection.');

@@ -12,11 +12,15 @@ const MarketPage = () => {
 	const fetchCategories = async () => {
 		setLoading(true);
 		try {
-			const data = await fetch(
-				'https://recipesappfunctions.azurewebsites.net/api/categories'
+			const response = await fetch(
+				`${process.env.REACT_APP_API_END_POINT}categories`
 			);
-			const categories = await data.json();
-			setCategories(categories);
+			console.log(response);
+			if (response.ok) {
+				const categories = await response.result.json();
+				setCategories(categories);
+				console.log(categories);
+			}
 		} catch {
 		} finally {
 			setLoading(false);
@@ -28,16 +32,18 @@ const MarketPage = () => {
 		const topString = topValue ? `top=${topValue}` : '';
 		setLoading(true);
 		try {
-			const data = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/recipes?${lastIdString}&${topString}&${categoryString}`
+			const response = await fetch(
+				`${process.env.REACT_APP_API_END_POINT}recipes?${lastIdString}&${topString}&${categoryString}`
 			);
+			if (response.ok) {
+				const newRecipes = await response.result.json();
+				console.log(newRecipes);
+				const recipesUpdated = [...recipes, ...newRecipes];
+				const lastIdUpdated = recipesUpdated[recipesUpdated.length - 1].idRec;
 
-			const newRecipes = await data.json();
-			const recipesUpdated = [...recipes, ...newRecipes];
-			const lastIdUpdated = recipesUpdated[recipesUpdated.length - 1].idRec;
-
-			setRecipes(recipesUpdated);
-			setLastId(lastIdUpdated);
+				setRecipes(recipesUpdated);
+				setLastId(lastIdUpdated);
+			}
 		} catch {
 		} finally {
 			setLoading(false);

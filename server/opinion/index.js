@@ -2,7 +2,7 @@ const sql = require('mssql');
 const config = require('../config.js');
 const queries = require('../queries.js');
 require('dotenv').config();
-const { verificationJWT } = require('../jwtFunctionalities.js');
+const { verificationJWT, generateJWT } = require('../jwtFunctionalities.js');
 
 module.exports = async function (context, req) {
 	try {
@@ -20,7 +20,9 @@ module.exports = async function (context, req) {
 		) {
 			context.res = {
 				status: 500,
-				body: 'Database configuration is missing or incomplete',
+				body: {
+					message: 'Database configuration is missing or incomplete',
+				},
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
@@ -45,7 +47,9 @@ module.exports = async function (context, req) {
 			default:
 				context.res = {
 					status: 400,
-					body: 'Invalid request method',
+					body: {
+						message: 'Invalid request method',
+					},
 					headers: {
 						'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 					},
@@ -54,7 +58,9 @@ module.exports = async function (context, req) {
 	} catch (err) {
 		context.res = {
 			status: 500,
-			body: `API Failed : ${err}`,
+			body: {
+				message: `API Failed : ${err}`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -72,7 +78,9 @@ async function handlePost(context, req, pool) {
 	if (!textOpi) {
 		context.res = {
 			status: 400,
-			body: 'textOpi parameter is required',
+			body: {
+				message: 'textOpi parameter is required',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -82,21 +90,30 @@ async function handlePost(context, req, pool) {
 
 	const query = queries.opinionPost(textOpi, idRec, idUser);
 	const result = await pool.request().query(query);
-	result.rowsAffected[0] >= 1
-		? (context.res = {
-				status: 200,
-				body: 'Opinion added successfully',
-				headers: {
-					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-				},
-		  })
-		: (context.res = {
-				status: result.recordset[0].status,
-				body: result.recordset[0].message,
-				headers: {
-					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-				},
-		  });
+
+	if (result.rowsAffected[0] >= 1) {
+		const tokenJWT = generateJWT(idUser);
+		context.res = {
+			status: 200,
+			body: {
+				message: 'Opinion added successfully',
+				tokenJWT: tokenJWT,
+			},
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+	} else {
+		context.res = {
+			status: result.recordset[0].status,
+			body: {
+				message: result.recordset[0].message,
+			},
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+	}
 }
 async function handleDelete(context, req, pool) {
 	const idRec = req.params.hasOwnProperty('idRec') ? +req.params.idRec : null;
@@ -108,9 +125,13 @@ async function handleDelete(context, req, pool) {
 	const result = await pool.request().query(query);
 
 	if (result.rowsAffected[0] === 1) {
+		const tokenJWT = generateJWT(idUser);
 		context.res = {
 			status: 200,
-			body: 'Entry successfully deleted',
+			body: {
+				message: 'Entry successfully deleted',
+				tokenJWT: tokenJWT,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -118,7 +139,9 @@ async function handleDelete(context, req, pool) {
 	} else {
 		context.res = {
 			status: 404,
-			body: 'Entry not found',
+			body: {
+				message: 'Entry not found',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -135,7 +158,9 @@ async function handleGet(context, req, pool) {
 	if (!Number.isInteger(topValue) || topValue <= 0) {
 		context.res = {
 			status: 400,
-			body: 'topValue must be a positive integer.',
+			body: {
+				message: 'topValue must be a positive integer.',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -145,10 +170,14 @@ async function handleGet(context, req, pool) {
 
 	const query = queries.opinionGet(idUser, topValue, lastId);
 	const result = await pool.request().query(query);
+	const tokenJWT = generateJWT(idUser);
 
 	context.res = {
 		status: 200,
-		body: result.recordset,
+		body: {
+			result: result.recordset,
+			tokenJWT: tokenJWT,
+		},
 		headers: {
 			'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 		},
@@ -164,7 +193,9 @@ async function handlePut(context, req, pool) {
 	if (!textOpi) {
 		context.res = {
 			status: 400,
-			body: 'textOpi parameter is required',
+			body: {
+				message: 'textOpi parameter is required',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -176,9 +207,13 @@ async function handlePut(context, req, pool) {
 	const result = await pool.request().query(query);
 
 	if (result.rowsAffected[0] === 1) {
+		const tokenJWT = generateJWT(idUser);
 		context.res = {
 			status: 200,
-			body: 'Opinion updated successfully',
+			body: {
+				message: 'Opinion updated successfully}',
+				tokenJWT: tokenJWT,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -186,7 +221,9 @@ async function handlePut(context, req, pool) {
 	} else {
 		context.res = {
 			status: 404,
-			body: 'Opinion not found',
+			body: {
+				message: 'Opinion not found',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},

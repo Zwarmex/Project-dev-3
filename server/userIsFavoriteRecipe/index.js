@@ -1,7 +1,7 @@
 const sql = require('mssql');
 const config = require('../config.js');
 const queries = require('../queries.js');
-const { verificationJWT } = require('../jwtFunctionalities.js');
+const { verificationJWT, generateJWT } = require('../jwtFunctionalities.js');
 require('dotenv').config();
 
 module.exports = async function (context, req) {
@@ -20,7 +20,9 @@ module.exports = async function (context, req) {
 		) {
 			context.res = {
 				status: 500,
-				body: 'Database configuration is missing or incomplete',
+				body: {
+					message: 'Database configuration is missing or incomplete',
+				},
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
@@ -38,7 +40,9 @@ module.exports = async function (context, req) {
 			default:
 				context.res = {
 					status: 405,
-					body: 'Method not allowed',
+					body: {
+						message: 'Method not allowed',
+					},
 					headers: {
 						'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 					},
@@ -48,7 +52,9 @@ module.exports = async function (context, req) {
 	} catch (err) {
 		context.res = {
 			status: 500,
-			body: `API Failed : ${err}`,
+			body: {
+				message: `API Failed : ${err}`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -64,9 +70,13 @@ async function handleGet(context, req, pool) {
 
 	const query = queries.userGetIsFavoriteRecipe(idUser, idRec);
 	const result = await pool.request().query(query);
+	const tokenJWT = generateJWT(idUser);
 	context.res = {
 		status: 200,
-		body: result.recordset,
+		body: {
+			result: result.recordset,
+			tokenJWT: tokenJWT,
+		},
 		headers: {
 			'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 		},

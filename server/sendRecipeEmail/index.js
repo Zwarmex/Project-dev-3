@@ -3,7 +3,7 @@ const {
 	KnownEmailSendStatus,
 } = require('@azure/communication-email');
 require('dotenv').config();
-const { verificationJWT } = require('../jwtFunctionalities.js');
+const { verificationJWT, generateJWT } = require('../jwtFunctionalities.js');
 
 module.exports = async function (context, req) {
 	try {
@@ -19,7 +19,9 @@ module.exports = async function (context, req) {
 			default:
 				context.res = {
 					status: 405,
-					body: 'Method not allowed',
+					body: {
+						message: 'Method not allowed',
+					},
 					headers: {
 						'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 					},
@@ -29,7 +31,9 @@ module.exports = async function (context, req) {
 	} catch (err) {
 		context.res = {
 			status: 500,
-			body: `API Failed : ${err}`,
+			body: {
+				message: `API Failed : ${err}`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -43,6 +47,7 @@ async function handlePost(context, req) {
 		: null;
 	const date = req.body.hasOwnProperty('date') ? req.body.date : null;
 	const mailUser = req.params.mailUser;
+	const idUser = req.body.hasOwnProperty('idUser') ? req.body.idUser : null;
 	const emailClient = new EmailClient(
 		process.env.COMMUNICATION_SERVICES_CONNECTION_STRING
 	);
@@ -84,7 +89,9 @@ async function handlePost(context, req) {
 	if (!poller.getOperationState().isStarted) {
 		context.res = {
 			status: 500,
-			body: 'The email was not sent.',
+			body: {
+				message: 'The email was not sent.',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -105,7 +112,9 @@ async function handlePost(context, req) {
 		if (timeElapsed > 18 * POLLER_WAIT_TIME) {
 			context.res = {
 				status: 500,
-				body: 'Polling timed out.',
+				body: {
+					message: 'Polling timed out.',
+				},
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
@@ -115,9 +124,14 @@ async function handlePost(context, req) {
 	}
 
 	if (poller.getResult().status === KnownEmailSendStatus.Succeeded) {
+		const tokenJWT = generateJWT(idUser);
+
 		context.res = {
 			status: 200,
-			body: 'Email sent successfully.',
+			body: {
+				message: 'Email sent successfully.',
+				token: tokenJWT,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -125,7 +139,9 @@ async function handlePost(context, req) {
 	} else {
 		context.res = {
 			status: 500,
-			body: poller.getResult().error,
+			body: {
+				message: poller.getResult().error,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},

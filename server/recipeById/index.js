@@ -2,7 +2,7 @@ const sql = require('mssql');
 const config = require('../config.js');
 const queries = require('../queries.js');
 require('dotenv').config();
-const { verificationJWT } = require('../jwtFunctionalities.js');
+const { verificationJWT, generateJWT } = require('../jwtFunctionalities.js');
 
 module.exports = async function (context, req) {
 	try {
@@ -15,7 +15,9 @@ module.exports = async function (context, req) {
 		) {
 			context.res = {
 				status: 500,
-				body: 'Database configuration is missing or incomplete',
+				body: {
+					message: 'Database configuration is missing or incomplete',
+				},
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
@@ -41,7 +43,9 @@ module.exports = async function (context, req) {
 			default:
 				context.res = {
 					status: 405,
-					body: 'Method not allowed',
+					body: {
+						message: 'Method not allowed',
+					},
 					headers: {
 						'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 					},
@@ -51,7 +55,9 @@ module.exports = async function (context, req) {
 	} catch (err) {
 		context.res = {
 			status: 500,
-			body: `API Failed : ${err}`,
+			body: {
+				message: `API Failed : ${err}`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -87,7 +93,9 @@ async function handlePost(context, req, pool) {
 	if (!labelRec) {
 		context.res = {
 			status: 400,
-			body: `label parameter is required`,
+			body: {
+				message: `label parameter is required`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -97,7 +105,9 @@ async function handlePost(context, req, pool) {
 	if (!stepsRec) {
 		context.res = {
 			status: 400,
-			body: `steps parameter is required`,
+			body: {
+				message: `steps parameter is required`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -111,7 +121,9 @@ async function handlePost(context, req, pool) {
 	) {
 		context.res = {
 			status: 400,
-			body: `numberOfPersons parameter must be a positive integer`,
+			body: {
+				message: `numberOfPersons parameter must be a positive integer`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -121,7 +133,9 @@ async function handlePost(context, req, pool) {
 	if (!timeRec || !Number.isInteger(timeRec) || timeRec < 0) {
 		context.res = {
 			status: 400,
-			body: `time parameter must be a positive integer`,
+			body: {
+				message: `time parameter must be a positive integer`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -134,7 +148,9 @@ async function handlePost(context, req, pool) {
 	) {
 		context.res = {
 			status: 400,
-			body: `difficulty parameter must be a positive integer between 1 and 5`,
+			body: {
+				message: `difficulty parameter must be a positive integer between 1 and 5`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -144,7 +160,9 @@ async function handlePost(context, req, pool) {
 	if (!idCat || !Number.isInteger(idCat) || idCat < 0) {
 		context.res = {
 			status: 400,
-			body: `idCat parameter must be a positive integer`,
+			body: {
+				message: `idCat parameter must be a positive integer`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -154,7 +172,9 @@ async function handlePost(context, req, pool) {
 	if (!idUser || !Number.isInteger(idUser) || idUser < 0) {
 		context.res = {
 			status: 400,
-			body: `idUser parameter must be a positive integer`,
+			body: {
+				message: `idUser parameter must be a positive integer`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -196,18 +216,27 @@ async function handlePost(context, req, pool) {
 			await pool.request().query(queryRecipeIngredientPost);
 		}
 	}
-	resultRecipe.rowsAffected[0] > 0
-		? (context.res = {
-				status: 200,
-				body: 'Recipe added successfully',
-				headers: {
-					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-				},
-		  })
-		: (context.res = {
-				status: 409,
-				body: 'Error in the insert statement',
-		  });
+
+	if (resultRecipe.rowsAffected[0] > 0) {
+		const tokenJWT = generateJWT(idUser);
+		context.res = {
+			status: 200,
+			body: {
+				message: 'Recipe added successfully',
+				tokenJWT: tokenJWT,
+			},
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+	} else {
+		context.res = {
+			status: 409,
+			body: {
+				message: 'Error in the insert statement',
+			},
+		};
+	}
 }
 async function handleDelete(context, req, pool) {
 	const jwtVerificationResult = verificationJWT(req);
@@ -229,7 +258,9 @@ async function handleDelete(context, req, pool) {
 	) {
 		context.res = {
 			status: 400,
-			body: 'abilityUser must be a positive integer.',
+			body: {
+				message: 'abilityUser must be a positive integer.',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -240,9 +271,13 @@ async function handleDelete(context, req, pool) {
 	const result = await pool.request().query(query);
 
 	if (result.rowsAffected[0] > 0) {
+		const tokenJWT = generateJWT(idUser);
 		context.res = {
 			status: 200,
-			body: 'Entry successfully deleted',
+			body: {
+				message: 'Entry successfully deleted',
+				tokenJWT: tokenJWT,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -250,7 +285,9 @@ async function handleDelete(context, req, pool) {
 	} else {
 		context.res = {
 			status: 404,
-			body: 'Entry not found',
+			body: {
+				message: 'Entry not found',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -273,10 +310,11 @@ async function handleGet(context, req, pool) {
 		ingredients[index].labelIng = ingredient.labelIng;
 	}
 	recipe.ingredients = ingredients;
-	console.log(recipe);
 	context.res = {
 		status: 200,
-		body: recipe,
+		body: {
+			result: recipe,
+		},
 		headers: {
 			'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 		},
@@ -318,9 +356,13 @@ async function handlePut(context, req, pool) {
 	const result = await pool.request().query(query);
 
 	if (result.rowsAffected[0] > 0) {
+		const tokenJWT = generateJWT(idUser);
 		context.res = {
 			status: 200,
-			body: 'Recipe updated successfully',
+			body: {
+				message: 'Recipe updated successfully',
+				tokenJWT: tokenJWT,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -328,7 +370,9 @@ async function handlePut(context, req, pool) {
 	} else {
 		context.res = {
 			status: 404,
-			body: 'Recipe not found',
+			body: {
+				message: 'Recipe not found',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},

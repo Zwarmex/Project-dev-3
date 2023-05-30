@@ -96,7 +96,7 @@ const LoginPage = () => {
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/user/account/${email}/${loginPassword}`
+				`${process.env.REACT_APP_API_END_POINT}user/account/${email}/${loginPassword}`
 			);
 
 			if (!response.ok) {
@@ -181,7 +181,7 @@ const LoginPage = () => {
 
 		try {
 			const response = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/user/account`,
+				`${process.env.REACT_APP_API_END_POINT}user/account`,
 				{
 					method: 'POST',
 					headers: {
@@ -198,7 +198,7 @@ const LoginPage = () => {
 			);
 
 			if (!response.ok) {
-				const errorData = await response.json();
+				const errorData = await response.result.json();
 				if (response.status === 409) {
 					setErrorMessage("L 'utilisateur existe déjà");
 				} else {

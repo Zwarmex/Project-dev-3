@@ -1,7 +1,7 @@
 const sql = require('mssql');
 const config = require('../config.js');
 const queries = require('../queries.js');
-const { verificationJWT } = require('../jwtFunctionalities.js');
+const { verificationJWT, generateJWT } = require('../jwtFunctionalities.js');
 require('dotenv').config();
 
 module.exports = async function (context, req) {
@@ -20,7 +20,9 @@ module.exports = async function (context, req) {
 		) {
 			context.res = {
 				status: 500,
-				body: 'Database configuration is missing or incomplete',
+				body: {
+					message: 'Database configuration is missing or incomplete',
+				},
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
@@ -35,7 +37,9 @@ module.exports = async function (context, req) {
 			default:
 				context.res = {
 					status: 405,
-					body: 'Method not allowed',
+					body: {
+						message: 'Method not allowed',
+					},
 					headers: { 'Access-Control-Allow-Origin': process.env.CORS_ORIGIN },
 				};
 				break;
@@ -43,7 +47,9 @@ module.exports = async function (context, req) {
 	} catch (err) {
 		context.res = {
 			status: 500,
-			body: `API Failed : ${err}`,
+			body: {
+				message: `API Failed : ${err}`,
+			},
 			headers: { 'Access-Control-Allow-Origin': process.env.CORS_ORIGIN },
 		};
 	}
@@ -55,7 +61,9 @@ async function handlePut(context, req, pool) {
 	if (!avatarUser) {
 		context.res = {
 			status: 400,
-			body: 'avatar parameter is required',
+			body: {
+				message: 'avatar parameter is required',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -66,9 +74,13 @@ async function handlePut(context, req, pool) {
 	const result = await pool.request().query(query);
 
 	if (result.rowsAffected[0] > 0) {
+		const tokenJWT = generateJWT(idUser);
 		context.res = {
 			status: 200,
-			body: 'User successfully updated',
+			body: {
+				message: 'User successfully updated',
+				tokenJWT: tokenJWT,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -76,7 +88,9 @@ async function handlePut(context, req, pool) {
 	} else {
 		context.res = {
 			status: 404,
-			body: 'User not found',
+			body: {
+				message: 'User not found',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},

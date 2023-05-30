@@ -13,12 +13,15 @@ import {
 	Container,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const UserSettingsPage = () => {
 	const maxImageSize = 1024 * 1024; // 1MB
-	const { idUser, setAvatarUser, tokenJWT } = useContext(UserContext);
+	const { idUser, setAvatarUser, tokenJWT, setTokenJWT, logout } =
+		useContext(UserContext);
+	const navigate = useNavigate();
 	const [base64Avatar, setBase64Avatar] = useState(null);
-	// const [avatarSize, setAvatarSize] = useState(null);
+
 	const [newPassword1, setNewPassword1] = useState('');
 	const [newPassword2, setNewPassword2] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
@@ -89,29 +92,32 @@ const UserSettingsPage = () => {
 		}
 		setErrorStatus(false);
 		setPasswordLoading(true);
-		const userData = {
-			password: newPassword1,
-		};
+
 		try {
 			const response = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/user/account/newPassword/${idUser}`,
+				`${process.env.REACT_APP_API_END_POINT}user/account/newPassword/${idUser}`,
 				{
 					method: 'PUT',
 					headers: {
 						'Content-Type': 'application/json',
 						authorization: tokenJWT,
 					},
-					body: JSON.stringify(userData),
+					body: JSON.stringify({
+						password: newPassword1,
+					}),
 				}
 			);
 
-			if (!response.ok) {
-				setErrorMessage('Connection échouée');
-				setErrorStatus(true);
-			}
 			if (response.ok) {
+				setTokenJWT(response.tokenJWT);
 				setInfoStatus(true);
 				setInfoMessage('Changement de mot de passe effectué');
+			} else if (response.status === 401) {
+				logout();
+				navigate('/login');
+			} else {
+				setErrorMessage('Connection échouée');
+				setErrorStatus(true);
 			}
 		} catch {
 			setErrorStatus(true);
@@ -121,27 +127,30 @@ const UserSettingsPage = () => {
 		}
 	};
 	const handleAvatarChanging = async () => {
-		const userData = {
-			avatar: base64Avatar,
-		};
 		setAvatarLoading(true);
 		try {
 			const response = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/updateAvatar`,
+				`${process.env.REACT_APP_API_END_POINT}user/${idUser}/updateAvatar`,
 				{
 					method: 'PUT',
 					headers: {
 						'Content-Type': 'application/json',
 						authorization: tokenJWT,
 					},
-					body: JSON.stringify(userData),
+					body: JSON.stringify({
+						avatar: base64Avatar,
+					}),
 				}
 			);
 
 			if (response.ok) {
+				setTokenJWT(response.tokenJWT);
 				setInfoStatus(true);
 				setInfoMessage('Votre avatar a été mis a jour.');
 				setAvatarUser(base64Avatar);
+			} else if (response.status === 401) {
+				logout();
+				navigate('/login');
 			} else {
 				setErrorMessage('Erreur dans la modification de votre avatar.');
 				setErrorStatus(true);

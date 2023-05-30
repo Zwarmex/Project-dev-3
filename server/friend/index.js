@@ -1,7 +1,7 @@
 const sql = require('mssql');
 const config = require('../config.js');
 const queries = require('../queries.js');
-const { verificationJWT } = require('../jwtFunctionalities.js');
+const { verificationJWT, generateJWT } = require('../jwtFunctionalities.js');
 require('dotenv').config();
 
 module.exports = async function (context, req) {
@@ -20,7 +20,9 @@ module.exports = async function (context, req) {
 		) {
 			context.res = {
 				status: 500,
-				body: 'Database configuration is missing or incomplete',
+				body: {
+					message: 'Database configuration is missing or incomplete',
+				},
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
@@ -42,7 +44,9 @@ module.exports = async function (context, req) {
 			default:
 				context.res = {
 					status: 400,
-					body: 'Invalid request method',
+					body: {
+						message: 'Invalid request method',
+					},
 					headers: {
 						'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 					},
@@ -51,7 +55,9 @@ module.exports = async function (context, req) {
 	} catch (err) {
 		context.res = {
 			status: 500,
-			body: `API Failed : ${err}`,
+			body: {
+				message: `API Failed : ${err}`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -70,7 +76,9 @@ async function handlePost(context, req, pool) {
 	if (!idFriend) {
 		context.res = {
 			status: 400,
-			body: `idFriend parameter is required`,
+			body: {
+				message: `idFriend parameter is required`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -80,7 +88,9 @@ async function handlePost(context, req, pool) {
 	if (!Number.isInteger(idFriend) || idFriend <= 0) {
 		context.res = {
 			status: 400,
-			body: `idFriend parameter must be a positive integer`,
+			body: {
+				message: `idFriend parameter must be a positive integer`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -90,7 +100,9 @@ async function handlePost(context, req, pool) {
 	if (idUser === idFriend) {
 		context.res = {
 			status: 400,
-			body: `Friend id not acceptable`,
+			body: {
+				message: `Friend id not acceptable`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -100,21 +112,29 @@ async function handlePost(context, req, pool) {
 	const query = queries.friendPost(idUser, idFriend);
 	const result = await pool.request().query(query);
 
-	result.recordsets.length > 0
-		? (context.res = {
-				status: 409,
-				body: result.recordset[0],
-				headers: {
-					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-				},
-		  })
-		: (context.res = {
-				status: 200,
-				body: 'Friend added successfully',
-				headers: {
-					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-				},
-		  });
+	if (result.recordsets.length > 0) {
+		context.res = {
+			status: 409,
+			body: {
+				message: result.recordset[0],
+			},
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+	} else {
+		const tokenJWT = generateJWT(idUser);
+		context.res = {
+			status: 200,
+			body: {
+				message: 'Friend added successfully',
+				tokenJWT: tokenJWT,
+			},
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+	}
 }
 async function handleDelete(context, req, pool) {
 	// The DELETE handler code goes here
@@ -129,9 +149,13 @@ async function handleDelete(context, req, pool) {
 	const result = await pool.request().query(query);
 
 	if (result.rowsAffected[0] > 0) {
+		const tokenJWT = generateJWT(idUser);
 		context.res = {
 			status: 200,
-			body: 'Friend successfully deleted',
+			body: {
+				message: 'Friend successfully deleted',
+				tokenJWT: tokenJWT,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -139,7 +163,9 @@ async function handleDelete(context, req, pool) {
 	} else {
 		context.res = {
 			status: 404,
-			body: 'Friend not found',
+			body: {
+				message: 'Friend not found',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -156,7 +182,9 @@ async function handleGet(context, req, pool) {
 	if (!Number.isInteger(topValue) || topValue <= 0) {
 		context.res = {
 			status: 400,
-			body: 'topValue must be a positive integer.',
+			body: {
+				message: 'topValue must be a positive integer.',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -167,9 +195,14 @@ async function handleGet(context, req, pool) {
 	const query = queries.friendGet(idUser, topValue, lastId);
 	const result = await pool.request().query(query);
 
+	const tokenJWT = generateJWT(idUser);
+
 	context.res = {
 		status: 200,
-		body: result.recordset,
+		body: {
+			result: result.recordset,
+			tokenJWT: tokenJWT,
+		},
 		headers: {
 			'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 		},

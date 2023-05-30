@@ -14,7 +14,9 @@ module.exports = async function (context, req) {
 		) {
 			context.res = {
 				status: 500,
-				body: 'Database configuration is missing or incomplete',
+				body: {
+					message: 'Database configuration is missing or incomplete',
+				},
 			};
 			return;
 		}
@@ -36,13 +38,17 @@ module.exports = async function (context, req) {
 			default:
 				context.res = {
 					status: 400,
-					body: 'Invalid request method',
+					body: {
+						message: 'Invalid request method',
+					},
 				};
 		}
 	} catch (err) {
 		context.res = {
 			status: 500,
-			body: `API Failed : ${err}`,
+			body: {
+				message: `API Failed : ${err}`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -58,7 +64,9 @@ async function handlePost(context, req, pool) {
 	if (!labelCat) {
 		context.res = {
 			status: 400,
-			body: 'label parameter is required',
+			body: {
+				message: 'label parameter is required',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -71,7 +79,9 @@ async function handlePost(context, req, pool) {
 
 	context.res = {
 		status: result.recordset[0].status,
-		body: result.recordset[0].message,
+		body: {
+			message: result.recordset[0].message,
+		},
 		headers: {
 			'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 		},
@@ -87,7 +97,9 @@ async function handleDelete(context, req, pool) {
 	if (result.rowsAffected[0] > 0) {
 		context.res = {
 			status: 200,
-			body: 'Entry successfully deleted',
+			body: {
+				message: 'Entry successfully deleted',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -95,7 +107,9 @@ async function handleDelete(context, req, pool) {
 	} else {
 		context.res = {
 			status: 404,
-			body: `Entry not found with this id ${idCat}`,
+			body: {
+				message: `Entry not found with this id ${idCat}`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -111,7 +125,9 @@ async function handleGet(context, req, pool) {
 
 	context.res = {
 		status: 200,
-		body: result.recordset,
+		body: {
+			result: result.recordset,
+		},
 		headers: {
 			'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 		},
@@ -125,7 +141,9 @@ async function handlePut(context, req, pool) {
 	if (!labelCat) {
 		context.res = {
 			status: 400,
-			body: 'label parameter is required',
+			body: {
+				message: 'label parameter is required',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -139,7 +157,9 @@ async function handlePut(context, req, pool) {
 	if (result.rowsAffected[0] === 1) {
 		context.res = {
 			status: 200,
-			body: 'Category successfully updated',
+			body: {
+				message: 'Category successfully updated',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -147,7 +167,9 @@ async function handlePut(context, req, pool) {
 	} else {
 		context.res = {
 			status: 404,
-			body: `Category not found with the specified id ${idCat}`,
+			body: {
+				message: `Category not found with the specified id ${idCat}`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},

@@ -14,7 +14,9 @@ module.exports = async function (context, req) {
 		) {
 			context.res = {
 				status: 500,
-				body: 'Database configuration is missing or incomplete',
+				body: {
+					message: 'Database configuration is missing or incomplete',
+				},
 			};
 			return;
 		}
@@ -28,13 +30,17 @@ module.exports = async function (context, req) {
 			default:
 				context.res = {
 					status: 400,
-					body: 'Invalid request method',
+					body: {
+						message: 'Invalid request method',
+					},
 				};
 		}
 	} catch (err) {
 		context.res = {
 			status: 500,
-			body: `API Failed : ${err}`,
+			body: {
+				message: `API Failed : ${err}`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -53,7 +59,9 @@ async function handleGet(context, req, pool) {
 
 	context.res = {
 		status: 200,
-		body: result.recordset,
+		body: {
+			result: result.recordset,
+		},
 		headers: {
 			'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 		},

@@ -1,7 +1,7 @@
 const sql = require('mssql');
 const config = require('../config.js');
 const queries = require('../queries.js');
-const { verificationJWT } = require('../jwtFunctionalities.js');
+const { verificationJWT, generateJWT } = require('../jwtFunctionalities.js');
 require('dotenv').config();
 
 module.exports = async function (context, req) {
@@ -20,7 +20,9 @@ module.exports = async function (context, req) {
 		) {
 			context.res = {
 				status: 500,
-				body: 'Database configuration is missing or incomplete',
+				body: {
+					message: 'Database configuration is missing or incomplete',
+				},
 				headers: {
 					'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 				},
@@ -43,7 +45,9 @@ module.exports = async function (context, req) {
 			default:
 				context.res = {
 					status: 405,
-					body: 'Method not allowed',
+					body: {
+						message: 'Method not allowed',
+					},
 					headers: {
 						'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 					},
@@ -53,7 +57,9 @@ module.exports = async function (context, req) {
 	} catch (err) {
 		context.res = {
 			status: 500,
-			body: `API Failed : ${err}`,
+			body: {
+				message: `API Failed : ${err}`,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -71,7 +77,9 @@ async function handleGet(context, req, pool) {
 	if (!Number.isInteger(topValue) || topValue <= 0) {
 		context.res = {
 			status: 400,
-			body: 'topValue must be a positive integer.',
+			body: {
+				message: 'topValue must be a positive integer.',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -81,9 +89,14 @@ async function handleGet(context, req, pool) {
 
 	const query = queries.userGetFavoritesRecipes(idUser, lastId);
 	const result = await pool.request().query(query);
+	const tokenJWT = generateJWT(idUser);
+
 	context.res = {
 		status: 200,
-		body: result.recordset,
+		body: {
+			result: result.recordset,
+			tokenJWT: tokenJWT,
+		},
 		headers: {
 			'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 		},
@@ -97,7 +110,9 @@ async function handlePost(context, req, pool) {
 	if (!idRec || !Number.isInteger(idRec) || idRec <= 0) {
 		context.res = {
 			status: 400,
-			body: 'idRec must be a positive integer',
+			body: {
+				message: 'idRec must be a positive integer',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -106,14 +121,28 @@ async function handlePost(context, req, pool) {
 	}
 	const query = queries.userPostFavoritesRecipes(idUser, idRec);
 	const result = await pool.request().query(query);
-
-	context.res = {
-		status: result.recordset[0].status,
-		body: result.recordset[0].message,
-		headers: {
-			'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
-		},
-	};
+	if (result.recordset[0].status === 200) {
+		const tokenJWT = generateJWT(idUser);
+		context.res = {
+			status: result.recordset[0].status,
+			body: {
+				message: result.recordset[0].message,
+				tokenJWT: tokenJWT,
+			},
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
+	} else
+		context.res = {
+			status: result.recordset[0].status,
+			body: {
+				message: result.recordset[0].message,
+			},
+			headers: {
+				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+			},
+		};
 }
 async function handleDelete(context, req, pool) {
 	const idUser = req.params.hasOwnProperty('idUser')
@@ -123,7 +152,9 @@ async function handleDelete(context, req, pool) {
 	if (!idRec || !Number.isInteger(idRec) || idRec <= 0) {
 		context.res = {
 			status: 400,
-			body: 'idRec must be a positive integer',
+			body: {
+				message: 'idRec must be a positive integer',
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -132,10 +163,15 @@ async function handleDelete(context, req, pool) {
 	}
 	const query = queries.userDeleteFavoritesRecipes(idUser, idRec);
 	const result = await pool.request().query(query);
+
 	if (result.rowsAffected[0] > 0) {
+		const tokenJWT = generateJWT(idUser);
 		context.res = {
 			status: 200,
-			body: result.recordset[0].message,
+			body: {
+				message: result.recordset[0].message,
+				tokenJWT,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
@@ -143,7 +179,9 @@ async function handleDelete(context, req, pool) {
 	} else {
 		context.res = {
 			status: 500,
-			body: result.recordset[0].message,
+			body: {
+				message: result.recordset[0].message,
+			},
 			headers: {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},

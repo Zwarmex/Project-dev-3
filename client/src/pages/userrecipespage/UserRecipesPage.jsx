@@ -2,8 +2,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import { LoadingHamster, RecipeItem, UserContext } from '../../components';
 import './userrecipespage.css';
 import { Box, Typography, Container, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 const UserRecipesPage = () => {
-	const { idUser, tokenJWT } = useContext(UserContext);
+	const navigate = useNavigate();
+	const { idUser, tokenJWT, setTokenJWT, logout } = useContext(UserContext);
 	const [recipes, setRecipes] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [disabledMoreButton, setDisabledMoreButton] = useState(false);
@@ -13,22 +15,28 @@ const UserRecipesPage = () => {
 			setLoading(true);
 			const topString = topValue ? `top=${topValue}` : '';
 			const lastIdString = lastId ? `lastId=${lastId}` : '';
-			const data = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/recipes?${topString}&${lastIdString}`,
+			const response = await fetch(
+				`${process.env.REACT_APP_API_END_POINT}user/${idUser}/recipes?${topString}&${lastIdString}`,
 				{
 					headers: {
 						authorization: tokenJWT,
 					},
 				}
 			);
-			const newRecipes = await data.json();
-			const recipesUpdated = [...recipes, ...newRecipes];
-			const lastIdUpdated = recipesUpdated[recipesUpdated.length - 1].idRec;
-			if (lastId === lastIdUpdated) {
-				setDisabledMoreButton(true);
+			if (response.ok) {
+				setTokenJWT(response.tokenJWT);
+				const newRecipes = await response.result.json();
+				const recipesUpdated = [...recipes, ...newRecipes];
+				const lastIdUpdated = recipesUpdated[recipesUpdated.length - 1].idRec;
+				if (lastId === lastIdUpdated) {
+					setDisabledMoreButton(true);
+				}
+				setRecipes(recipesUpdated);
+				setLastId(lastIdUpdated);
+			} else if (response.status === 401) {
+				logout();
+				navigate('/login');
 			}
-			setRecipes(recipesUpdated);
-			setLastId(lastIdUpdated);
 		} catch {
 		} finally {
 			setLoading(false);

@@ -2,9 +2,11 @@ import React, { useState, useContext, useEffect } from 'react';
 import './wheelpage.css';
 import { RecipeItem, UserContext, LoadingHamster } from '../../components';
 import { Box, Button, Container, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const WheelPage = () => {
-	const { idUser, tokenJWT } = useContext(UserContext);
+	const navigate = useNavigate();
+	const { idUser, tokenJWT, logout, setTokenJWT } = useContext(UserContext);
 	const [recipes, setRecipes] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [selectedIndex, setSelectedIndex] = useState(null);
@@ -12,25 +14,33 @@ const WheelPage = () => {
 	const fetchRecipes = async () => {
 		setLoading(true);
 		try {
-			const rawFavoritesRecipes = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`,
+			const response = await fetch(
+				`${process.env.REACT_APP_API_END_POINT}user/${idUser}/favoritesRecipes`,
 				{
 					headers: {
 						authorization: tokenJWT,
 					},
 				}
 			);
-			const favoritesRecipes = await rawFavoritesRecipes.json();
-			let localRecipes = [];
-			for (let index = 0; index < favoritesRecipes.length; index++) {
-				const idRec = favoritesRecipes[index].idRec;
-				const rawRecipe = await fetch(
-					`https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`
-				);
-				const recipe = await rawRecipe.json();
-				localRecipes.push(recipe);
+			if (response.ok) {
+				setTokenJWT(response.tokenJWT);
+				const favoritesRecipes = await response.result.json();
+				let localRecipes = [];
+				for (let index = 0; index < favoritesRecipes.length; index++) {
+					const idRec = favoritesRecipes[index].idRec;
+					const data = await fetch(
+						`${process.env.REACT_APP_API_END_POINT}recipe/${idRec}`
+					);
+					if (data.ok) {
+						const recipe = await data.result.json();
+						localRecipes.push(recipe);
+					}
+				}
+				setRecipes(localRecipes);
+			} else if (response.status === 401) {
+				logout();
+				navigate('/login');
 			}
-			setRecipes(localRecipes);
 		} catch {
 		} finally {
 			setLoading(false);
