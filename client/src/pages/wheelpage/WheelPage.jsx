@@ -24,7 +24,6 @@ const WheelPage = () => {
 			);
 			if (responseFR.ok) {
 				const dataFR = await responseFR.json();
-				console.log(dataFR.result);
 				localStorage.setItem('tokenJWT', dataFR.tokenJWT);
 				setTokenJWT(dataFR.tokenJWT);
 				const favoritesRecipes = await dataFR.result;

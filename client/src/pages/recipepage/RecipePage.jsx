@@ -109,10 +109,8 @@ const RecipePage = () => {
 					}),
 				}
 			);
-			console.log(response.status);
 			if (response.ok) {
 				const data = await response.json();
-				console.log(data);
 				setTokenJWT(data.tokenJWT);
 				localStorage.setItem('tokenJWT', data.tokenJWT);
 				setIsFav(true);
