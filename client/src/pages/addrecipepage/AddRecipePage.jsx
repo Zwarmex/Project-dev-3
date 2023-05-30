@@ -206,7 +206,6 @@ const AddRecipePage = () => {
 		)
 			? newIngredient.idIng
 			: null;
-		console.log(updatedIngredientsSelected);
 		setIngredientsSelected(updatedIngredientsSelected);
 	};
 	const handleIngredientUnitChange = (index, newUnit) => {

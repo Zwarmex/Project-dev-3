@@ -1,6 +1,7 @@
 import 'react-calendar/dist/Calendar.css';
 import './calendarpage.css';
 import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import {
 	LoadingBars,
@@ -105,7 +106,6 @@ const CalendarPage = () => {
 		// Format the date as YYYY-MM-DD
 		const formattedDate = selectedDate.toLocaleDateString('en-CA');
 		setDate(formattedDate);
-		console.log(formattedDate);
 	};
 	const handleSelectRecipe = (selectedRecipe) => {
 		if (selectedRecipe === savedSelectedRecipe) {

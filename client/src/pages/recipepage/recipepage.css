@@ -37,3 +37,10 @@
 .recipe__delete-button-item {
 	width: fit-content;
 }
+#recipe__favorites-container {
+	margin: 0 0 0 5%;
+}
+#recipe__favorites-button {
+	width: fit-content;
+	background: rgba(0, 0, 0, 0.2);
+}

@@ -102,7 +102,6 @@ async function handlePost(context, req) {
 	let timeElapsed = 0;
 	while (!poller.isDone()) {
 		poller.poll();
-		console.log('Email send polling in progress');
 
 		await new Promise((resolve) =>
 			setTimeout(resolve, POLLER_WAIT_TIME * 1000)
