@@ -28,98 +28,30 @@ const RecipePage = () => {
 	const { idUser, abilityUser, tokenJWT, setTokenJWT, logout } =
 		useContext(UserContext);
 
-  const [isFav, setIsFav] = useState(false);
-  const getFav = async () => {
-    const result = await fetch(
-      `https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/isFavoriteRecipe/${idRec}`,
-      {
-        headers: {
-          authorization: tokenJWT,
-        },
-      }
-    );
-    const fav = await result.json();
-    setIsFav(fav[0]['']);
-  };
+	const [isFav, setIsFav] = useState(false);
+	const getFav = async () => {
+		const result = await fetch(
+			`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/isFavoriteRecipe/${idRec}`,
+			{
+				headers: {
+					authorization: tokenJWT,
+				},
+			}
+		);
+		const fav = await result.json();
+		setIsFav(fav[0]['']);
+	};
 
-  const fetchRecipe = async () => {
-    const resultRecipe = await fetch(
-      `https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`
-    );
-    const localRecipe = await resultRecipe.json();
+	const fetchRecipe = async () => {
+		const resultRecipe = await fetch(
+			`https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`
+		);
+		const localRecipe = await resultRecipe.json();
 
 		setRecipe(localRecipe);
 		fetchCategory(localRecipe.idCat);
 		const contentState = convertFromRaw(JSON.parse(localRecipe.stepsRec));
 		setEditorState(EditorState.createWithContent(contentState));
-	};
-	const fetchCategory = async (id) => {
-		const data = await fetch(
-			`https://recipesappfunctions.azurewebsites.net/api/category/${id}`
-		);
-		await data.json().then((categoryArray) => {
-			setCategory(categoryArray[0]);
-		});
-	};
-	const handleFavorite = async () => {
-		if (!idUser) {
-			alert('Veuillez vous connectez pour ajouter la recette dans vos favoris');
-			return;
-		}
-		const body = JSON.stringify({ idRec: idRec });
-		if (isFav) {
-			const response = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`,
-				{
-					method: 'DELETE',
-					headers: {
-						'Content-Type': 'application/json',
-						authorization: tokenJWT,
-					},
-					body: body,
-				}
-			);
-			if (response.ok) {
-				setIsFav(false);
-			} else if (response.status === 401) {
-				logout();
-				navigate('/');
-			}
-		} else {
-			const response = await fetch(
-				`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/favoritesRecipes`,
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						authorization: tokenJWT,
-					},
-					body: body,
-				}
-			);
-			if (response.ok) {
-				setIsFav(true);
-			} else if (response.status === 401) {
-				logout();
-				navigate('/');
-			}
-		}
-	};
-	const handleDelete = async () => {
-		const confirmDelete = window.confirm(
-			'Are you sure you want to delete this recipe?'
-		);
-		if (confirmDelete) {
-			try {
-				const response = await fetch(
-					`https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}/user/${idUser}`,
-					{ method: 'DELETE', authorization: tokenJWT }
-				);
-			setRecipe(localRecipe);
-			fetchCategory(localRecipe.idCat);
-			const contentState = convertFromRaw(JSON.parse(localRecipe.stepsRec));
-			setEditorState(EditorState.createWithContent(contentState));
-		}
 	};
 	const fetchCategory = async (id) => {
 		const response = await fetch(
@@ -130,6 +62,10 @@ const RecipePage = () => {
 		});
 	};
 	const handleFavorite = async () => {
+		if (!idUser) {
+			alert('Veuillez vous connectez pour ajouter la recette dans vos favoris');
+			return;
+		}
 		if (isFav) {
 			const response = await fetch(
 				`${process.env.REACT_APP_API_END_POINT}user/${idUser}/favoritesRecipes`,

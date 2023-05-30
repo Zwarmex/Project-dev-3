@@ -10,7 +10,6 @@ import {
 	UserContext,
 } from '../../components';
 import { Typography, Button, Box, Container } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 
 const CalendarPage = () => {
 	const { idUser, mailUser, tokenJWT, setTokenJWT, logout } =
