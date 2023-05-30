@@ -257,7 +257,6 @@ async function handleDelete(context, req, pool) {
 async function handleGet(context, req, pool) {
 	const mailUser = req.params.mail;
 	const passwordUser = req.params.password;
-	const idUser = req.body.idUser;
 
 	const queryByMail = queries.userGetPasswordAndSaltByMail(mailUser);
 	const result = await pool.request().query(queryByMail);
@@ -271,7 +270,7 @@ async function handleGet(context, req, pool) {
 			const userDetails = await pool.request().query(queryUser);
 
 			// generate JWT
-			const tokenJWT = generateJWT(idUser);
+			const tokenJWT = generateJWT(userDetails.idUser);
 
 			context.res = {
 				status: 200,
@@ -292,7 +291,9 @@ async function handleGet(context, req, pool) {
 		body: {
 			message: 'Invalid email or password',
 		},
-		headers: { 'Access-Control-Allow-Origin': process.env.CORS_ORIGIN },
+		headers: {
+			'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
+		},
 	};
 }
 async function handlePut(context, req, pool) {

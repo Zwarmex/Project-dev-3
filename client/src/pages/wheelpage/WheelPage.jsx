@@ -14,7 +14,7 @@ const WheelPage = () => {
 	const fetchRecipes = async () => {
 		setLoading(true);
 		try {
-			const response = await fetch(
+			const responseFR = await fetch(
 				`${process.env.REACT_APP_API_END_POINT}user/${idUser}/favoritesRecipes`,
 				{
 					headers: {
@@ -22,22 +22,25 @@ const WheelPage = () => {
 					},
 				}
 			);
-			if (response.ok) {
-				setTokenJWT(response.tokenJWT);
-				const favoritesRecipes = await response.result.json();
+			if (responseFR.ok) {
+				const dataFR = await responseFR.json();
+				console.log(dataFR.result);
+				localStorage.setItem('tokenJWT', dataFR.tokenJWT);
+				setTokenJWT(dataFR.tokenJWT);
+				const favoritesRecipes = await dataFR.result;
 				let localRecipes = [];
 				for (let index = 0; index < favoritesRecipes.length; index++) {
 					const idRec = favoritesRecipes[index].idRec;
-					const data = await fetch(
+					const responseR = await fetch(
 						`${process.env.REACT_APP_API_END_POINT}recipe/${idRec}`
 					);
-					if (data.ok) {
-						const recipe = await data.result.json();
-						localRecipes.push(recipe);
+					if (responseR.ok) {
+						const dataR = await responseR.json();
+						localRecipes.push(dataR.result);
 					}
 				}
 				setRecipes(localRecipes);
-			} else if (response.status === 401) {
+			} else if (responseFR.status === 401) {
 				logout();
 				navigate('/login');
 			}

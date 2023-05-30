@@ -157,7 +157,9 @@ const AddRecipePage = () => {
 			);
 
 			if (response.ok) {
-				setTokenJWT(response.tokenJWT);
+				const data = await response.json();
+				setTokenJWT(data.tokenJWT);
+				localStorage.setItem('tokenJWT', data.tokenJWT);
 				navigate('/');
 			} else if (response.status === 401) {
 				logout();
@@ -228,8 +230,8 @@ const AddRecipePage = () => {
 				`${process.env.REACT_APP_API_END_POINT}ingredients`
 			);
 			if (response.ok) {
-				const data = await response.result.json();
-				setIngredients(data);
+				const data = await response.json();
+				setIngredients(data.result);
 			} else {
 				setErrorStatus(true);
 				setErrorMessage('Erreur de connection.');
@@ -249,13 +251,9 @@ const AddRecipePage = () => {
 				`${process.env.REACT_APP_API_END_POINT}categories`
 			);
 			if (response.ok) {
-				setTokenJWT(response.tokenJWT);
-				const data = await response.result.json();
-				setCategories(data);
-				setSelectedCategoryId(data[0].idCat);
-			} else if (response.status === 401) {
-				logout();
-				navigate('/login');
+				const data = await response.json();
+				setCategories(data.result);
+				setSelectedCategoryId(data.result[0].idCat);
 			} else {
 				setErrorStatus(true);
 				setErrorMessage('Erreur de connection.');

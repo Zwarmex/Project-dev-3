@@ -101,19 +101,19 @@ const LoginPage = () => {
 
 			if (!response.ok) {
 				setErrorMessage('Connection échouée');
+				return;
 			}
 
 			const data = await response.json();
-
-			setIdUser(data.user.idUser);
-			setMailUser(data.user.mailUser);
-			setAvatarUser(data.user.avatarUser);
-			setAbilityUser(data.user.abilityUser);
+			setIdUser(data.result.idUser);
+			setMailUser(data.result.mailUser);
+			setAvatarUser(data.result.avatarUser);
+			setAbilityUser(data.result.abilityUser);
 			setTokenJWT(data.tokenJWT);
-			localStorage.setItem('idUser', data.user.idUser);
-			localStorage.setItem('mailUser', data.user.mailUser);
-			localStorage.setItem('avatarUser', data.user.avatarUser);
-			localStorage.setItem('abilityUser', data.user.abilityUser);
+			localStorage.setItem('idUser', data.result.idUser);
+			localStorage.setItem('mailUser', data.result.mailUser);
+			localStorage.setItem('avatarUser', data.result.avatarUser);
+			localStorage.setItem('abilityUser', data.result.abilityUser);
 			localStorage.setItem('tokenJWT', data.tokenJWT);
 			navigate('/');
 		} catch (error) {
@@ -198,7 +198,7 @@ const LoginPage = () => {
 			);
 
 			if (!response.ok) {
-				const errorData = await response.result.json();
+				const errorData = await response.json();
 				if (response.status === 409) {
 					setErrorMessage("L 'utilisateur existe déjà");
 				} else {

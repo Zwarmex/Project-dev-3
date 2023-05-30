@@ -14,7 +14,7 @@ const FavoritePage = () => {
 	const fetchFavoritesRecipes = async () => {
 		setLoading(true);
 		try {
-			const response = await fetch(
+			const responseFR = await fetch(
 				`${process.env.REACT_APP_API_END_POINT}user/${idUser}/favoritesRecipes`,
 				{
 					headers: {
@@ -22,20 +22,23 @@ const FavoritePage = () => {
 					},
 				}
 			);
-			if (response.ok) {
-				setTokenJWT(response.tokenJWT);
-				const favoritesRecipes = await response.result.json();
+			if (responseFR.ok) {
+				const dataFR = await responseFR.json();
+				setTokenJWT(dataFR.tokenJWT);
+				localStorage.setItem('tokenJWT', dataFR.tokenJWT);
+
+				const favoritesRecipes = dataFR.result;
 				let localRecipes = [];
 				for (let index = 0; index < favoritesRecipes.length; index++) {
 					const idRec = favoritesRecipes[index].idRec;
-					const data = await fetch(
+					const responseR = await fetch(
 						`${process.env.REACT_APP_API_END_POINT}recipe/${idRec}`
 					);
-					let recipe = await data.result.json();
-					localRecipes.push(recipe);
+					const dataR = await responseR.json();
+					localRecipes.push(dataR.result);
 				}
 				setRecipes(localRecipes);
-			} else if (response.status === 401) {
+			} else if (responseFR.status === 401) {
 				logout();
 				navigate('/login');
 			}
@@ -51,8 +54,8 @@ const FavoritePage = () => {
 			const data = await fetch(
 				`${process.env.REACT_APP_API_END_POINT}categories`
 			);
-			const categories = await data.result.json();
-			setCategories(categories);
+			const categories = await data.json();
+			setCategories(categories.result);
 		} catch {
 		} finally {
 			setLoading(false);

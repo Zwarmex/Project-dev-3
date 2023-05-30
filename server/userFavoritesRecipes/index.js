@@ -121,7 +121,7 @@ async function handlePost(context, req, pool) {
 	}
 	const query = queries.userPostFavoritesRecipes(idUser, idRec);
 	const result = await pool.request().query(query);
-	if (result.recordset[0].status === 200) {
+	if (+result.recordset[0].status === 200) {
 		const tokenJWT = generateJWT(idUser);
 		context.res = {
 			status: result.recordset[0].status,
@@ -133,7 +133,7 @@ async function handlePost(context, req, pool) {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
 		};
-	} else
+	} else {
 		context.res = {
 			status: result.recordset[0].status,
 			body: {
@@ -143,6 +143,7 @@ async function handlePost(context, req, pool) {
 				'Access-Control-Allow-Origin': process.env.CORS_ORIGIN,
 			},
 		};
+	}
 }
 async function handleDelete(context, req, pool) {
 	const idUser = req.params.hasOwnProperty('idUser')

@@ -15,11 +15,9 @@ const MarketPage = () => {
 			const response = await fetch(
 				`${process.env.REACT_APP_API_END_POINT}categories`
 			);
-			console.log(response);
 			if (response.ok) {
-				const categories = await response.result.json();
-				setCategories(categories);
-				console.log(categories);
+				const categories = await response.json();
+				setCategories(categories.result);
 			}
 		} catch {
 		} finally {
@@ -36,9 +34,8 @@ const MarketPage = () => {
 				`${process.env.REACT_APP_API_END_POINT}recipes?${lastIdString}&${topString}&${categoryString}`
 			);
 			if (response.ok) {
-				const newRecipes = await response.result.json();
-				console.log(newRecipes);
-				const recipesUpdated = [...recipes, ...newRecipes];
+				const data = await response.json();
+				const recipesUpdated = [...recipes, ...data.result];
 				const lastIdUpdated = recipesUpdated[recipesUpdated.length - 1].idRec;
 
 				setRecipes(recipesUpdated);

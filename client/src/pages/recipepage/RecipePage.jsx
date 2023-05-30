@@ -30,36 +30,41 @@ const RecipePage = () => {
 
 	const [isFav, setIsFav] = useState(false);
 	const getFav = async () => {
-		const result = await fetch(
-			`https://recipesappfunctions.azurewebsites.net/api/user/${idUser}/isFavoriteRecipe/${idRec}`,
+		const response = await fetch(
+			`${process.env.REACT_APP_API_END_POINT}user/${idUser}/isFavoriteRecipe/${idRec}`,
 			{
 				headers: {
 					authorization: tokenJWT,
 				},
 			}
 		);
-		const fav = await result.json();
-		setIsFav(fav[0]['']);
+		if (response.ok) {
+			const data = await response.json();
+			setTokenJWT(data.tokenJWT);
+			setIsFav(data.result[0]['']);
+		} else if (response.status === 401) {
+			logout();
+			navigate('/login');
+		}
 	};
 
 	const fetchRecipe = async () => {
-		const resultRecipe = await fetch(
+		const response = await fetch(
 			`https://recipesappfunctions.azurewebsites.net/api/recipe/${idRec}`
 		);
-		const localRecipe = await resultRecipe.json();
+		const data = await response.json();
 
-		setRecipe(localRecipe);
-		fetchCategory(localRecipe.idCat);
-		const contentState = convertFromRaw(JSON.parse(localRecipe.stepsRec));
+		setRecipe(data.result);
+		fetchCategory(data.result.idCat);
+		const contentState = convertFromRaw(JSON.parse(data.result.stepsRec));
 		setEditorState(EditorState.createWithContent(contentState));
 	};
 	const fetchCategory = async (id) => {
 		const response = await fetch(
 			`${process.env.REACT_APP_API_END_POINT}category/${id}`
 		);
-		await response.result.json().then((categoryArray) => {
-			setCategory(categoryArray[0]);
-		});
+		const data = await response.json();
+		setCategory(data.result[0]);
 	};
 	const handleFavorite = async () => {
 		if (!idUser) {
@@ -81,8 +86,14 @@ const RecipePage = () => {
 				}
 			);
 			if (response.ok) {
-				setTokenJWT(response.tokenJWT);
+				const data = await response.json();
+				setTokenJWT(data.tokenJWT);
+				localStorage.setItem('tokenJWT', data.tokenJWT);
+
 				setIsFav(false);
+			} else if (response.status === 401) {
+				logout();
+				navigate('/login');
 			}
 		} else {
 			const response = await fetch(
@@ -98,9 +109,16 @@ const RecipePage = () => {
 					}),
 				}
 			);
+			console.log(response.status);
 			if (response.ok) {
-				setTokenJWT(response.tokenJWT);
+				const data = await response.json();
+				console.log(data);
+				setTokenJWT(data.tokenJWT);
+				localStorage.setItem('tokenJWT', data.tokenJWT);
 				setIsFav(true);
+			} else if (response.status === 401) {
+				logout();
+				navigate('/login');
 			}
 		}
 	};
@@ -121,7 +139,9 @@ const RecipePage = () => {
 				);
 
 				if (response.ok) {
-					setTokenJWT(response.tokenJWT);
+					const data = await response.json();
+					setTokenJWT(data.tokenJWT);
+					localStorage.setItem('tokenJWT', data.tokenJWT);
 					navigate(-1);
 				} else if (response.status === 401) {
 					logout();

@@ -109,7 +109,10 @@ const UserSettingsPage = () => {
 			);
 
 			if (response.ok) {
-				setTokenJWT(response.tokenJWT);
+				const data = await response.json();
+				setTokenJWT(data.tokenJWT);
+				localStorage.setItem('tokenJWT', data.tokenJWT);
+
 				setInfoStatus(true);
 				setInfoMessage('Changement de mot de passe effectué');
 			} else if (response.status === 401) {
@@ -144,7 +147,9 @@ const UserSettingsPage = () => {
 			);
 
 			if (response.ok) {
-				setTokenJWT(response.tokenJWT);
+				const data = await response.json();
+				setTokenJWT(data.tokenJWT);
+				localStorage.setItem('tokenJWT', data.tokenJWT);
 				setInfoStatus(true);
 				setInfoMessage('Votre avatar a été mis a jour.');
 				setAvatarUser(base64Avatar);

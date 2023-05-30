@@ -24,9 +24,11 @@ const UserRecipesPage = () => {
 				}
 			);
 			if (response.ok) {
-				setTokenJWT(response.tokenJWT);
-				const newRecipes = await response.result.json();
-				const recipesUpdated = [...recipes, ...newRecipes];
+				const data = await response.json();
+				setTokenJWT(data.tokenJWT);
+				localStorage.setItem('tokenJWT', data.tokenJWT);
+
+				const recipesUpdated = [...recipes, ...data.result];
 				const lastIdUpdated = recipesUpdated[recipesUpdated.length - 1].idRec;
 				if (lastId === lastIdUpdated) {
 					setDisabledMoreButton(true);

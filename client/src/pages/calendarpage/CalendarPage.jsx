@@ -34,7 +34,7 @@ const CalendarPage = () => {
 		try {
 			if (!disableMore) {
 				setRecipesLoading(true);
-				const data = await fetch(
+				const response = await fetch(
 					`${process.env.REACT_APP_API_END_POINT}user/${idUser}/recipes?${lastIdString}&${topString}`,
 					{
 						headers: {
@@ -42,9 +42,12 @@ const CalendarPage = () => {
 						},
 					}
 				);
-				if (data.ok) {
+
+				if (response.ok) {
+					const data = await response.json();
 					setTokenJWT(data.tokenJWT);
-					const newRecipes = await data.result.json();
+					localStorage.setItem('tokenJWT', data.tokenJWT);
+					const newRecipes = await data.result;
 					const recipesUpdated = [...recipes, ...newRecipes];
 					const lastIdUpdated = recipesUpdated[recipesUpdated.length - 1].idRec;
 					if (lastId === lastIdUpdated) {
@@ -52,7 +55,7 @@ const CalendarPage = () => {
 					}
 					setRecipes(recipesUpdated);
 					setLastId(lastIdUpdated);
-				} else if (data.status === 401) {
+				} else if (response.status === 401) {
 					logout();
 					navigate('/login');
 				}
@@ -83,7 +86,10 @@ const CalendarPage = () => {
 				}
 			);
 			if (response.ok) {
-				setTokenJWT(response.tokenJWT);
+				const data = await response.json();
+				setTokenJWT(data.tokenJWT);
+				localStorage.setItem('tokenJWT', data.tokenJWT);
+
 				setInfoMessage('Mail envoyé avec succès');
 				setInfoStatus(true);
 				setEmailSent(true);
