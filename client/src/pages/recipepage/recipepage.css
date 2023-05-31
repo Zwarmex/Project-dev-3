@@ -44,3 +44,12 @@
 	width: fit-content;
 	background: rgba(0, 0, 0, 0.2);
 }
+
+.commentaires{
+	height: 100px;
+	border-radius: 5%;
+	border-color: rgb(255, 127, 127);
+	border: 10%;
+}
+
+	
