@@ -150,6 +150,10 @@ function recipeIngredientsPost(idIng, idRec, quantityRecIng, unitRecIng) {
 	return `INSERT INTO recipeIngredients
 			VALUES (${idIng}, ${idRec}, ${quantityRecIng},'${unitRecIng}')`;
 }
+function recipeOpinionsGet(idRec, topValue, lastId) {
+	const pagination = lastId ? `AND idOpi > ${lastId}` : '';
+	return `SELECT TOP ${topValue} * FROM opinions WHERE idRec=${idRec} ${pagination} ORDER BY idOpi`;
+}
 function recipePut(
 	idRec,
 	idUser,
@@ -377,6 +381,7 @@ module.exports = {
 	recipeGetByLabel: recipeGetByLabel,
 	recipeIngredientsGet: recipeIngredientsGet,
 	recipeIngredientsPost: recipeIngredientsPost,
+	recipeOpinionsGet: recipeOpinionsGet,
 	recipePut: recipePut,
 	recipes: recipes,
 	userPost: userPost,

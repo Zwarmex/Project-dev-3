@@ -27,7 +27,7 @@ const RecipePage = () => {
 	const { idRec } = useParams();
 	const { idUser, abilityUser, tokenJWT, setTokenJWT, logout } =
 		useContext(UserContext);
-  const [comments, setComments] = useState([]);
+	const [comments, setComments] = useState([]);
 	const [isFav, setIsFav] = useState(false);
 	const getFav = async () => {
 		const response = await fetch(
@@ -152,67 +152,57 @@ const RecipePage = () => {
 		event.target.src = defaultRecipeImage;
 		event.target.alt = 'Default image for recipe';
 	};
-  const handleCommentSubmit = async (event) => {
-    event.preventDefault();
-  const formData = new FormData(event.target);
-  const author = formData.get('author');
-  const text = formData.get('text');
+	const fetchComments = async () => {
+		const response = await fetch(
+			`${process.env.REACT_APP_API_END_POINT}opinion/recipe/${idRec}`
+		);
 
+		if (response.ok) {
+			const data = await response.json();
+			console.log(data.result);
+			if (data.result && data.result.length > 0) {
+				setComments(data.result);
+			} else {
+				setComments([]);
+			}
+		}
+	};
+	const handleCommentSubmit = async (event) => {
+		event.preventDefault();
+		const formData = new FormData(event.target);
+		const author = formData.get('author');
+		const text = formData.get('text');
 
-  const response = await fetch( `${process.env.REACT_APP_API_END_POINT}opinion/user/${idUser}/recipe/${idRec}`, 
-  
-  {
-    method: 'POST',
-    headers: {
-      authorization: tokenJWT,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name: author,
-      textOpi: text,
-      idUser: idUser,
-    }),
-    
-  }
-  );
-  await fetch(`${process.env.REACT_APP_API_END_POINT}opinion/user/${idUser}/recipe/${idRec}`, {
-	method: 'GET',
-	headers: {
-	  authorization: tokenJWT,
-	  'Content-Type': 'application/json',
-	}    
-  })
-  .then(response => response.json())
-  .then(data => {
-	if (data.result && data.result.length > 0) {
-	  setComments(data.result);
-	} else {
-	  console.log('No comments found');
-	  setComments([]);
-	}
-  });
-};
+		const response = await fetch(
+			`${process.env.REACT_APP_API_END_POINT}opinion/user/${idUser}/recipe/${idRec}`,
+
+			{
+				method: 'POST',
+				headers: {
+					authorization: tokenJWT,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					name: author,
+					textOpi: text,
+					idUser: idUser,
+				}),
+			}
+		);
+		if (response.ok) {
+			const data = await response.json();
+			setTokenJWT(data.tokenJWT);
+			localStorage.setItem('tokenJWT', data.tokenJWT);
+		}
+		fetchComments();
+	};
 
 	useEffect(() => {
 		fetchRecipe();
 		getFav();
-		fetch(`${process.env.REACT_APP_API_END_POINT}opinion/user/${idUser}/recipe/${idRec}`, {
-			method: 'GET',
-			headers: {
-			  authorization: tokenJWT,
-			  'Content-Type': 'application/json',
-			}    
-		  })
-		  .then(response => {
-			console.log(response);
-			return response.text();
-		  })
-		  .then(text => {
-			console.log('Response body:', text);
-			return JSON.parse(text);
-		  })
-		  .then(data => setComments(data));
-}, []);
+		fetchComments();
+		//eslint-disable-next-line
+	}, []);
 	return (
 		<Container>
 			<Box className='recipePage__title-container'>
@@ -296,35 +286,49 @@ const RecipePage = () => {
 					</Button>
 				</Box>
 			) : null}
-      <Box className="recipePage__comments-container">
-      <Typography variant="h5">Espace commentaire</Typography>
-      <Divider />
-      {Array.isArray(comments) && comments.map((comment) => (
-        <Box key={comment.idOpi} className="recipePage__comment">
-          <p>{comment.idUser}</p>
-          <hr></hr>
-          <p className="commentaires">{comment.textOpi}</p>
-        </Box>
-      ))}
-    </Box>
-	  <Box className='recipe__comment-form-container'>
-		<Typography  variant='h5' className='recipe__comment-form-title'>
-			Ajouter un commentaire
-		</Typography>
-		<form onSubmit={handleCommentSubmit} className='recipe__comment-form'>
-			<label htmlFor='author' className='recipe__comment-form-label'>
-				Nom :
-			</label>
-				<input type='text' name='author' className='recipe__comment-form-input' required />
-			<label htmlFor='text' className='recipe__comment-form-label'>
-				Commentaire :
-			</label>
-			<textarea name='text' className='recipe__comment-form-input' required />
-			<Button type='submit' color='primary' variant='contained' className='recipe__delete-button-item'>
-				Ajouter
-			</Button>
-		</form>
-		</Box>
+			<Box className='recipePage__comments-container'>
+				<Typography variant='h5'>Espace commentaire</Typography>
+				<Divider />
+				{Array.isArray(comments) &&
+					comments.map((comment) => (
+						<Box key={comment.idOpi} className='recipePage__comment'>
+							<p>{comment.idUser}</p>
+							<hr></hr>
+							<p className='commentaires'>{comment.textOpi}</p>
+						</Box>
+					))}
+			</Box>
+			<Box className='recipe__comment-form-container'>
+				<Typography variant='h5' className='recipe__comment-form-title'>
+					Ajouter un commentaire
+				</Typography>
+				<form onSubmit={handleCommentSubmit} className='recipe__comment-form'>
+					<label htmlFor='author' className='recipe__comment-form-label'>
+						Nom :
+					</label>
+					<input
+						type='text'
+						name='author'
+						className='recipe__comment-form-input'
+						required
+					/>
+					<label htmlFor='text' className='recipe__comment-form-label'>
+						Commentaire :
+					</label>
+					<textarea
+						name='text'
+						className='recipe__comment-form-input'
+						required
+					/>
+					<Button
+						type='submit'
+						color='primary'
+						variant='contained'
+						className='recipe__delete-button-item'>
+						Ajouter
+					</Button>
+				</form>
+			</Box>
 		</Container>
 	);
 };
