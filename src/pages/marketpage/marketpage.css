@@ -25,3 +25,8 @@
 .marketplace__row {
 	margin: 1% 0;
 }
+@media (max-width: 480px) {
+	.marketplace__recipes-array-container {
+		gap: 10%;
+	}
+}
