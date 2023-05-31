@@ -250,7 +250,9 @@ const LoginPage = () => {
               {register ? 'Inscription' : 'Connection'}
             </Typography>
             <Typography variant='subtitle1' fontSize='medium'>
-              Restez en lien avec la nourriture
+              {register
+                ? 'Restez en lien avec la nourriture'
+                : 'Connectez vous à votre compte'}
             </Typography>
             <Typography variant='subtitle1' color='error'>
               <pre style={{ fontFamily: 'inherit' }}>{errorMessage}</pre>
