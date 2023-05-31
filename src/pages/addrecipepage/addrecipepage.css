@@ -1,60 +1,60 @@
 .recipe__add-ingredients-buttons {
-	width: fit-content;
+  width: fit-content;
 }
 .recipe__add-ingredients-dropdown-containers {
-	width: 20%;
+  width: 20%;
 }
 .recipe__add-ingredients-choice-containers {
-	display: flex;
+  display: flex;
 }
 .recipe__add-ingredients-choice-containers > *:not(style) {
-	margin: 0 1%;
+  margin: 0 1%;
 }
 .recipe__add-ingredients-choice-numbers {
-	margin: 0 1% !important;
-	display: flex;
-	align-content: center;
-	flex-wrap: wrap;
+  margin: 0 1% !important;
+  display: flex;
+  align-content: center;
+  flex-wrap: wrap;
 }
 #recipe__add-top-title {
-	display: flex;
-	justify-content: center;
-	text-decoration: underline;
-	font-weight: bold;
+  display: flex;
+  justify-content: center;
+  text-decoration: underline;
+  font-weight: bold;
 }
 #recipe__add-difficulty-container,
 #recipe__add-image-container {
-	display: flex;
+  display: flex;
 }
 #recipe__add-difficulty-container > *:not(style),
 #recipe__add-image-container > *:not(style) {
-	margin: 0 1%;
+  margin: 0 1%;
 }
 #recipe__add-ingredients-container > *:not(style) {
-	margin: 1% 0 0 0;
+  margin: 1% 0 0 0;
 }
 #recipe__add-rich__editor-container {
-	width: 50%;
-	margin: 3% auto 0;
-	border-radius: 5%;
-	background: white;
+  width: 50%;
+  margin: 3% auto 0;
+  border-radius: 5%;
+  background: white;
 }
 #recipe__add-button {
-	width: 100%;
+  width: 100%;
 }
 #recipe__add-error {
-	align-self: center;
-	background-color: var(--color-background-text);
+  align-self: center;
+  background-color: var(--color-background-text);
 }
 #recipe__add-button__warning-container {
-	display: grid !important;
-	place-content: center;
+  display: grid !important;
+  place-content: center;
 }
 #recipe__add-form > *:not(style) {
-	margin: 1%;
+  margin: 1%;
 }
 #recipe__add-number-of-persons,
 #recipe__add-time,
 #recipe__add-category {
-	width: 15%;
+  width: 15%;
 }
