@@ -37,14 +37,30 @@
 .recipe__delete-button-item {
 	width: fit-content;
 }
-#recipe__favorites-container {
-	margin: 0 0 0 5%;
-}
-#recipe__favorites-button {
-	width: fit-content;
-	background: rgba(0, 0, 0, 0.2);
+.recipe__comment-form-container{
+	width: 10%;
 }
 
+textarea {
+	width: 510px; 
+	height: 153px;
+
+}
+input.recipe__comment-form-input{
+		height: 30px;
+}
+.recipe__comment-form-title{
+	width: 2000%;
+}
+.recipePage__comment{
+	display: inline-block;
+	width: 20%;
+	height: auto;
+	background-color: white;
+	border-radius: 5%;
+	text-align: center;
+	font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+}
 .commentaires{
 	height: 100px;
 	border-radius: 5%;

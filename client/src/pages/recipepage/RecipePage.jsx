@@ -159,9 +159,12 @@ const RecipePage = () => {
   const text = formData.get('text');
 
 
-  const response = await fetch( `${process.env.REACT_APP_API_END_POINT}recipe/${idRec}/user/${idUser}opinion/user/${idUser}/recipe/${idRec}`, {
+  const response = await fetch( `${process.env.REACT_APP_API_END_POINT}opinion/user/${idUser}/recipe/${idRec}`, 
+  
+  {
     method: 'POST',
     headers: {
+      authorization: tokenJWT,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -169,19 +172,46 @@ const RecipePage = () => {
       textOpi: text,
       idUser: idUser,
     }),
+    
   }
   );
-  fetch(`${process.env.REACT_APP_API_END_POINT}recipe/${idRec}/user/${idUser}opinion/user/${idUser}/recipe/${idRec}`)
+  await fetch(`${process.env.REACT_APP_API_END_POINT}opinion/user/${idUser}/recipe/${idRec}`, {
+	method: 'GET',
+	headers: {
+	  authorization: tokenJWT,
+	  'Content-Type': 'application/json',
+	}    
+  })
   .then(response => response.json())
-  .then(data => setComments(data));
+  .then(data => {
+	if (data.result && data.result.length > 0) {
+	  setComments(data.result);
+	} else {
+	  console.log('No comments found');
+	  setComments([]);
+	}
+  });
 };
 
 	useEffect(() => {
 		fetchRecipe();
 		getFav();
-    fetch(`${process.env.REACT_APP_API_END_POINT}recipe/${idRec}/user/${idUser}opinion/user/${idUser}/recipe/${idRec}`)
-    .then(response => response.json())
-    .then(data => setComments(data));
+		fetch(`${process.env.REACT_APP_API_END_POINT}opinion/user/${idUser}/recipe/${idRec}`, {
+			method: 'GET',
+			headers: {
+			  authorization: tokenJWT,
+			  'Content-Type': 'application/json',
+			}    
+		  })
+		  .then(response => {
+			console.log(response);
+			return response.text();
+		  })
+		  .then(text => {
+			console.log('Response body:', text);
+			return JSON.parse(text);
+		  })
+		  .then(data => setComments(data));
 }, []);
 	return (
 		<Container>
@@ -269,7 +299,7 @@ const RecipePage = () => {
       <Box className="recipePage__comments-container">
       <Typography variant="h5">Espace commentaire</Typography>
       <Divider />
-      {comments.map((comment) => (
+      {Array.isArray(comments) && comments.map((comment) => (
         <Box key={comment.idOpi} className="recipePage__comment">
           <p>{comment.idUser}</p>
           <hr></hr>
