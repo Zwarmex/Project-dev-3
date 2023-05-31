@@ -159,7 +159,7 @@ const RecipePage = () => {
   const text = formData.get('text');
 
 
-  const response = await fetch(`https://recipesappfunctions.azurewebsites.net/api/opinion/user/${idUser}/recipe/${idRec}`, {
+  const response = await fetch( `${process.env.REACT_APP_API_END_POINT}recipe/${idRec}/user/${idUser}opinion/user/${idUser}/recipe/${idRec}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -171,7 +171,7 @@ const RecipePage = () => {
     }),
   }
   );
-  fetch(`https://recipesappfunctions.azurewebsites.net/api/opinion/user/${idUser}/recipe/${idRec}`)
+  fetch(`${process.env.REACT_APP_API_END_POINT}recipe/${idRec}/user/${idUser}opinion/user/${idUser}/recipe/${idRec}`)
   .then(response => response.json())
   .then(data => setComments(data));
 };
@@ -179,7 +179,7 @@ const RecipePage = () => {
 	useEffect(() => {
 		fetchRecipe();
 		getFav();
-    fetch(`https://recipesappfunctions.azurewebsites.net/api/opinion/user/${idUser}/recipe/${idRec}`)
+    fetch(`${process.env.REACT_APP_API_END_POINT}recipe/${idRec}/user/${idUser}opinion/user/${idUser}/recipe/${idRec}`)
     .then(response => response.json())
     .then(data => setComments(data));
 }, []);
