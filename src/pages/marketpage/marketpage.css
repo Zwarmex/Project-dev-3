@@ -25,6 +25,10 @@
 .marketplace__row {
 	margin: 1% 0;
 }
+.marketplace__no-recipe__container {
+	place-content: center;
+	display: flex;
+}
 @media (max-width: 480px) {
 	.marketplace__recipes-array-container {
 		gap: 10%;
