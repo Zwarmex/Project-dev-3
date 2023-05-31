@@ -102,7 +102,8 @@ const AddRecipePage = () => {
 		let errorMessageRecipe = '';
 		for (let index = 0; index < ingredientsSelected.length; index++) {
 			const ingredient = ingredientsSelected[index];
-			if (!labelError && ingredient.labelIng === '') {
+			console.log(ingredient);
+			if (!labelError && !ingredient.labelIng) {
 				labelError = true;
 				errorMessageRecipe += "- Il manque au moins un nom d'ingrédient\n";
 			}
