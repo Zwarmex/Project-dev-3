@@ -97,11 +97,11 @@ const CalendarPage = () => {
 				logout();
 				navigate('/login');
 			} else {
-				setErrorMessage('Problèmes de connection...');
+				setErrorMessage('Problèmes de connexion...');
 				setErrorStatus(true);
 			}
 		} catch {
-			setErrorMessage('Problèmes de connection...');
+			setErrorMessage('Problèmes de connexion...');
 			setErrorStatus(true);
 		} finally {
 			setMailLoading(false);

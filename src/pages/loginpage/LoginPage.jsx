@@ -100,7 +100,7 @@ const LoginPage = () => {
 			);
 
 			if (!response.ok) {
-				setErrorMessage('Connection échouée');
+				setErrorMessage('Connexion échouée');
 				return;
 			}
 
@@ -117,7 +117,7 @@ const LoginPage = () => {
 			localStorage.setItem('tokenJWT', data.tokenJWT);
 			navigate('/');
 		} catch (error) {
-			setErrorMessage('Connection échouée');
+			setErrorMessage('Connexion échouée');
 		} finally {
 			setLoading(false);
 		}
@@ -244,7 +244,7 @@ const LoginPage = () => {
 					onKeyPress={handleKeyPress}>
 					<Container maxWidth='false'>
 						<Typography variant='h2'>
-							{register ? 'Inscription' : 'Connection'}
+							{register ? 'Inscription' : 'Connexion'}
 						</Typography>
 						<Typography variant='subtitle1' fontSize='medium'>
 							Restez en lien avec la nourriture
@@ -388,7 +388,7 @@ const LoginPage = () => {
 						color='warning'
 						variant='contained'
 						disabled={loading}>
-						{loading ? null : register ? 'INSCRIPTION' : 'CONNECTION'}
+						{loading ? null : register ? 'INSCRIPTION' : 'CONNEXION'}
 						{loading && <LoadingBars />}
 					</Button>
 					<Box className='login__form-option-container'>
@@ -405,7 +405,7 @@ const LoginPage = () => {
 									: () => handleChangingLoginOrRegister(true)
 							}
 							className='login__form-buttons login__form-option__buttons'>
-							{register ? 'CONNECTION' : 'INSCRIPTION'}
+							{register ? 'CONNEXION' : 'INSCRIPTION'}
 						</Button>
 					</Box>
 				</Box>

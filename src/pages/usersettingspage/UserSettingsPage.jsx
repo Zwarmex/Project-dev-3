@@ -119,7 +119,7 @@ const UserSettingsPage = () => {
 				logout();
 				navigate('/login');
 			} else {
-				setErrorMessage('Connection échouée');
+				setErrorMessage('Connexion échouée');
 				setErrorStatus(true);
 			}
 		} catch {

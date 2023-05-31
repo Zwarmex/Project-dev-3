@@ -234,11 +234,11 @@ const AddRecipePage = () => {
 				setIngredients(data.result);
 			} else {
 				setErrorStatus(true);
-				setErrorMessage('Erreur de connection.');
+				setErrorMessage('Erreur de connexion.');
 			}
 		} catch {
 			setErrorStatus(true);
-			setErrorMessage('Erreur de connection.');
+			setErrorMessage('Erreur de connexion.');
 		} finally {
 			setLoadingIngredients(false);
 		}
@@ -256,11 +256,11 @@ const AddRecipePage = () => {
 				setSelectedCategoryId(data.result[0].idCat);
 			} else {
 				setErrorStatus(true);
-				setErrorMessage('Erreur de connection.');
+				setErrorMessage('Erreur de connexion.');
 			}
 		} catch {
 			setErrorStatus(true);
-			setErrorMessage('Erreur de connection.');
+			setErrorMessage('Erreur de connexion.');
 		} finally {
 			setLoadingCategories(false);
 		}
