@@ -285,7 +285,13 @@ const AddRecipePage = () => {
 					Ajoute une recette :{' '}
 				</Typography>
 			</Box>
-			<Box component='form' id='recipe__add-form' noValidate autoComplete='off'>
+			<Box
+				component='form'
+				id='recipe__add-form'
+				noValidate
+				autoComplete='off'
+				className='recipe__add-container'
+				sx={{ display: 'flex', flexDirection: 'column' }}>
 				<FormControl id='recipe__add-title'>
 					<InputLabel htmlFor='recipe__add-title-input'>
 						<Typography>Titre</Typography>

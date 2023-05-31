@@ -235,7 +235,10 @@ const LoginPage = () => {
 	return (
 		<>
 			<CssBaseline />
-			<Container className='login__form-container' maxWidth='false'>
+			<Container
+				className='login__form-container'
+				maxWidth='false'
+				sx={{ display: 'flex', flexDirection: 'column' }}>
 				<Box
 					component='form'
 					id='login__form-box'
@@ -247,7 +250,9 @@ const LoginPage = () => {
 							{register ? 'Inscription' : 'Connexion'}
 						</Typography>
 						<Typography variant='subtitle1' fontSize='medium'>
-							Restez en lien avec la nourriture
+							{register
+								? 'Restez en lien avec la nourriture'
+								: 'Connectez vous à votre compte'}
 						</Typography>
 						<Typography variant='subtitle1' color='error'>
 							<pre style={{ fontFamily: 'inherit' }}>{errorMessage}</pre>

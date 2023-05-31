@@ -1,71 +1,72 @@
 .recipePage__title-container {
-	display: grid;
-	place-content: center;
+  display: grid;
+  place-content: center;
 }
 .recipe__rating-container {
-	display: flex;
-	justify-content: right;
-	margin: 1%;
-	align-items: center;
-	/* background-color: black; */
+  display: flex;
+  justify-content: right;
+  margin: 1%;
+  align-items: center;
+  /* background-color: black; */
 }
 .recipe__rating-stars {
-	background-color: var(--color-neutral);
+  background-color: var(--color-neutral);
+}
+.recipe__favorites-button {
+  max-width: fit-content;
 }
 .recipe__img {
-	max-width: 25vw;
-	height: auto;
-	margin: 1%;
-	border-radius: 20%;
-	border: 10px solid var(--color-primary);
+  max-width: 25vw;
+  height: auto;
+  margin: 1%;
+  border-radius: 20%;
+  border: 10px solid var(--color-primary);
 }
 .recipe__category-container {
-	display: flex;
-	flex-direction: column;
-	justify-content: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
 }
 
 .recipe__steps-editor {
-	margin: 0 1% 0 1%;
-	border-radius: 10px;
-	background: white;
+  margin: 0 1% 0 1%;
+  border-radius: 10px;
+  background: white;
 }
 .recipe__delete-button-container {
-	display: grid;
-	place-content: center;
+  display: grid;
+  place-content: center;
 }
 .recipe__delete-button-item {
-	width: fit-content;
+  width: fit-content;
 }
-.recipe__comment-form-container{
-	width: 10%;
+.recipe__comment-form-container {
+  width: 10%;
 }
 
 textarea {
-	width: 510px; 
-	height: 153px;
-
+  width: 510px;
+  height: 153px;
 }
-input.recipe__comment-form-input{
-		height: 30px;
+input.recipe__comment-form-input {
+  height: 30px;
 }
-.recipe__comment-form-title{
-	width: 2000%;
+.recipe__comment-form-title {
+  width: 2000%;
 }
-.recipePage__comment{
-	display: inline-block;
-	width: 20%;
-	height: auto;
-	background-color: white;
-	border-radius: 5%;
-	text-align: center;
-	font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+.recipePage__comment {
+  display: inline-block;
+  width: 20%;
+  height: auto;
+  background-color: white;
+  border-radius: 5%;
+  text-align: center;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+    'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
-.commentaires{
-	height: 100px;
-	border-radius: 5%;
-	border-color: rgb(255, 127, 127);
-	border: 10%;
+.commentaires {
+  height: 100px;
+  border-radius: 5%;
+  border-color: rgb(255, 127, 127);
+  border: 10%;
 }
-
-	
