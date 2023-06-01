@@ -116,7 +116,10 @@ function recipePost(
 			SELECT SCOPE_IDENTITY();`;
 }
 function recipeDelete(idRec, idUser, abilityUser) {
-	let userCondition = abilityUser === 1 ? '' : `AND idUser=${idUser}`;
+	let userCondition = '';
+	if (abilityUser !== 1) {
+		userCondition = ` AND idUser=${idUser}`;
+	}
 	return `DELETE TOP(1) FROM recipes
             WHERE idRec=${idRec} ${userCondition}`;
 }

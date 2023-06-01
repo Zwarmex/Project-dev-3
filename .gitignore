@@ -14,4 +14,4 @@ local.settings.json
 .DS_Store
 
 /.vscode
-
+/.github/workflows

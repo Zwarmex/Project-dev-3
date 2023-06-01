@@ -268,6 +268,7 @@ async function handleDelete(context, req, pool) {
 		return;
 	}
 	const query = queries.recipeDelete(idRec, idUser, abilityUser);
+	console.log(query);
 	const result = await pool.request().query(query);
 
 	if (result.rowsAffected[0] > 0) {
