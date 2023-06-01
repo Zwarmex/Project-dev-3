@@ -147,6 +147,9 @@ const RecipePage = () => {
 						headers: {
 							authorization: tokenJWT,
 						},
+						body: {
+							abilityUser: abilityUser,
+						},
 					}
 				);
 
@@ -173,7 +176,6 @@ const RecipePage = () => {
 
 		if (response.ok) {
 			const data = await response.json();
-			console.log(data.result);
 			if (data.result && data.result.length > 0) {
 				setComments(data.result);
 			} else {
