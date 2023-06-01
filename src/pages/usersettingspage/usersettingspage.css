@@ -36,3 +36,10 @@
 	width: 50%;
 	margin: 1% !important;
 }
+
+@media screen and (max-width: 480px) {
+	#settings__password-new1-form,
+	#settings__password-new2-form {
+		width: 95%;
+	}
+}

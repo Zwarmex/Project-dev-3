@@ -248,19 +248,19 @@ const Navbar = () => {
 												onClick={() => {
 													navigate('/user_recipes');
 												}}>
-												Mes recettes
+												Recettes
+											</MenuItem>
+											<MenuItem
+												onClick={() => {
+													navigate('/favoritepage');
+												}}>
+												Favoris
 											</MenuItem>
 											<MenuItem
 												onClick={() => {
 													navigate('/settings');
 												}}>
 												Paramètres
-											</MenuItem>
-											<MenuItem
-												onClick={() => {
-													navigate('/favoritepage');
-												}}>
-												Mes favoris
 											</MenuItem>
 											<MenuItem
 												onClick={() => {
