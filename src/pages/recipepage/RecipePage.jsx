@@ -29,6 +29,21 @@ const RecipePage = () => {
 		useContext(UserContext);
 	const [comments, setComments] = useState([]);
 	const [isFav, setIsFav] = useState(false);
+
+	const tokenVerification = async () => {
+		const response = await fetch(
+			`${process.env.REACT_APP_API_END_POINT}user/jwtVerif`,
+			{
+				headers: {
+					authorization: tokenJWT,
+				},
+			}
+		);
+		if (!response.ok) {
+			logout();
+			navigate('/login');
+		}
+	};
 	const getFav = async () => {
 		const response = await fetch(
 			`${process.env.REACT_APP_API_END_POINT}user/${idUser}/isFavoriteRecipe/${idRec}`,
@@ -47,7 +62,6 @@ const RecipePage = () => {
 			navigate('/login');
 		}
 	};
-
 	const fetchRecipe = async () => {
 		const response = await fetch(
 			`${process.env.REACT_APP_API_END_POINT}recipe/${idRec}`
@@ -196,8 +210,8 @@ const RecipePage = () => {
 		}
 		fetchComments();
 	};
-
 	useEffect(() => {
+		tokenVerification();
 		fetchRecipe();
 		getFav();
 		fetchComments();

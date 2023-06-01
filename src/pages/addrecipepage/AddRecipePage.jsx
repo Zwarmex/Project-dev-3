@@ -70,7 +70,20 @@ const AddRecipePage = () => {
 	const [editorState, setEditorState] = useState(() =>
 		EditorState.createEmpty()
 	);
-
+	const tokenVerification = async () => {
+		const response = await fetch(
+			`${process.env.REACT_APP_API_END_POINT}user/jwtVerif`,
+			{
+				headers: {
+					authorization: tokenJWT,
+				},
+			}
+		);
+		if (!response.ok) {
+			logout();
+			navigate('/login');
+		}
+	};
 	const resetError = () => {
 		setErrorStatus(false);
 	};
@@ -273,6 +286,7 @@ const AddRecipePage = () => {
 		);
 	}, [title, editorState, imageSize, maxImageSize]);
 	useEffect(() => {
+		tokenVerification();
 		fetchCategories();
 		fetchIngredients();
 		//eslint-disable-next-line

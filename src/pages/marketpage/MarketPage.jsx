@@ -1,14 +1,33 @@
 import { Container, Box, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { LoadingHamster, RecipeItem } from '../../components';
+import React, { useContext, useEffect, useState } from 'react';
+import { LoadingHamster, RecipeItem, UserContext } from '../../components';
 import './marketpage.css';
+import { useNavigate } from 'react-router-dom';
 
 const MarketPage = () => {
 	const [recipes, setRecipes] = useState([]);
 	const [categories, setCategories] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [lastId, setLastId] = useState(0);
+	const { idUser, tokenJWT, logout } = useContext(UserContext);
+	const navigate = useNavigate('/');
 
+	const tokenVerification = async () => {
+		if (idUser) {
+			const response = await fetch(
+				`${process.env.REACT_APP_API_END_POINT}user/jwtVerif`,
+				{
+					headers: {
+						authorization: tokenJWT,
+					},
+				}
+			);
+			if (!response.ok) {
+				logout();
+				navigate('/login');
+			}
+		}
+	};
 	const fetchCategories = async () => {
 		setLoading(true);
 		try {
@@ -54,6 +73,7 @@ const MarketPage = () => {
 		}
 	};
 	useEffect(() => {
+		tokenVerification();
 		fetchCategories();
 		fetchRecipes();
 		//eslint-disable-next-line

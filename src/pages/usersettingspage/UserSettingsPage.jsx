@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './usersettingspage.css';
 import { ImageUpload, LoadingBars, UserContext } from '../../components';
 import {
@@ -37,6 +37,20 @@ const UserSettingsPage = () => {
 	const [passwordLoading, setPasswordLoading] = useState(false);
 	const [avatarLoading, setAvatarLoading] = useState(false);
 
+	const tokenVerification = async () => {
+		const response = await fetch(
+			`${process.env.REACT_APP_API_END_POINT}user/jwtVerif`,
+			{
+				headers: {
+					authorization: tokenJWT,
+				},
+			}
+		);
+		if (!response.ok) {
+			logout();
+			navigate('/login');
+		}
+	};
 	const handleClickShowNewPassword1 = () => {
 		setShowNewPassword1((show) => !show);
 	};
@@ -170,7 +184,10 @@ const UserSettingsPage = () => {
 	const validatePassword = (newPassword) => {
 		return newPassword.length >= 8;
 	};
-
+	useEffect(() => {
+		tokenVerification();
+		//eslint-disable-next-line
+	}, []);
 	return (
 		<Container className='settings__page-container'>
 			{errorStatus && (

@@ -27,7 +27,20 @@ const CalendarPage = () => {
 	const [infoStatus, setInfoStatus] = useState(false);
 	const [emailSent, setEmailSent] = useState(false);
 	const [disableMore, setDisableMore] = useState(false);
-
+	const tokenVerification = async () => {
+		const response = await fetch(
+			`${process.env.REACT_APP_API_END_POINT}user/jwtVerif`,
+			{
+				headers: {
+					authorization: tokenJWT,
+				},
+			}
+		);
+		if (!response.ok) {
+			logout();
+			navigate('/login');
+		}
+	};
 	const fetchRecipes = async (lastId, topValue) => {
 		const lastIdString = lastId ? `lastId=${lastId}` : '';
 		const topString = topValue ? `top=${topValue}` : '';
@@ -137,13 +150,12 @@ const CalendarPage = () => {
 			fetchRecipes(lastId);
 		}
 	};
-
 	const resetInfosAndErrors = () => {
 		setErrorStatus(false);
 		setInfoStatus(false);
 	};
-
 	useEffect(() => {
+		tokenVerification();
 		fetchRecipes();
 		//eslint-disable-next-line
 	}, []);

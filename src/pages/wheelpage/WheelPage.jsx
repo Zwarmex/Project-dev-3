@@ -11,6 +11,20 @@ const WheelPage = () => {
 	const [loading, setLoading] = useState(false);
 	const [selectedIndex, setSelectedIndex] = useState(null);
 
+	const tokenVerification = async () => {
+		const response = await fetch(
+			`${process.env.REACT_APP_API_END_POINT}user/jwtVerif`,
+			{
+				headers: {
+					authorization: tokenJWT,
+				},
+			}
+		);
+		if (!response.ok) {
+			logout();
+			navigate('/login');
+		}
+	};
 	const fetchRecipes = async () => {
 		setLoading(true);
 		try {
@@ -81,8 +95,8 @@ const WheelPage = () => {
 			}, i * rotationTime(i));
 		}
 	};
-
 	useEffect(() => {
+		tokenVerification();
 		fetchRecipes();
 		//eslint-disable-next-line
 	}, []);

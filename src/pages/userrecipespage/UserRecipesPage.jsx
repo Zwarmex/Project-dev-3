@@ -10,6 +10,21 @@ const UserRecipesPage = () => {
 	const [loading, setLoading] = useState(false);
 	const [disabledMoreButton, setDisabledMoreButton] = useState(false);
 	const [lastId, setLastId] = useState(0);
+
+	const tokenVerification = async () => {
+		const response = await fetch(
+			`${process.env.REACT_APP_API_END_POINT}user/jwtVerif`,
+			{
+				headers: {
+					authorization: tokenJWT,
+				},
+			}
+		);
+		if (!response.ok) {
+			logout();
+			navigate('/login');
+		}
+	};
 	const fetchRecipes = async (lastId, topValue) => {
 		try {
 			setLoading(true);
@@ -45,6 +60,7 @@ const UserRecipesPage = () => {
 		}
 	};
 	useEffect(() => {
+		tokenVerification();
 		fetchRecipes();
 		// eslint-disable-next-line
 	}, []);

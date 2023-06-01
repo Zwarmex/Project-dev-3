@@ -11,6 +11,20 @@ const FavoritePage = () => {
 	const [loading, setLoading] = useState(false);
 	const { idUser, tokenJWT, setTokenJWT, logout } = useContext(UserContext);
 
+	const tokenVerification = async () => {
+		const response = await fetch(
+			`${process.env.REACT_APP_API_END_POINT}user/jwtVerif`,
+			{
+				headers: {
+					authorization: tokenJWT,
+				},
+			}
+		);
+		if (!response.ok) {
+			logout();
+			navigate('/login');
+		}
+	};
 	const fetchFavoritesRecipes = async () => {
 		setLoading(true);
 		try {
@@ -47,7 +61,6 @@ const FavoritePage = () => {
 			setLoading(false);
 		}
 	};
-
 	const fetchCategories = async () => {
 		setLoading(true);
 		try {
@@ -61,8 +74,8 @@ const FavoritePage = () => {
 			setLoading(false);
 		}
 	};
-
 	useEffect(() => {
+		tokenVerification();
 		fetchCategories();
 		fetchFavoritesRecipes();
 		//eslint-disable-next-line
