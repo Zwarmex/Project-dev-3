@@ -20,6 +20,8 @@ const CalendarPage = () => {
 	const [infoMessage, setInfoMessage] = useState('');
 	const [lastId, setLastId] = useState(0);
 	const [recipes, setRecipes] = useState([]);
+	const [planning, setPlanning] = useState({});
+	const [selectedDay, setSelectedDay] = useState(null);
 	const [savedSelectedRecipe, setSavedSelectedRecipe] = useState(null);
 	const [recipesLoading, setRecipesLoading] = useState(false);
 	const [mailLoading, setMailLoading] = useState(false);
@@ -65,6 +67,7 @@ const CalendarPage = () => {
 			setRecipesLoading(false);
 		}
 	};
+
 	const sendRecipeEmail = async (recipe) => {
 		setMailLoading(true);
 		try {
@@ -107,11 +110,25 @@ const CalendarPage = () => {
 			setMailLoading(false);
 		}
 	};
+
 	const handleSetDate = (selectedDate) => {
 		// Format the date as YYYY-MM-DD
 		const formattedDate = selectedDate.toLocaleDateString('en-CA');
+
+		// Update the selected date
 		setDate(formattedDate);
+
+		// If the selected date is in the planning, select it and its associated recipe
+		if (planning[formattedDate]) {
+			setSelectedDay(formattedDate);
+			setSavedSelectedRecipe(planning[formattedDate]);
+		} else {
+			// If the selected date is not in the planning, deselect the current day and recipe
+			setSelectedDay(null);
+			setSavedSelectedRecipe(null);
+		}
 	};
+
 	const handleSelectRecipe = (selectedRecipe) => {
 		if (selectedRecipe === savedSelectedRecipe) {
 			setSavedSelectedRecipe(null);
@@ -120,13 +137,16 @@ const CalendarPage = () => {
 		}
 	};
 	const handleSendRecipe = () => {
+		console.log('handleSendRecipe is called');
 		resetInfosAndErrors();
 		const confirmSend = window.confirm(
-			`Voulez vous réellement recevoir "${
+			`Voulez vous réellemendt recevoir "${
 				savedSelectedRecipe.labelRec
 			}" pour le ${new Date(date).toLocaleDateString('fr-FR')} par mail ?`
 		);
+		console.log('confirmSend', confirmSend);
 		if (confirmSend) {
+			console.log('sending recipe');
 			sendRecipeEmail(savedSelectedRecipe);
 		}
 	};
@@ -138,13 +158,51 @@ const CalendarPage = () => {
 		}
 	};
 
+	const addRecipeToPlanning = (day, recipe) => {
+		setPlanning(prevPlanning => {
+			// Créez une copie du planning actuel
+			const newPlanning = { ...prevPlanning };
+	
+			// Limitez à 7 jours max
+			const planningDays = Object.keys(newPlanning);
+			if (planningDays.length >= 7) {
+				const oldestDay = planningDays[0];
+				delete newPlanning[oldestDay];
+			}
+	
+			// Ajoutez la recette au jour sélectionné
+			newPlanning[day] = recipe;
+	
+			// Sauvegardez le planning dans le localStorage
+			localStorage.setItem('planning', JSON.stringify(newPlanning));
+			if (day === selectedDay) setSelectedDay(null);
+			return newPlanning;
+		});
+	};
+
 	const resetInfosAndErrors = () => {
 		setErrorStatus(false);
 		setInfoStatus(false);
 	};
 
+	const removeDayFromPlanning = (dayToRemove) => {
+		setPlanning(prevPlanning => {
+			const newPlanning = { ...prevPlanning };
+			delete newPlanning[dayToRemove];
+			if (dayToRemove === selectedDay) setSelectedDay(null);
+			localStorage.setItem('planning', JSON.stringify(newPlanning));
+			return newPlanning;
+		});
+	};
+
 	useEffect(() => {
 		fetchRecipes();
+		
+		// Récupérez le planning du localStorage
+		const storedPlanning = localStorage.getItem('planning');
+		if (storedPlanning) {
+			setPlanning(JSON.parse(storedPlanning));
+		}
 		//eslint-disable-next-line
 	}, []);
 
@@ -159,8 +217,33 @@ const CalendarPage = () => {
 				{errorStatus && <Typography color='error'>{errorMessage}</Typography>}
 				{infoStatus && <Typography>{infoMessage}</Typography>}
 			</Box>
-			<Box id='calendar__calendar-container'>
-				<Calendar onChange={handleSetDate} value={date} locale='fr-FR' />
+			<Box id='calendar__main-container' style={{ display: 'flex', justifyContent: 'space-around' }}>
+				<Box id='calendar__planning-container' style={{ marginRight: '5px', border: '2px solid #000', borderRadius: '5px', padding: '10px', backgroundColor: 'white' }}>
+					<h2>Planning de la semaine</h2>
+					{Object.entries(planning)
+						.sort((a, b) => new Date(a[0]) - new Date(b[0]))
+						.map(([day, recipe], index) => (
+						<div 
+							key={index} 
+							style={day === selectedDay ? {backgroundColor: 'darkgray'} : {}}
+							onClick={() => {
+								setSelectedDay(day);
+								setDate(day);
+								setSavedSelectedRecipe(recipe);
+							}}
+						>
+							<h3>{new Date(day).toLocaleDateString('fr-FR')}</h3>
+							<p>{recipe.labelRec}</p>
+							<button onClick={(event) => {
+								event.stopPropagation(); // prevent the onClick event of the parent div from being triggered
+								removeDayFromPlanning(day);
+							}}>Supprimer</button>
+						</div>
+					))}
+				</Box>
+				<Box id='calendar__calendar-container' style={{ marginLeft: '5px' }}>
+					<Calendar onChange={handleSetDate} value={date} locale='fr-FR' />
+				</Box>
 			</Box>
 			{recipes.length > 0 ? (
 				<Box id='calendar__recipes-container'>
@@ -193,6 +276,13 @@ const CalendarPage = () => {
 							{(mailLoading && <LoadingBars />) ||
 								(emailSent && 'Vous avez déjà reçu la recette') ||
 								'Recevoir la recette sélectionnée'}
+						</Button>
+						<Button
+							variant='contained'
+							color='primary'
+							onClick={() => addRecipeToPlanning(date, savedSelectedRecipe)}
+							disabled={!savedSelectedRecipe}>
+							Ajouter au planning
 						</Button>
 					</Box>
 				</Box>
