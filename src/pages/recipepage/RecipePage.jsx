@@ -374,12 +374,12 @@ const RecipePage = () => {
 						Ajouter
 					</Button>
 					<Button
-							onClick={handleCommentDelete}
-							type='delete'
-							variant='contained'
-							className='recipe__add-button-item'>
-							Supprimer
-						</Button>
+						onClick={handleCommentDelete}
+						type='delete'
+						variant='contained'
+						className='recipe__add-button-item'>
+						Supprimer
+					</Button>
 				</form>
 			</Box>
 		</Container>
