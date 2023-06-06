@@ -72,6 +72,7 @@ input.recipe__comment-form-input{
 }
 Button{
 	display: inline-flex;
+  margin:5%;
 }
 
 
