@@ -66,15 +66,13 @@ input.recipe__comment-form-input{
     'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 .commentaires{
-	height: 100px;
-	border-radius: 5%;
-	border: 10%;
+    height: 100px;
+    border-radius: 5%;
+    border: 10%;
 }
-button{
-	display: inline-flex;
-  margin:5%;
+.button-container{
+    display: inline-flex;
 }
-
 
 
 	

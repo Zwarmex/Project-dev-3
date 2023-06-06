@@ -367,24 +367,23 @@ const RecipePage = () => {
 						className='recipe__comment-form-input'
 						required
 					/>
-					<Button
-						type='submit'
-						color='primary'
-						variant='contained'
-						className='recipe__delete-button-item'>
-						Ajouter
-					</Button>
+					<div className='button-container'>
+                        <Button
+                            type='submit'
+                            variant='contained'
+                            className='recipeadd-button-item'>
+                            Ajouter
+                        </Button>
+                        <Button
 
-
-					
+                            onClick={handleCommentDelete}
+                            type='delete'
+                            variant='contained'
+                            className='recipeadd-button-item'>
+                            Supprimer
+                        </Button>
+                    </div>
 				</form>
-				<Button
-						onClick={handleCommentDelete}
-						type='delete'
-						variant='contained'
-						className='recipe__add-button-item'>
-						Supprimer
-				</Button>
 			</Box>
 		</Container>
 	);
