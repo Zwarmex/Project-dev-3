@@ -148,6 +148,34 @@ const RecipePage = () => {
 			} catch (error) {}
 		}
 	};
+	const handleCommentDelete = async () => {
+		const confirmed = window.confirm(
+			'Are you sure you want to delete your comment?'
+		);
+		if (confirmed) {
+			try {
+				const response = await fetch(
+					`${process.env.REACT_APP_API_END_POINT}opinion/user/${idUser}/recipe/${idRec}`,
+					{
+						method: 'DELETE',
+						headers: {
+							authorization: tokenJWT,
+						},
+					}
+				);
+
+				if (response.ok) {
+					const data = await response.json();
+					setTokenJWT(data.tokenJWT);
+					localStorage.setItem('tokenJWT', data.tokenJWT);
+					navigate(-1);
+				} else if (response.status === 401) {
+					logout();
+					navigate('/login');
+				}
+			} catch (error) {}
+		}
+	};
 	const handleImageError = (event) => {
 		event.target.src = defaultRecipeImage;
 		event.target.alt = 'Default image for recipe';
@@ -320,13 +348,23 @@ const RecipePage = () => {
 						className='recipe__comment-form-input'
 						required
 					/>
-					<Button
-						type='submit'
-						color='primary'
-						variant='contained'
-						className='recipe__delete-button-item'>
-						Ajouter
-					</Button>
+					<div className='button-container'>
+						<Button
+							type='submit'
+							variant='contained'
+							className='recipe__add-button-item'>
+							Ajouter
+						</Button>
+						<Button
+						
+							onClick={handleCommentDelete}
+							type='delete'
+							variant='contained'
+							className='recipe__add-button-item'>
+							Supprimer
+						</Button>
+					</div>
+					
 				</form>
 			</Box>
 		</Container>
