@@ -183,6 +183,36 @@ const RecipePage = () => {
 			}
 		}
 	};
+	const handleCommentDelete = async () => {
+		const confirmed = window.confirm(
+			'Are you sure you want to delete your comment?'
+		);
+		if (confirmed) {
+			try {
+				const response = await fetch(
+					`${process.env.REACT_APP_API_END_POINT}opinion/user/${idUser}/recipe/${idRec}`,
+					{
+						method: 'DELETE',
+						headers: {
+							authorization: tokenJWT,
+						},
+					}
+				);
+
+				if (response.ok) {
+					const data = await response.json();
+					setTokenJWT(data.tokenJWT);
+					localStorage.setItem('tokenJWT', data.tokenJWT);
+				} else if (response.status === 401) {
+					logout();
+					navigate('/login');
+				}
+				  else if (response.status === 409) {
+					alert("Vous n'avez pas de commentaire à supprimer")
+				}	
+			} catch (error) {}
+		}
+	};
 	const handleCommentSubmit = async (event) => {
 		event.preventDefault();
 		const formData = new FormData(event.target);
@@ -343,6 +373,13 @@ const RecipePage = () => {
 						className='recipe__delete-button-item'>
 						Ajouter
 					</Button>
+					<Button
+							onClick={handleCommentDelete}
+							type='delete'
+							variant='contained'
+							className='recipe__add-button-item'>
+							Supprimer
+						</Button>
 				</form>
 			</Box>
 		</Container>

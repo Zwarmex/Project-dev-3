@@ -64,9 +64,11 @@ input.recipe__comment-form-input {
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
     'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
-.commentaires {
+.commentaires{
   height: 100px;
   border-radius: 5%;
-  border-color: rgb(255, 127, 127);
   border: 10%;
+}
+.button-container{
+  display: inline-flex;
 }
