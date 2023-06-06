@@ -70,7 +70,7 @@ input.recipe__comment-form-input{
 	border-radius: 5%;
 	border: 10%;
 }
-Button{
+button{
 	display: inline-flex;
   margin:5%;
 }
