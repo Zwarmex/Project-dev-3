@@ -212,6 +212,7 @@ const RecipePage = () => {
 				}	
 			} catch (error) {}
 		}
+		fetchComments();
 	};
 	const handleCommentSubmit = async (event) => {
 		event.preventDefault();
