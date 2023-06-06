@@ -366,6 +366,7 @@ const RecipePage = () => {
 						className='recipe__comment-form-input'
 						required
 					/>
+					<div>
 					<Button
 						type='submit'
 						color='primary'
@@ -380,6 +381,8 @@ const RecipePage = () => {
 						className='recipe__add-button-item'>
 						Supprimer
 					</Button>
+					</div>
+					
 				</form>
 			</Box>
 		</Container>
