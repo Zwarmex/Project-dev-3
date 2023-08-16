@@ -3,7 +3,7 @@
 ## Fonctionnalities
 
 > It will be an app where you'll be able to add some recipes to your favorites and create a menu for your week.
-
+TEST  TEST  TEST
 To launch the application, you need to
 -change directory to client
 -npm i
